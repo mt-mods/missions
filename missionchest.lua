@@ -122,7 +122,10 @@ minetest.register_node("missions:missionchest", {
 	on_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
-		-- TODO: remove put items
+		if listname == "main" then
+			-- remove from inventory
+			inv:remove_item("main", stack)
+		end
 	end,
 
 	on_receive_fields = function(pos, formname, fields, sender)
@@ -134,13 +137,6 @@ minetest.register_node("missions:missionchest", {
 
 		update_formspec(meta)
 		create_book_ref(pos)
-	end,
-
-	can_dig = function(pos,player)
-		local meta = minetest.get_meta(pos);
-		local inv = meta:get_inventory()
-		return inv:is_empty("main")
 	end
-
 })
 

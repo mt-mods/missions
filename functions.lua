@@ -17,7 +17,6 @@ missions.load_missions = function()
 end
 
 missions.start_mission = function(player, mission)
-	print(dump(mission)) -- XXX
 
 	local playername = player:get_player_name()
 	local playermissions = missions.list[playername]
@@ -62,6 +61,11 @@ missions.update_mission = function(player, mission, stack)
 		if targetStack:get_name() == stack:get_name() then
 			-- same type
 			local takenStack = targetStack:take_item(stack:get_count())
+
+			-- update current stack
+			stack:set_count(stack:get_count() - takenStack:get_count())
+
+			-- update return stack
 			count = count + takenStack:get_count()
 
 			-- save remaining stack
@@ -95,8 +99,6 @@ local check_player_mission = function(player, mission, remaining)
 
 	if openCount == 0 then
 		-- mission finished
-		-- XXX
-		print(dump(mission))
 
 
 		missions.hud_remove_mission(player, mission)
