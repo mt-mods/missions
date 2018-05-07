@@ -88,7 +88,41 @@ minetest.register_node("missions:missionchest", {
 	end,
 
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		return -1
+		if listname == "ref" then
+			return -1
+		end
+
+		if listname == "main" then
+			-- TODO
+			-- check if mission is running for player (source-inv/spec stuff)
+		end
+
+		return 0
+	end,
+
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		-- check mission
+		local playermissions = missions.list[player:get_player_name()]
+
+		if playermissions == nil then
+			return 0
+		end
+
+		for i,mission in pairs(playermissions) do
+			if missions.pos_equal(pos, mission.target) then
+				-- mission target matches
+				local movedItems = missions.update_mission(player, mission, stack)
+				return movedItems
+			end
+		end
+
+		return 0
+	end,
+
+	on_metadata_inventory_put = function(pos, listname, index, stack, player)
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+		-- TODO: remove put items
 	end,
 
 	on_receive_fields = function(pos, formname, fields, sender)

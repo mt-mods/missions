@@ -19,8 +19,9 @@ local update_formspec = function(meta)
 		"button_exit[6,1;2,1;start;Start]" ..
 
 		-- col 2
-		"label[0,2;From]" ..
-		"list[context;from;1,2;1,1;]" ..
+		-- TODO: implement source-inv, uncomment from-spec afterwards
+		-- "label[0,2;From]" ..
+		-- "list[context;from;1,2;1,1;]" ..
 		"label[2,2;To]" ..
 		"list[context;to;3,2;1,1;]" ..
 		"field[6,2.5;2,1;time;Time (min);" .. meta:get_int("time") .. "]" ..
