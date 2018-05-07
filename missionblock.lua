@@ -32,6 +32,19 @@ local is_book = function(stack)
 	return stack:get_count() == 1 and stack:get_name() == "default:book_written"
 end
 
+local start_mission = function(player, mission)
+	print(dump(mission)) -- XXX
+end
+
+local timer = 0
+minetest.register_globalstep(function(dtime)
+	timer = timer + dtime;
+	if timer >= 1 then
+		-- TODO
+		timer = 0
+	end
+end)
+
 minetest.register_node("missions:missionblock", {
 	description = "Mission block",
 	tiles = {"missionblock.png"},
@@ -144,6 +157,7 @@ minetest.register_node("missions:missionblock", {
 			-- TODO: start mission
 			local mission = {};
 			mission.time = meta:get_int("time")
+			mission.start = os.clock()
 
 			local reward = {}
 			reward.multiplier = meta:get_int("reward-multi")
@@ -201,7 +215,7 @@ minetest.register_node("missions:missionblock", {
 				end
 			end
 
-			print(dump(mission)) -- XXX
+			start_mission(sender, mission)
 
 		end
 
