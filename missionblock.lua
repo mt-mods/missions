@@ -4,13 +4,14 @@ local update_formspec = function(meta)
 		-- col 1
 		"label[0,1;Mission book]" ..
 		"list[context;book;3,1;1,1;]" ..
-		"button_exit[6,1;2,1;save;Save]" ..
+		"button_exit[4,1;2,1;save;Save]" ..
+		"button_exit[6,1;2,1;start;Start]" ..
 
 		-- col 2
 		"label[0,2;From]" ..
-		"list[context;book;1,2;1,1;]" ..
+		"list[context;from;1,2;1,1;]" ..
 		"label[2,2;To]" ..
-		"list[context;book;3,2;1,1;]" ..
+		"list[context;to;3,2;1,1;]" ..
 		"field[6,2.5;2,1;time;Time (min);" .. meta:get_int("time") .. "]" ..
 
 		-- col 3
@@ -25,6 +26,10 @@ local update_formspec = function(meta)
 
 		-- col 5,6,7,8
 		"list[current_player;main;0,5;8,4;]")
+end
+
+local is_book = function(stack)
+	return stack:get_count() == 1 and stack:get_name() == "default:book_written"
 end
 
 minetest.register_node("missions:missionblock", {
@@ -131,6 +136,73 @@ minetest.register_node("missions:missionblock", {
 			end
 		else
 			-- non-owner
+		end
+
+		if fields.start then
+			local inv = meta:get_inventory()
+
+			-- TODO: start mission
+			local mission = {};
+			mission.time = meta:get_int("time")
+
+			local reward = {}
+			reward.multiplier = meta:get_int("reward-multi")
+			reward.list = {}
+			local i=1
+			while i<=inv:get_size("reward") do
+				local stack = inv:get_stack("reward", i)
+				if stack:get_count() > 0 then
+					table.insert(reward.list, stack:to_string())
+				end
+				i = i + 1
+			end
+			mission.reward = reward;
+
+			local transport = {}
+			transport.multiplier = meta:get_int("transport-multi")
+			transport.list = {}
+			i = 1
+			while i<=inv:get_size("transport") do
+				local stack = inv:get_stack("transport", i)
+				if stack:get_count() > 0 then
+					table.insert(transport.list, stack:to_string())
+				end
+				i = i + 1
+			end
+
+			mission.transport = transport
+
+			local missionBookStack = inv:get_stack("book", 1)
+			local fromBookStack = inv:get_stack("from", 1)
+			local toBookStack = inv:get_stack("to", 1)
+
+			if is_book(missionBookStack) and is_book(toBookStack) then
+				-- to and mission books available
+				mission.title = missionBookStack:get_meta():get_string("title")
+				mission.description = missionBookStack:get_meta():get_string("text")
+
+				local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
+				if target == nil then
+					minetest.chat_send_player(sender:get_player_name(), "to-book malformed")
+					return
+				end
+
+				mission.target = target
+
+				if is_book(fromBookStack) then
+					-- from book available
+					local source = minetest.deserialize(fromBookStack:get_meta():get_string("text"))
+					if source == nil then
+						minetest.chat_send_player(sender:get_player_name(), "from-book malformed")
+						return
+					end
+
+					mission.source = source
+				end
+			end
+
+			print(dump(mission)) -- XXX
+
 		end
 
 		update_formspec(meta)
