@@ -6,6 +6,7 @@ missions = {
 }
 
 dofile(MP.."/functions.lua")
+dofile(MP.."/hud.lua")
 dofile(MP.."/missionblock.lua")
 dofile(MP.."/missionchest.lua")
 

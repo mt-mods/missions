@@ -21,7 +21,7 @@ missions.start_mission = function(player, mission)
 
 	for i,m in pairs(playermissions) do
 		if m.title == mission.title then
-			minetest.chat_send_player(playername, "Mission alread running: " .. mission.title)
+			minetest.chat_send_player(playername, "Mission already running: " .. mission.title)
 			return
 		end
 	end
@@ -32,10 +32,27 @@ missions.start_mission = function(player, mission)
 	missions.save_missions()
 end
 
+missions.remove_mission = function(player, mission)
+	local playername = player:get_player_name()
+	local playermissions = missions.list[playername]
+	if playermissions == nil then playermissions = {} end
+
+	for i,m in pairs(playermissions) do
+		if m.title == mission.title then
+			table.remove(playermissions, i)
+			return
+		end
+	end
+end
 
 
-
-local update_player_mission = function(player, mission, time)
+local update_player_mission = function(player, mission, remaining)
+	if remaining <= 0 then
+		-- mission timed-out
+		missions.hud_remove_mission(player, mission)
+		missions.remove_mission(player, mission)
+		minetest.chat_send_player(player:get_player_name(), "Mission timed out!: " .. mission.title)
+	end
 end
 
 local timer = 0
@@ -49,14 +66,15 @@ minetest.register_globalstep(function(dtime)
 			local playermissions = missions.list[playername]
 			if playermissions ~= nil then
 				for j,mission in pairs(playermissions) do
-					local diff = now - mission.start
-					print(playername .. ": " .. mission.title .. " == " .. diff .. " seconds")
+					local remaining = mission.time - (now - mission.start)
 
-					update_player_mission(player, mission, diff)
+					update_player_mission(player, mission, remaining)
 				end
 			end
+			missions.hud_update(player, playermissions)
 		end
 
 		timer = 0
 	end
 end)
+
