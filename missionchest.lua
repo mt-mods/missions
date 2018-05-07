@@ -87,8 +87,8 @@ minetest.register_node("missions:missionchest", {
 		create_book_ref(pos)
 	end,
 
-	on_metadata_inventory_take = function(pos, listname, index, stack, player)
-		create_book_ref(pos)
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		return -1
 	end,
 
 	on_receive_fields = function(pos, formname, fields, sender)
