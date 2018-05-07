@@ -1,13 +1,9 @@
 
-local is_book = function(stack)
-	return stack:get_count() == 1 and stack:get_name() == "default:book_written"
-end
-
 local update_formspec = function(meta)
 	local inv = meta:get_inventory()
 	local missionBookStack = inv:get_stack("book", 1)
 
-	if is_book(missionBookStack) then
+	if missions.is_book(missionBookStack) then
 		local title = missionBookStack:get_meta():get_string("title")
 		meta:set_string("infotext", "Mission-block: " .. title)
 	else
@@ -43,57 +39,6 @@ local update_formspec = function(meta)
 		"list[current_player;main;0,5;8,4;]")
 end
 
-local missions = {} -- playername -> mission[]
-
-
-local save_missions = function()
-	-- TODO
-end
-
-local load_missions = function()
-	-- TODO
-end
-
-local start_mission = function(player, mission)
-	print(dump(mission)) -- XXX
-
-	local playername = player:get_player_name()
-	local playermissions = missions[playername]
-	if playermissions == nil then playermissions = {} end
-
-	for i,m in pairs(playermissions) do
-		if m.title == mission.title then
-			minetest.chat_send_player(playername, "Mission alread running: " .. mission.title)
-			return
-		end
-	end
-
-	table.insert(playermissions, mission)
-
-	missions[playername] = playermissions
-	save_missions()
-end
-
-local timer = 0
-minetest.register_globalstep(function(dtime)
-	timer = timer + dtime;
-	if timer >= 1 then
-		local now = os.time(os.date("!*t"))
-		local players = minetest.get_connected_players()
-		for i,player in pairs(players) do
-			local playername = player:get_player_name()
-			local playermissions = missions[playername]
-			if playermissions ~= nil then
-				for j,mission in pairs(playermissions) do
-					local diff = now - mission.start
-					print(playername .. ": " .. mission.title .. " == " .. diff .. " seconds")
-				end
-			end
-		end
-
-		timer = 0
-	end
-end)
 
 minetest.register_node("missions:missionblock", {
 	description = "Mission block",
@@ -119,7 +64,7 @@ minetest.register_node("missions:missionblock", {
 
 		meta:set_int("reward-multi", 1)
 		meta:set_int("transport-multi", 1)
-		meta:set_int("time", 5)
+		meta:set_int("time", 300)
 
 		update_formspec(meta)
 	end,
@@ -203,7 +148,6 @@ minetest.register_node("missions:missionblock", {
 		if fields.start then
 			local inv = meta:get_inventory()
 
-			-- TODO: start mission
 			local mission = {};
 			mission.time = meta:get_int("time")
 			mission.start = os.time(os.date("!*t"))
@@ -239,7 +183,7 @@ minetest.register_node("missions:missionblock", {
 			local fromBookStack = inv:get_stack("from", 1)
 			local toBookStack = inv:get_stack("to", 1)
 
-			if is_book(missionBookStack) and is_book(toBookStack) then
+			if missions.is_book(missionBookStack) and missions.is_book(toBookStack) then
 				-- to and mission books available
 				mission.title = missionBookStack:get_meta():get_string("title")
 				mission.description = missionBookStack:get_meta():get_string("text")
@@ -252,7 +196,7 @@ minetest.register_node("missions:missionblock", {
 
 				mission.target = target
 
-				if is_book(fromBookStack) then
+				if missions.is_book(fromBookStack) then
 					-- from book available
 					local source = minetest.deserialize(fromBookStack:get_meta():get_string("text"))
 					if source == nil then
@@ -262,7 +206,7 @@ minetest.register_node("missions:missionblock", {
 
 					mission.source = source
 				end
-				start_mission(sender, mission)
+				missions.start_mission(sender, mission)
 
 			else
 				minetest.chat_send_player(sender:get_player_name(), "mission-book or to-book not available")
