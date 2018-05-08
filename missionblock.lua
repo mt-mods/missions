@@ -1,3 +1,4 @@
+local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
 local update_formspec = function(meta)
 	local inv = meta:get_inventory()
@@ -8,6 +9,14 @@ local update_formspec = function(meta)
 		meta:set_string("infotext", "Mission-block: " .. title)
 	else
 		meta:set_string("infotext", "Unconfigured mission-block")
+	end
+
+	local xp_str = function(str)
+		if has_xp_redo_mod then
+			return str
+		else
+			return ""
+		end
 	end
 
 
@@ -28,13 +37,15 @@ local update_formspec = function(meta)
 
 		-- col 3
 		"label[0,3;Reward]" ..
-		"list[context;reward;3,3;2,1;]" ..
-		"field[6,3.5;2,1;rewardmultiplier;Multiplier;" .. meta:get_int("reward-multi") .. "]" ..
+		"list[context;reward;2,3;3,1;]" ..
+		-- "field[6,3.5;2,1;rewardmultiplier;Multiplier;" .. meta:get_int("reward-multi") .. "]" ..
+		xp_str("field[6,3.5;2,1;rewardxp;XP-Reward;" .. meta:get_int("rewardxp") .. "]") ..
 
 		-- col 4
 		"label[0,4;Transport]" ..
-		"list[context;transport;3,4;2,1;]" ..
-		"field[6,4.5;2,1;transportmultiplier;Multiplier;" .. meta:get_int("transport-multi") .. "]" ..
+		"list[context;transport;2,4;3,1;]" ..
+		-- "field[6,4.5;2,1;transportmultiplier;Multiplier;" .. meta:get_int("transport-multi") .. "]" ..
+		xp_str("field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
 
 		-- col 5,6,7,8
 		"list[current_player;main;0,5;8,4;]")
@@ -60,8 +71,15 @@ minetest.register_node("missions:missionblock", {
 		inv:set_size("book", 1)
 		inv:set_size("from", 1)
 		inv:set_size("to", 1)
-		inv:set_size("reward", 2)
-		inv:set_size("transport", 2)
+		inv:set_size("reward", 3)
+		inv:set_size("transport", 3)
+
+		-- xp stuff
+		if has_xp_redo_mod then
+			meta:set_int("rewardxp", 10)
+			meta:set_int("penaltyxp", 20)
+			meta:set_int("entryxp", 0)
+		end
 
 		meta:set_int("reward-multi", 1)
 		meta:set_int("transport-multi", 1)
@@ -141,6 +159,16 @@ minetest.register_node("missions:missionblock", {
 
 				local transportMulti = tonumber(fields.transportmultiplier)
 				if transportMulti~= nil then meta:set_int("transport-multi", transportMulti) end
+
+				local rewardxp = tonumber(fields.rewardxp)
+				if rewardxp~= nil then meta:set_int("rewardxp", rewardxp) end
+
+				local penaltyxp = tonumber(fields.penaltyxp)
+				if penaltyxp~= nil then meta:set_int("penaltyxp", penaltyxp) end
+
+				local entryxp = tonumber(fields.entryxp)
+				if entryxp~= nil then meta:set_int("entryxp", entryxp) end
+
 			end
 		else
 			-- non-owner
@@ -152,6 +180,11 @@ minetest.register_node("missions:missionblock", {
 			local mission = {};
 			mission.time = meta:get_int("time")
 			mission.start = os.time(os.date("!*t"))
+
+			if has_xp_redo_mod then
+				mission.rewardxp = meta:get_int("rewardxp")
+				mission.penaltyxp = meta:get_int("penaltyxp")
+			end
 
 			local reward = {}
 			reward.multiplier = meta:get_int("reward-multi")

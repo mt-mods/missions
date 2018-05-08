@@ -1,4 +1,4 @@
-
+local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
 missions.is_book = function(stack)
 	return stack:get_count() == 1 and stack:get_name() == "default:book_written"
@@ -19,6 +19,15 @@ end
 missions.start_mission = function(player, mission)
 
 	local playername = player:get_player_name()
+
+	if has_xp_redo_mod and mission.entryxp then
+		local xp = xp_redo.get_xp(playername)
+		if xp < mission.entryxp then
+			minetest.chat_send_player(playername, "Not enough xp for mission, needed: " .. mission.entryxp)
+			return
+		end
+	end
+
 	local playermissions = missions.list[playername]
 	if playermissions == nil then playermissions = {} end
 
@@ -85,7 +94,10 @@ local check_player_mission = function(player, mission, remaining)
 		minetest.chat_send_player(player:get_player_name(), "Mission timed out!: " .. mission.title)
 		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission timed out: " .. mission.title)
 
-		-- TODO: penalty (xp?)
+		if has_xp_redo_mod and mission.penaltyxp then
+			xp_redo.add_xp(player:get_player_name(), -mission.penaltyxp)
+		end
+
 	end
 
 	local openCount = 0
@@ -145,7 +157,7 @@ local check_player_mission = function(player, mission, remaining)
 			hud_elem_type = "image",
 			name = "award_icon",
 			scale = {x = 4, y = 4},
-			text = "missions_unknown.png",
+			text = "default_gold_ingot.png",
 			position = {x = 0.4, y = 0},
 			offset = {x = -81.5, y = 126},
 			alignment = {x = 0, y = -1}
@@ -158,7 +170,10 @@ local check_player_mission = function(player, mission, remaining)
 			player:hud_remove(four)
 		end)
 
-		-- TODO: xp reward
+		if has_xp_redo_mod and mission.rewardxp then
+			xp_redo.add_xp(player:get_player_name(), mission.rewardxp)
+		end
+
 
 		local inv = player:get_inventory()
 		for i,stackStr in pairs(mission.reward.list) do
