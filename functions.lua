@@ -106,7 +106,58 @@ local check_player_mission = function(player, mission, remaining)
 		minetest.chat_send_player(player:get_player_name(), "Mission finished: " .. mission.title)
 		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission finished: " .. mission.title)
 
-		-- TODO: proper finish animation
+		minetest.sound_play({name="missions_generic", gain=0.25}, {to_player=player:get_player_name()})
+
+
+		local one = player:hud_add({
+			hud_elem_type = "image",
+			name = "award_bg",
+			scale = {x = 2, y = 1},
+			text = "missions_bg_default.png",
+			position = {x = 0.5, y = 0},
+			offset = {x = 0, y = 138},
+			alignment = {x = 0, y = -1}
+		})
+
+		local two = player:hud_add({
+			hud_elem_type = "text",
+			name = "award_au",
+			number = 0xFFFFFF,
+			scale = {x = 100, y = 20},
+			text = "Mission complete!",
+			position = {x = 0.5, y = 0},
+			offset = {x = 0, y = 40},
+			alignment = {x = 0, y = -1}
+		})
+
+		local three = player:hud_add({
+			hud_elem_type = "text",
+			name = "award_title",
+			number = 0xFFFFFF,
+			scale = {x = 100, y = 20},
+			text = mission.title,
+			position = {x = 0.5, y = 0},
+			offset = {x = 30, y = 100},
+			alignment = {x = 0, y = -1}
+		})
+
+		local four = player:hud_add({
+			hud_elem_type = "image",
+			name = "award_icon",
+			scale = {x = 4, y = 4},
+			text = "missions_unknown.png",
+			position = {x = 0.4, y = 0},
+			offset = {x = -81.5, y = 126},
+			alignment = {x = 0, y = -1}
+		})
+
+		minetest.after(4, function()
+			player:hud_remove(one)
+			player:hud_remove(two)
+			player:hud_remove(three)
+			player:hud_remove(four)
+		end)
+
 		-- TODO: xp reward
 
 		local inv = player:get_inventory()
