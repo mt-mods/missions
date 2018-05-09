@@ -16,7 +16,10 @@ missions.load_missions = function()
 	-- TODO
 end
 
+
 missions.start_mission = function(player, mission)
+
+	-- print(dump(mission)) --XXX
 
 	local playername = player:get_player_name()
 
