@@ -52,11 +52,17 @@ local update_formspec = function(meta)
 end
 
 
-minetest.register_node("missions:missionblock", {
-	description = "Mission block",
-	tiles = {"missionblock.png"},
+minetest.register_node("missions:transport", {
+	description = "Transport mission",
+	tiles = {
+		"default_gold_block.png",
+		"default_gold_block.png",
+		"default_gold_block.png^default_steel_ingot.png^missions_m_overlay.png",
+		"default_gold_block.png^default_steel_ingot.png^missions_m_overlay.png",
+		"default_gold_block.png^default_steel_ingot.png^missions_m_overlay.png",
+		"default_gold_block.png^default_steel_ingot.png^missions_m_overlay.png"
+	},
 	groups = {cracky=3,oddly_breakable_by_hand=3},
-	drop = "missions:missionblock",
 	sounds = default.node_sound_glass_defaults(),
 
 	after_place_node = function(pos, placer)

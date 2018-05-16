@@ -1,0 +1,14 @@
+missions:
+
+- missions:transport (missions:chest)
+
+- missions:kill (on_punch)
+
+- missions:walk (global_step, distance)
+
+- missions:goto (global_step, destination)
+
+- missions:dig (on_dig)
+
+- missions:craft (on_craft)
+

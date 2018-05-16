@@ -55,10 +55,10 @@ minetest.register_node("missions:missionchest", {
 	tiles = {
 		"default_chest_top.png",
 		"default_chest_top.png",
-		"default_chest_side.png",
-		"default_chest_side.png",
-		"missionchest_front.png",
-		"default_chest_side.png"
+		"default_chest_side.png^missions_m_overlay.png",
+		"default_chest_side.png^missions_m_overlay.png",
+		"default_chest_front.png^missions_m_overlay.png",
+		"default_chest_side.png^missions_m_overlay.png"
 	},
 	paramtype = "light",
 	paramtype2 = "facedir",
@@ -66,8 +66,6 @@ minetest.register_node("missions:missionchest", {
 	sound_open = "default_chest_open",
 	sound_close = "default_chest_close",
 	groups = {choppy = 2, oddly_breakable_by_hand = 2},
-
-	drop = "missions:missionchest",
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
@@ -130,8 +128,9 @@ minetest.register_node("missions:missionchest", {
 
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
 
-		if fields.save then
+		if fields.save and sender:get_player_name() == owner then
 			meta:set_string("title", fields.title)
 		end
 
