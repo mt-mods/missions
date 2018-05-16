@@ -97,8 +97,8 @@ local check_player_mission = function(player, mission, remaining)
 		minetest.chat_send_player(player:get_player_name(), "Mission timed out!: " .. mission.title)
 		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission timed out: " .. mission.title)
 
-		if has_xp_redo_mod and mission.penaltyxp then
-			xp_redo.add_xp(player:get_player_name(), -mission.penaltyxp)
+		if has_xp_redo_mod and mission.xp and mission.xp.penalty then
+			xp_redo.add_xp(player:get_player_name(), -mission.penalty)
 		end
 
 	end
@@ -173,8 +173,8 @@ local check_player_mission = function(player, mission, remaining)
 			player:hud_remove(four)
 		end)
 
-		if has_xp_redo_mod and mission.rewardxp then
-			xp_redo.add_xp(player:get_player_name(), mission.rewardxp)
+		if has_xp_redo_mod and mission.xp and mission.xp.reward then
+			xp_redo.add_xp(player:get_player_name(), mission.xp.reward)
 		end
 
 

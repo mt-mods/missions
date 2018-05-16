@@ -28,9 +28,6 @@ local update_formspec = function(meta)
 		"button_exit[6,1;2,1;start;Start]" ..
 
 		-- col 2
-		-- TODO: implement source-inv, uncomment from-spec afterwards
-		-- "label[0,2;From]" ..
-		-- "list[context;from;1,2;1,1;]" ..
 		"label[2,2;To]" ..
 		"list[context;to;3,2;1,1;]" ..
 		"field[6,2.5;2,1;time;Time (min);" .. meta:get_int("time") .. "]" ..
@@ -38,13 +35,11 @@ local update_formspec = function(meta)
 		-- col 3
 		"label[0,3;Reward]" ..
 		"list[context;reward;2,3;3,1;]" ..
-		-- "field[6,3.5;2,1;rewardmultiplier;Multiplier;" .. meta:get_int("reward-multi") .. "]" ..
 		xp_str("field[6,3.5;2,1;rewardxp;XP-Reward;" .. meta:get_int("rewardxp") .. "]") ..
 
 		-- col 4
 		"label[0,4;Transport]" ..
 		"list[context;transport;2,4;3,1;]" ..
-		-- "field[6,4.5;2,1;transportmultiplier;Multiplier;" .. meta:get_int("transport-multi") .. "]" ..
 		xp_str("field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
 
 		-- col 5,6,7,8
@@ -79,6 +74,7 @@ minetest.register_node("missions:transport", {
 		inv:set_size("to", 1)
 		inv:set_size("reward", 3)
 		inv:set_size("transport", 3)
+		meta:set_int("time", 300)
 
 		-- xp stuff
 		if has_xp_redo_mod then
@@ -87,9 +83,6 @@ minetest.register_node("missions:transport", {
 			meta:set_int("entryxp", 0)
 		end
 
-		meta:set_int("reward-multi", 1)
-		meta:set_int("transport-multi", 1)
-		meta:set_int("time", 300)
 
 		update_formspec(meta)
 	end,
@@ -160,12 +153,6 @@ minetest.register_node("missions:transport", {
 				local time = tonumber(fields.time)
 				if time ~= nil then meta:set_int("time", time) end
 
-				local rewardMulti = tonumber(fields.rewardmultiplier)
-				if rewardMulti~= nil then meta:set_int("reward-multi", rewardMulti) end
-
-				local transportMulti = tonumber(fields.transportmultiplier)
-				if transportMulti~= nil then meta:set_int("transport-multi", transportMulti) end
-
 				local rewardxp = tonumber(fields.rewardxp)
 				if rewardxp~= nil then meta:set_int("rewardxp", rewardxp) end
 
@@ -188,12 +175,13 @@ minetest.register_node("missions:transport", {
 			mission.start = os.time(os.date("!*t"))
 
 			if has_xp_redo_mod then
-				mission.rewardxp = meta:get_int("rewardxp")
-				mission.penaltyxp = meta:get_int("penaltyxp")
+				mission.xp = {
+					reward = meta:get_int("rewardxp"),
+					penalty = meta:get_int("penaltyxp")
+				}
 			end
 
 			local reward = {}
-			reward.multiplier = meta:get_int("reward-multi")
 			reward.list = {}
 			local i=1
 			while i<=inv:get_size("reward") do
@@ -206,7 +194,6 @@ minetest.register_node("missions:transport", {
 			mission.reward = reward;
 
 			local transport = {}
-			transport.multiplier = meta:get_int("transport-multi")
 			transport.list = {}
 			i = 1
 			while i<=inv:get_size("transport") do

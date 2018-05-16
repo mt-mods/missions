@@ -139,15 +139,6 @@ missions.hud_update = function(player, playermissions)
 			if mission.hud == nil then
 				-- add waypoint markers if new mission
 				mission.hud = {}
-				if mission.source ~= nil then
-					mission.hud.source = player:hud_add({
-						hud_elem_type = "waypoint",
-						name = mission.source.title .. "(Source)",
-						text = "m",
-						number = 0x0000FF,
-						world_pos = {x=mission.source.x, y=mission.source.y, z=mission.source.z}
-					})
-				end
 				mission.hud.target = player:hud_add({
 					hud_elem_type = "waypoint",
 					name = mission.target.title .. "(Destination)",
