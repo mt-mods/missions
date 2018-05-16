@@ -82,7 +82,7 @@ minetest.register_on_joinplayer(function(player)
 	data.transport2 = player:hud_add({
 		hud_elem_type = "image",
 		position = HUD_POSITION,
-		offset = {x = 40,   y = 110},
+		offset = {x = 80,   y = 110},
 		text = "",
 		alignment = HUD_ALIGNMENT,
 		scale = {x = 1, y = 1},
@@ -91,7 +91,7 @@ minetest.register_on_joinplayer(function(player)
 	data.transport3 = player:hud_add({
 		hud_elem_type = "image",
 		position = HUD_POSITION,
-		offset = {x = 80,   y = 110},
+		offset = {x = 160,   y = 110},
 		text = "",
 		alignment = HUD_ALIGNMENT,
 		scale = {x = 1, y = 1},
@@ -137,15 +137,20 @@ missions.hud_update = function(player, playermissions)
 		for i,mission in pairs(playermissions) do
 
 			if mission.hud == nil then
-				-- add waypoint markers if new mission
-				mission.hud = {}
-				mission.hud.target = player:hud_add({
-					hud_elem_type = "waypoint",
-					name = mission.target.title .. "(Destination)",
-					text = "m",
-					number = 0x0000FF,
-					world_pos = {x=mission.target.x, y=mission.target.y, z=mission.target.z}
-				})
+
+
+				if mission.type == "transport" then
+					-- add waypoint markers if new mission
+					mission.hud = {}
+					mission.hud.target = player:hud_add({
+						hud_elem_type = "waypoint",
+						name = mission.target.title .. "(Destination)",
+						text = "m",
+						number = 0x0000FF,
+						world_pos = {x=mission.target.x, y=mission.target.y, z=mission.target.z}
+					})
+
+				end
 			end
 
 
@@ -168,8 +173,9 @@ missions.hud_update = function(player, playermissions)
 		-- show the first mission to time out
 		local remainingTime = topMission.time - (now - topMission.start)
 		player:hud_change(data.title, "text", "Missions: (1/" .. table.getn(playermissions) .. ")")
-		player:hud_change(data.mission, "text", topMission.title)
+		player:hud_change(data.mission, "text", topMission.name .. " (" .. topMission.type .. ")")
 		player:hud_change(data.time, "text", "" .. format_time(remainingTime))
+
 		if remainingTime > 60 then
 			player:hud_change(data.time, "number", 0x00FF00)
 			player:hud_change(data.mission, "number", 0x00FF00)
@@ -178,19 +184,23 @@ missions.hud_update = function(player, playermissions)
 			player:hud_change(data.mission, "number", 0xFF0000)
 		end
 
-		if topMission.transport.list[1] ~= nil then
-			local img = get_image(ItemStack(topMission.transport.list[1]):get_name());
-			player:hud_change(data.transport1, "text", img)
-		end
+		if topMission.type == "transport" then
 
-		if topMission.transport.list[2] ~= nil then
-			local img = get_image(ItemStack(topMission.transport.list[2]):get_name());
-			player:hud_change(data.transport2, "text", img)
-		end
+			-- TODO dynamic code
+			if topMission.transport.list[1] ~= nil then
+				local img = get_image(ItemStack(topMission.transport.list[1]):get_name());
+				player:hud_change(data.transport1, "text", img)
+			end
 
-		if topMission.transport.list[3] ~= nil then
-			local img = get_image(ItemStack(topMission.transport.list[3]):get_name());
-			player:hud_change(data.transport3, "text", img)
+			if topMission.transport.list[2] ~= nil then
+				local img = get_image(ItemStack(topMission.transport.list[2]):get_name());
+				player:hud_change(data.transport2, "text", img)
+			end
+
+			if topMission.transport.list[3] ~= nil then
+				local img = get_image(ItemStack(topMission.transport.list[3]):get_name());
+				player:hud_change(data.transport3, "text", img)
+			end
 		end
 
 	else

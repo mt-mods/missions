@@ -19,6 +19,9 @@ end
 
 missions.start_mission = function(player, mission)
 
+	-- mark start of mission
+	mission.start = os.time(os.date("!*t"))
+
 	-- print(dump(mission)) --XXX
 
 	local playername = player:get_player_name()
@@ -35,8 +38,8 @@ missions.start_mission = function(player, mission)
 	if playermissions == nil then playermissions = {} end
 
 	for i,m in pairs(playermissions) do
-		if m.title == mission.title then
-			minetest.chat_send_player(playername, "Mission already running: " .. mission.title)
+		if m.name == mission.name then
+			minetest.chat_send_player(playername, "Mission already running: " .. mission.name)
 			return
 		end
 	end
@@ -53,7 +56,7 @@ missions.remove_mission = function(player, mission)
 	if playermissions == nil then playermissions = {} end
 
 	for i,m in pairs(playermissions) do
-		if m.title == mission.title then
+		if m.name == mission.name then
 			table.remove(playermissions, i)
 			return
 		end
@@ -94,8 +97,8 @@ local check_player_mission = function(player, mission, remaining)
 		-- mission timed-out
 		missions.hud_remove_mission(player, mission)
 		missions.remove_mission(player, mission)
-		minetest.chat_send_player(player:get_player_name(), "Mission timed out!: " .. mission.title)
-		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission timed out: " .. mission.title)
+		minetest.chat_send_player(player:get_player_name(), "Mission timed out!: " .. mission.name)
+		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission timed out: " .. mission.name)
 
 		if has_xp_redo_mod and mission.xp and mission.xp.penalty then
 			xp_redo.add_xp(player:get_player_name(), -mission.penalty)
@@ -103,23 +106,32 @@ local check_player_mission = function(player, mission, remaining)
 
 	end
 
-	local openCount = 0
-	for i,itemStr in pairs(mission.transport.list) do
-		-- check if items placed
-		local stack = ItemStack(itemStr)
-		if not stack:is_empty() then
-			openCount = openCount + 1
+	local finished = false;
+
+	if mission.type == "transport" then
+		-- check transport list
+		local openCount = 0
+		for i,itemStr in pairs(mission.transport.list) do
+			-- check if items placed
+			local stack = ItemStack(itemStr)
+			if not stack:is_empty() then
+				openCount = openCount + 1
+			end
+		end
+
+		if openCount == 0 then
+			finished = true
 		end
 	end
 
-	if openCount == 0 then
+	if finished then
 		-- mission finished
 
 
 		missions.hud_remove_mission(player, mission)
 		missions.remove_mission(player, mission)
-		minetest.chat_send_player(player:get_player_name(), "Mission finished: " .. mission.title)
-		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission finished: " .. mission.title)
+		minetest.chat_send_player(player:get_player_name(), "Mission finished: " .. mission.name)
+		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission finished: " .. mission.name)
 
 		minetest.sound_play({name="missions_generic", gain=0.25}, {to_player=player:get_player_name()})
 
@@ -150,7 +162,7 @@ local check_player_mission = function(player, mission, remaining)
 			name = "award_title",
 			number = 0xFFFFFF,
 			scale = {x = 100, y = 20},
-			text = mission.title,
+			text = mission.name,
 			position = {x = 0.5, y = 0},
 			offset = {x = 30, y = 100},
 			alignment = {x = 0, y = -1}

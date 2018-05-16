@@ -2,14 +2,9 @@ local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
 local update_formspec = function(meta)
 	local inv = meta:get_inventory()
-	local missionBookStack = inv:get_stack("book", 1)
 
-	if missions.is_book(missionBookStack) then
-		local title = missionBookStack:get_meta():get_string("title")
-		meta:set_string("infotext", "Mission-block: " .. title)
-	else
-		meta:set_string("infotext", "Unconfigured mission-block")
-	end
+	local mission_name = meta:get_string("mission_name")
+	meta:set_string("infotext", "Mission-block: " .. mission_name)
 
 	local xp_str = function(str)
 		if has_xp_redo_mod then
@@ -22,8 +17,7 @@ local update_formspec = function(meta)
 
 	meta:set_string("formspec", "size[8,10;]" ..
 		-- col 1
-		"label[0,1;Mission book]" ..
-		"list[context;book;3,1;1,1;]" ..
+		"field[0,1.5;4,1;mission_name;Mission name;" .. mission_name .. "]" ..
 		"button_exit[4,1;2,1;save;Save]" ..
 		"button_exit[6,1;2,1;start;Start]" ..
 
@@ -69,12 +63,11 @@ minetest.register_node("missions:transport", {
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()
 
-		inv:set_size("book", 1)
-		inv:set_size("from", 1)
 		inv:set_size("to", 1)
 		inv:set_size("reward", 3)
 		inv:set_size("transport", 3)
 		meta:set_int("time", 300)
+		meta:set_string("mission_name", "My mission")
 
 		-- xp stuff
 		if has_xp_redo_mod then
@@ -132,13 +125,7 @@ minetest.register_node("missions:transport", {
 			return stack:get_count()
 		end
 
-		-- non-owner
-		if listname == "book" then
-			-- mission books always allowed
-			return -1
-		end
-
-		-- other items not allowed
+		-- not allowed
 		return 0
 
 	end,
@@ -150,6 +137,10 @@ minetest.register_node("missions:transport", {
 		if name == meta:get_string("owner") then
 			-- owner
 			if fields.save then
+
+				local name = fields.mission_name
+				meta:set_string("mission_name", fields.mission_name)
+
 				local time = tonumber(fields.time)
 				if time ~= nil then meta:set_int("time", time) end
 
@@ -171,8 +162,9 @@ minetest.register_node("missions:transport", {
 			local inv = meta:get_inventory()
 
 			local mission = {};
+			mission.name = meta:get_string("mission_name")
+			mission.type = "transport"
 			mission.time = meta:get_int("time")
-			mission.start = os.time(os.date("!*t"))
 
 			if has_xp_redo_mod then
 				mission.xp = {
@@ -206,14 +198,10 @@ minetest.register_node("missions:transport", {
 
 			mission.transport = transport
 
-			local missionBookStack = inv:get_stack("book", 1)
-			local fromBookStack = inv:get_stack("from", 1)
 			local toBookStack = inv:get_stack("to", 1)
 
-			if missions.is_book(missionBookStack) and missions.is_book(toBookStack) then
+			if missions.is_book(toBookStack) then
 				-- to and mission books available
-				mission.title = missionBookStack:get_meta():get_string("title")
-				mission.description = missionBookStack:get_meta():get_string("text")
 
 				local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
 				if target == nil then
@@ -223,20 +211,10 @@ minetest.register_node("missions:transport", {
 
 				mission.target = target
 
-				if missions.is_book(fromBookStack) then
-					-- from book available
-					local source = minetest.deserialize(fromBookStack:get_meta():get_string("text"))
-					if source == nil then
-						minetest.chat_send_player(sender:get_player_name(), "from-book malformed")
-						return
-					end
-
-					mission.source = source
-				end
 				missions.start_mission(sender, mission)
 
 			else
-				minetest.chat_send_player(sender:get_player_name(), "mission-book or to-book not available")
+				minetest.chat_send_player(sender:get_player_name(), "to-book not available")
 			end
 
 
