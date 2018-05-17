@@ -56,7 +56,7 @@ The other mission types are not implemented yet, but many can be emulated by the
 # Depends
 
 * default
-* (xp_redo)[https://github.com/thomasrudin-mt/xp_redo]?
+* [xp-redo](https://github.com/thomasrudin-mt/xp_redo)?
 
 # Screenshots
 
@@ -75,9 +75,31 @@ Note: **Android screenshot**
 
 # Lua api
 
-## misssions.start_mission(missionSpec)
+## misssions.start_mission(player, missionSpec)
 
-## missionSpec
+```lua
+missionSpec = {
+	name = "Mission name",
+	type = "transport",
+	time = 300, --seconds
+	xp = { -- optional
+		reward = 100,
+		penalty = 50
+	},
+	reward = {
+		"default:stone 50"
+	},
+	transport = {
+		"default:gold_ingot 10"
+	},
+	target = {
+		x = 100,
+		y = 200,
+		z = 300,
+		title = "Town chest"
+	}
+}
+```
 
 # Pull requests / bugs
 
