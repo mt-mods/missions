@@ -5,7 +5,7 @@ Minetest mod for in-game mission creation
 Adds some blocks to create missions with rewards, timeout and penalties
 
 * Github: [https://github.com/thomasrudin-mt/missions](https://github.com/thomasrudin-mt/missions)
-* Forum Topic: TODO
+* Forum Topic: [https://forum.minetest.net/viewtopic.php?f=9&t=20125](https://forum.minetest.net/viewtopic.php?f=9&t=20125)
 
 # Install
 
