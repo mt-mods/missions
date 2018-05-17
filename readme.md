@@ -22,7 +22,7 @@ The mission chest acts as a target for transport-missions. The book in the right
 
 # Mission-types
 
-There is only only mission block for now
+There is only one implemented mission block for now
 
 ## Transport (missions:transport)
 
