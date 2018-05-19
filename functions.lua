@@ -100,7 +100,7 @@ local check_player_mission = function(player, mission, remaining)
 		minetest.chat_send_player(player:get_player_name(), "Mission timed out!: " .. mission.name)
 		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission timed out: " .. mission.name)
 
-		if has_xp_redo_mod and mission.xp and mission.xp.penalty then
+		if has_xp_redo_mod and mission.xp and mission.xp.penalty ~= nil then
 			xp_redo.add_xp(player:get_player_name(), -mission.penalty)
 		end
 
