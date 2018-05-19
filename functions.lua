@@ -101,7 +101,7 @@ local check_player_mission = function(player, mission, remaining)
 		minetest.log("action", "[missions] " .. player:get_player_name() .. " -- mission timed out: " .. mission.name)
 
 		if has_xp_redo_mod and mission.xp and mission.xp.penalty ~= nil then
-			xp_redo.add_xp(player:get_player_name(), -mission.penalty)
+			xp_redo.add_xp(player:get_player_name(), -mission.xp.penalty)
 		end
 
 	end
