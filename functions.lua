@@ -64,33 +64,6 @@ missions.remove_mission = function(player, mission)
 end
 
 
--- returns count of items moved to target (if any)
-missions.update_mission = function(player, mission, stack)
-
-	minetest.log("action", "[missions] " .. player:get_player_name() .. " updates transport items: " .. stack:to_string())
-	local count = 0
-
-	for i,targetStackStr in pairs(mission.transport.list) do
-		local targetStack = ItemStack(targetStackStr)
-
-		if targetStack:get_name() == stack:get_name() then
-			-- same type
-			local takenStack = targetStack:take_item(stack:get_count())
-
-			-- update current stack
-			stack:set_count(stack:get_count() - takenStack:get_count())
-
-			-- update return stack
-			count = count + takenStack:get_count()
-
-			-- save remaining stack
-			mission.transport.list[i] = targetStack:to_string()
-		end
-	end
-
-	return count
-end
-
 
 local check_player_mission = function(player, mission, remaining)
 	if remaining <= 0 then
@@ -108,10 +81,10 @@ local check_player_mission = function(player, mission, remaining)
 
 	local finished = false;
 
-	if mission.type == "transport" then
+	if mission.type == "transport" or mission.type == "build" then
 		-- check transport list
 		local openCount = 0
-		for i,itemStr in pairs(mission.transport.list) do
+		for i,itemStr in pairs(mission.context.list) do
 			-- check if items placed
 			local stack = ItemStack(itemStr)
 			if not stack:is_empty() then
@@ -199,6 +172,7 @@ local check_player_mission = function(player, mission, remaining)
 	end
 end
 
+-- timeout check
 local timer = 0
 minetest.register_globalstep(function(dtime)
 	timer = timer + dtime;
@@ -221,4 +195,69 @@ minetest.register_globalstep(function(dtime)
 		timer = 0
 	end
 end)
+
+
+
+-- transport, dig, craft, build mission
+-- returns count of items moved to target (if any)
+missions.update_mission = function(player, mission, stack)
+
+	minetest.log("action", "[missions] " .. player:get_player_name() .. " updates context items: " .. stack:to_string())
+	local count = 0
+
+	for i,targetStackStr in pairs(mission.context.list) do
+		local targetStack = ItemStack(targetStackStr)
+
+		if targetStack:get_name() == stack:get_name() then
+			-- same type
+			local takenStack = targetStack:take_item(stack:get_count())
+
+			-- update current stack
+			stack:set_count(stack:get_count() - takenStack:get_count())
+
+			-- update return stack
+			count = count + takenStack:get_count()
+
+			-- save remaining stack
+			mission.context.list[i] = targetStack:to_string()
+		end
+	end
+
+	return count
+end
+
+
+minetest.register_on_placenode(function(pos, newnode, player, oldnode, itemstack)
+	if player and player:is_player() and newnode and newnode.name then
+
+		local playername = player:get_player_name()
+		local playermissions = missions.list[playername]
+		if playermissions ~= nil then
+			for j,mission in pairs(playermissions) do
+
+				local stack = ItemStack(newnode.name)
+				stack:set_count(1)
+
+				missions.update_mission(player, mission, stack)
+			end
+		end
+	end
+end)
+
+-- dig mission
+minetest.register_on_dignode(function(pos, oldnode, digger)
+	if digger ~= nil and digger:is_player() then
+		-- TODO
+	end
+end)
+
+
+-- craft mission
+minetest.register_on_craft(function(itemstack, player, old_craft_grid, craft_inv)
+	if player and player:is_player() then
+		-- TODO
+	end
+end)
+
+
 

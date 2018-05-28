@@ -80,7 +80,7 @@ Note: **Android screenshot**
 ```lua
 missionSpec = {
 	name = "Mission name",
-	type = "transport",
+	type = "transport", -- "build", "craft", "dig"
 	time = 300, --seconds
 	xp = { -- optional
 		reward = 100,
@@ -89,9 +89,15 @@ missionSpec = {
 	reward = {
 		"default:stone 50"
 	},
-	transport = {
-		"default:gold_ingot 10"
+
+	-- build, craft, dig, transport mission
+	context = {
+		list: {
+			"default:stone 10"
+		}
 	},
+
+	-- transport mission
 	target = {
 		x = 100,
 		y = 200,
@@ -107,6 +113,7 @@ I'm happy for any bug reports or pull requests (code and textures)
 
 # TODO / Ideas
 
+* Only let owner take chest-ref book
 * Implement more mission-types
 * Display current missions in sfinv/unified inv
 * Mission stats / export

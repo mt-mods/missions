@@ -10,7 +10,7 @@ local get_image = function(name)
 	-- minetest.registered_items[name].inventory_image
 	-- minetest.registered_tools[name].inventory_image
 	-- minetest.registered_nodes["default:stone"].tiles[1]
-
+	-- TODO: look at drawer code
 
 	if name == nil then
 		return ""
@@ -184,21 +184,21 @@ missions.hud_update = function(player, playermissions)
 			player:hud_change(data.mission, "number", 0xFF0000)
 		end
 
-		if topMission.type == "transport" then
+		if topMission.type == "transport" or topMission.type == "build" then
 
-			-- TODO dynamic code
-			if topMission.transport.list[1] ~= nil then
-				local img = get_image(ItemStack(topMission.transport.list[1]):get_name());
+			-- TODO dynamic code, counter
+			if topMission.context.list[1] ~= nil then
+				local img = get_image(ItemStack(topMission.context.list[1]):get_name());
 				player:hud_change(data.transport1, "text", img)
 			end
 
-			if topMission.transport.list[2] ~= nil then
-				local img = get_image(ItemStack(topMission.transport.list[2]):get_name());
+			if topMission.context.list[2] ~= nil then
+				local img = get_image(ItemStack(topMission.context.list[2]):get_name());
 				player:hud_change(data.transport2, "text", img)
 			end
 
-			if topMission.transport.list[3] ~= nil then
-				local img = get_image(ItemStack(topMission.transport.list[3]):get_name());
+			if topMission.context.list[3] ~= nil then
+				local img = get_image(ItemStack(topMission.context.list[3]):get_name());
 				player:hud_change(data.transport3, "text", img)
 			end
 		end
