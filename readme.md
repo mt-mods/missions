@@ -113,7 +113,6 @@ I'm happy for any bug reports or pull requests (code and textures)
 
 # TODO / Ideas
 
-* Only let owner take chest-ref book
 * Implement more mission-types
 * Display current missions in sfinv/unified inv
 * Mission stats / export

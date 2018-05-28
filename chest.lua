@@ -86,15 +86,14 @@ minetest.register_node("missions:missionchest", {
 	end,
 
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
-		if listname == "ref" then
-			return -1
+		local meta = minetest.get_meta(pos)
+
+		-- owner
+		if player:get_player_name() == meta:get_string("owner") then
+			return stack:get_count()
 		end
 
-		if listname == "main" then
-			-- TODO
-			-- check if mission is running for player (source-inv/spec stuff)
-		end
-
+		-- not allowed
 		return 0
 	end,
 
