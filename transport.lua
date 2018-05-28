@@ -1,6 +1,6 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
-local update_formspec = function(meta)
+local update_formspec = function(pos, meta)
 	local inv = meta:get_inventory()
 
 	local mission_name = meta:get_string("mission_name")
@@ -14,6 +14,17 @@ local update_formspec = function(meta)
 		end
 	end
 
+	local distance = 0
+
+	local toBookStack = inv:get_stack("to", 1)
+	if toBookStack and missions.is_book(toBookStack) then
+		local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
+		if target then
+			distance = math.floor(vector.distance(pos, target))
+		end
+	end
+
+
 
 	meta:set_string("formspec", "size[8,10;]" ..
 		-- col 1
@@ -22,8 +33,8 @@ local update_formspec = function(meta)
 		"button_exit[6,1;2,1;start;Start]" ..
 
 		-- col 2
-		"label[2,2;To]" ..
-		"list[context;to;3,2;1,1;]" ..
+		"label[0,2;Target (" .. distance .. " m)]" ..
+		"list[context;to;4,2;1,1;]" ..
 		"field[6,2.5;2,1;time;Time (min);" .. meta:get_int("time") .. "]" ..
 
 		-- col 3
@@ -77,7 +88,7 @@ minetest.register_node("missions:transport", {
 		end
 
 
-		update_formspec(meta)
+		update_formspec(pos, meta)
 	end,
 
 	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -220,7 +231,7 @@ minetest.register_node("missions:transport", {
 
 		end
 
-		update_formspec(meta)
+		update_formspec(pos, meta)
 	end
 
 })
