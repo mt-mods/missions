@@ -2,10 +2,16 @@ Minetest mission mod (missions)
 ======
 
 Minetest mod for in-game mission creation
-Adds some blocks to create missions with rewards, timeout and penalties
+Adds blocks to create missions with rewards, timeout and penalties
 
 * Github: [https://github.com/thomasrudin-mt/missions](https://github.com/thomasrudin-mt/missions)
 * Forum Topic: [https://forum.minetest.net/viewtopic.php?f=9&t=20125](https://forum.minetest.net/viewtopic.php?f=9&t=20125)
+
+Supported missions:
+* Transport (to mission-chest)
+* Craft
+* Build
+* Dig
 
 # Install
 
@@ -22,14 +28,12 @@ The mission chest acts as a target for transport-missions. The book in the right
 
 # Mission-types
 
-There is only one implemented mission block for now
-
 ## Transport (missions:transport)
 
 A simple transport mission, in which blocks/items must be place in the target chest (displayed in hud, if started)
 This block can be configured only by its owner:
 
-* **To**: The target mission-chest (book-reference)
+* **Target**: The target mission-chest (book-reference)
 * **Time**: Time for the mission in seconds
 * **Reward**: Block/Items rewards if the mission is completed
 * **Transport**: Blocks/items to transport/craft. All items must be placed in the **to**-chest for mission completion
@@ -44,14 +48,17 @@ Buttons:
 * **Save** Saves the configuration
 * **Start** Starts the mission for the player
 
-## Other mission-blocks
+## Build
 
-The other mission types are not implemented yet, but many can be emulated by the transport mission:
-* Walk (missions:walk)
-* Kill (missions:kill)
-* Goto (missions:goto)
-* Dig (missions:dig)
-* Craft (missions:craft)
+Build nodes
+
+## Dig
+
+Dig nodes/items
+
+## Craft
+
+Craft items
 
 # Depends
 
@@ -113,7 +120,9 @@ I'm happy for any bug reports or pull requests (code and textures)
 
 # TODO / Ideas
 
-* Implement more mission-types
+* Kill mission
+* Goto mission
+* Walk mission
 * Display current missions in sfinv/unified inv
 * Mission stats / export
 * Persist missions across server-restart (player:set_attribute)
