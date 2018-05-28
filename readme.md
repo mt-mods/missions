@@ -75,10 +75,13 @@ Note: **Android screenshot**
 ![](screenshots/Minetest_2018-05-17-09-18-38.png?raw=true)
 
 ## Example transport mission configuration
-![](screenshots/Minetest_2018-05-17-09-18-49.png?raw=true)
+![](screenshots/Minetest_2018-05-28-10-12-59.png?raw=true)
 
 ## Running transport mission
 ![](screenshots/Minetest_2018-05-17-10-28-35.png?raw=true)
+
+## Running dig-mission
+![](screenshots/Minetest_2018-05-28-10-13-28.png?raw=true)
 
 # Lua api
 
