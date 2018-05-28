@@ -193,7 +193,7 @@ missions.hud_update = function(player, playermissions)
 			player:hud_change(data.mission, "number", 0xFF0000)
 		end
 
-		if topMission.type == "transport" or topMission.type == "build" then
+		if topMission.context and topMission.context.list then
 
 			local i = 1
 			while i <= hud_context_count do -- 1..n

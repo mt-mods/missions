@@ -106,7 +106,7 @@ minetest.register_node("missions:missionchest", {
 		end
 
 		for i,mission in pairs(playermissions) do
-			if missions.pos_equal(pos, mission.target) then
+			if mission.target and mission.type == "transport" and missions.pos_equal(pos, mission.target) then
 				-- mission target matches
 				local movedItems = missions.update_mission(player, mission, stack)
 				return movedItems
