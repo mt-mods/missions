@@ -4,6 +4,8 @@ local HUD_ALIGNMENT = {x = 1, y = 0}
 
 local hud = {} -- playerName -> {}
 
+-- number of context items displayed in hud
+local hud_context_count = 3
 
 -- returns the image (itam, node, tool) or ""
 local get_image = function(name)
@@ -70,32 +72,39 @@ minetest.register_on_joinplayer(function(player)
 		number = 0x00FF00
 	})
 
-	data.transport1 = player:hud_add({
-		hud_elem_type = "image",
-		position = HUD_POSITION,
-		offset = {x = 0,   y = 110},
-		text = "",
-		alignment = HUD_ALIGNMENT,
-		scale = {x = 1, y = 1},
-	})
+	data.context = {} -- table<id>
+	data.contextcount = {} -- table<id>
 
-	data.transport2 = player:hud_add({
-		hud_elem_type = "image",
-		position = HUD_POSITION,
-		offset = {x = 80,   y = 110},
-		text = "",
-		alignment = HUD_ALIGNMENT,
-		scale = {x = 1, y = 1},
-	})
+	local i = 0
+	while i < hud_context_count do -- 0..n-1
 
-	data.transport3 = player:hud_add({
-		hud_elem_type = "image",
-		position = HUD_POSITION,
-		offset = {x = 160,   y = 110},
-		text = "",
-		alignment = HUD_ALIGNMENT,
-		scale = {x = 1, y = 1},
-	})
+		local yOffset = 110 + (i * 50)
+
+		local count = player:hud_add({
+			hud_elem_type = "text",
+			position = HUD_POSITION,
+			offset = {x = 0,   y = yOffset},
+			text = "",
+			alignment = HUD_ALIGNMENT,
+			scale = {x = 100, y = 100},
+			number = 0xFFFFFF
+		})
+
+		local ctx = player:hud_add({
+			hud_elem_type = "image",
+			position = HUD_POSITION,
+			offset = {x = 60, y = yOffset},
+			text = "",
+			alignment = HUD_ALIGNMENT,
+			scale = {x = 1, y = 1}
+		})
+
+		table.insert(data.context, ctx)
+		table.insert(data.contextcount, count)
+
+		i = i + 1
+	end
+
 
 	hud[playername] = data
 end)
@@ -186,21 +195,28 @@ missions.hud_update = function(player, playermissions)
 
 		if topMission.type == "transport" or topMission.type == "build" then
 
-			-- TODO dynamic code, counter
-			if topMission.context.list[1] ~= nil then
-				local img = get_image(ItemStack(topMission.context.list[1]):get_name());
-				player:hud_change(data.transport1, "text", img)
+			local i = 1
+			while i <= hud_context_count do -- 1..n
+				local ctx = topMission.context.list[i]
+
+				if ctx then
+					local stack = ItemStack(ctx)
+					if stack:get_count() > 0 then
+						local img = get_image(stack:get_name());
+						player:hud_change(data.context[i], "text", img)
+						player:hud_change(data.contextcount[i], "text", stack:get_count() .. "x")
+					else
+						player:hud_change(data.context[i], "text", "")
+						player:hud_change(data.contextcount[i], "text", "")
+					end
+				else
+					player:hud_change(data.context[i], "text", "")
+					player:hud_change(data.contextcount[i], "text", "")
+				end
+
+				i = i + 1
 			end
 
-			if topMission.context.list[2] ~= nil then
-				local img = get_image(ItemStack(topMission.context.list[2]):get_name());
-				player:hud_change(data.transport2, "text", img)
-			end
-
-			if topMission.context.list[3] ~= nil then
-				local img = get_image(ItemStack(topMission.context.list[3]):get_name());
-				player:hud_change(data.transport3, "text", img)
-			end
 		end
 
 	else
@@ -208,9 +224,14 @@ missions.hud_update = function(player, playermissions)
 		player:hud_change(data.title, "text", "")
 		player:hud_change(data.mission, "text", "")
 		player:hud_change(data.time, "text", "")
-		player:hud_change(data.transport1, "text", "")
-		player:hud_change(data.transport2, "text", "")
-		player:hud_change(data.transport3, "text", "")
+
+		local i = 1
+		while i <= hud_context_count do -- 1..n
+			player:hud_change(data.context[i], "text", "")
+			player:hud_change(data.contextcount[i], "text", "")
+
+			i = i + 1
+		end
 	end
 	
 end
