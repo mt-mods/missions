@@ -13,7 +13,7 @@ local show_formspec = function(pos, meta, player, type)
 	local inv = meta:get_inventory()
 
 	local mission_name = meta:get_string("mission_name")
-	meta:set_string("infotext", "Transport-mission: " .. mission_name)
+	local mission_description = meta:get_string("mission_description")
 
 	local distance = 0
 
@@ -50,8 +50,11 @@ local show_formspec = function(pos, meta, player, type)
 			"list[nodemeta:" .. pos_str .. ";transport;2,4;3,1;]" ..
 			showif(has_xp_redo_mod, "field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
 
-			-- col 5,6,7,8
-			"list[current_player;main;0,5;8,4;]"
+			-- col 5
+			"field[0,5;8,1;mission_description;Mission description;" .. mission_description .. "]" ..
+
+			-- col 6
+			"list[current_player;main;0,6;8,1;]"
 	end
 
 	if type == "user" then
@@ -75,7 +78,7 @@ local show_formspec = function(pos, meta, player, type)
 			showif(has_xp_redo_mod, "field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
 
 			-- col 5,6,7,8
-			"" -- TODO: missions description for user
+			"label[0,5;" .. mission_description .. "]"
 	end
 
 	minetest.show_formspec(player:get_player_name(), "transportmission;"..minetest.pos_to_string(pos), formspec)
@@ -109,6 +112,7 @@ minetest.register_node("missions:transport", {
 		inv:set_size("transport", 3)
 		meta:set_int("time", 300)
 		meta:set_string("mission_name", "My mission")
+		meta:set_string("mission_description", "")
 
 		-- xp stuff
 		if has_xp_redo_mod then
@@ -207,8 +211,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		-- admin
 		if fields.save then
 
-			local name = fields.mission_name
 			meta:set_string("mission_name", fields.mission_name)
+			meta:set_string("mission_description", fields.mission_description)
+			meta:set_string("infotext", "Transport-mission: " .. fields.mission_name)
 
 			local time = tonumber(fields.time)
 			if time ~= nil then meta:set_int("time", time) end
