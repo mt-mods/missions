@@ -1,18 +1,19 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
-local update_formspec = function(pos, meta)
+local showif = function(cond, str)
+	if cond then
+		return str
+	else
+		return ""
+	end
+end
+
+
+local show_formspec = function(pos, meta, player, type)
 	local inv = meta:get_inventory()
 
 	local mission_name = meta:get_string("mission_name")
 	meta:set_string("infotext", "Transport-mission: " .. mission_name)
-
-	local xp_str = function(str)
-		if has_xp_redo_mod then
-			return str
-		else
-			return ""
-		end
-	end
 
 	local distance = 0
 
@@ -24,33 +25,62 @@ local update_formspec = function(pos, meta)
 		end
 	end
 
+	local pos_str = pos.x..","..pos.y..","..pos.z
+	local formspec = "size[8,10;]"
 
+	if type == "admin" then
+		formspec = formspec ..
+			-- col 1
+			"field[0,1.5;4,1;mission_name;Mission name;" .. mission_name .. "]" ..
+			"button_exit[4,1;2,1;save;Save]" ..
+			"button_exit[6,1;2,1;userview;User-view]" ..
 
-	meta:set_string("formspec", "size[8,10;]" ..
-		-- col 1
-		"field[0,1.5;4,1;mission_name;Mission name;" .. mission_name .. "]" ..
-		"button_exit[4,1;2,1;save;Save]" ..
-		"button_exit[6,1;2,1;start;Start]" ..
+			-- col 2
+			"label[0,2;Target (" .. distance .. " m)]" ..
+			"list[nodemeta:" .. pos_str .. ";to;4,2;1,1;]" ..
+			"field[6,2.5;2,1;time;Time (min);" .. meta:get_int("time") .. "]" ..
 
-		-- col 2
-		"label[0,2;Target (" .. distance .. " m)]" ..
-		"list[context;to;4,2;1,1;]" ..
-		"field[6,2.5;2,1;time;Time (min);" .. meta:get_int("time") .. "]" ..
+			-- col 3
+			"label[0,3;Reward]" ..
+			"list[nodemeta:" .. pos_str .. ";reward;2,3;3,1;]" ..
+			showif(has_xp_redo_mod, "field[6,3.5;2,1;rewardxp;XP-Reward;" .. meta:get_int("rewardxp") .. "]") ..
 
-		-- col 3
-		"label[0,3;Reward]" ..
-		"list[context;reward;2,3;3,1;]" ..
-		xp_str("field[6,3.5;2,1;rewardxp;XP-Reward;" .. meta:get_int("rewardxp") .. "]") ..
+			-- col 4
+			"label[0,4;Transport]" ..
+			"list[nodemeta:" .. pos_str .. ";transport;2,4;3,1;]" ..
+			showif(has_xp_redo_mod, "field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
 
-		-- col 4
-		"label[0,4;Transport]" ..
-		"list[context;transport;2,4;3,1;]" ..
-		xp_str("field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
+			-- col 5,6,7,8
+			"list[current_player;main;0,5;8,4;]"
+	end
 
-		-- col 5,6,7,8
-		"list[current_player;main;0,5;8,4;]")
+	if type == "user" then
+		formspec = formspec ..
+			-- col 1
+			"label[0,1.5;" .. mission_name .. "]" ..
+			"button_exit[4,1;4,1;start;Start]" ..
+
+			-- col 2
+			"label[0,2;Target (" .. distance .. " m)]" ..
+			"label[4,2;Time: " .. meta:get_int("time") .. " min]" ..
+
+			-- col 3
+			"label[0,3;Reward]" ..
+			"list[nodemeta:" .. pos_str .. ";reward;2,3;3,1;]" ..
+			showif(has_xp_redo_mod, "field[6,3.5;2,1;rewardxp;XP-Reward;" .. meta:get_int("rewardxp") .. "]") ..
+
+			-- col 4
+			"label[0,4;Transport]" ..
+			"list[nodemeta:" .. pos_str .. ";transport;2,4;3,1;]" ..
+			showif(has_xp_redo_mod, "field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
+
+			-- col 5,6,7,8
+			"" -- TODO: missions description for user
+	end
+
+	minetest.show_formspec(player:get_player_name(), "transportmission;"..minetest.pos_to_string(pos), formspec)
+
 end
-
 
 minetest.register_node("missions:transport", {
 	description = "Transport mission",
@@ -86,9 +116,23 @@ minetest.register_node("missions:transport", {
 			meta:set_int("penaltyxp", 20)
 			meta:set_int("entryxp", 0)
 		end
+	end,
 
+	on_rightclick = function(pos, node, clicker)
 
-		update_formspec(pos, meta)
+		if not clicker or not clicker:is_player() then
+			return
+		end
+
+		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
+		local playername = clicker:get_player_name()
+
+		if playername == owner then
+			show_formspec(pos, meta, clicker, "admin")
+		else
+			show_formspec(pos, meta, clicker, "user")
+		end
 	end,
 
 	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -139,100 +183,116 @@ minetest.register_node("missions:transport", {
 		-- not allowed
 		return 0
 
-	end,
-
-	on_receive_fields = function(pos, formname, fields, sender)
-		local meta = minetest.get_meta(pos)
-		local name = sender:get_player_name()
-
-		if name == meta:get_string("owner") then
-			-- owner
-			if fields.save then
-
-				local name = fields.mission_name
-				meta:set_string("mission_name", fields.mission_name)
-
-				local time = tonumber(fields.time)
-				if time ~= nil then meta:set_int("time", time) end
-
-				local rewardxp = tonumber(fields.rewardxp)
-				if rewardxp~= nil then meta:set_int("rewardxp", rewardxp) end
-
-				local penaltyxp = tonumber(fields.penaltyxp)
-				if penaltyxp~= nil then meta:set_int("penaltyxp", penaltyxp) end
-
-				local entryxp = tonumber(fields.entryxp)
-				if entryxp~= nil then meta:set_int("entryxp", entryxp) end
-
-			end
-		else
-			-- non-owner
-		end
-
-		if fields.start then
-			local inv = meta:get_inventory()
-
-			local mission = {};
-			mission.name = meta:get_string("mission_name")
-			mission.type = "transport"
-			mission.time = meta:get_int("time")
-
-			if has_xp_redo_mod then
-				mission.xp = {
-					reward = meta:get_int("rewardxp"),
-					penalty = meta:get_int("penaltyxp")
-				}
-			end
-
-			local reward = {}
-			reward.list = {}
-			local i=1
-			while i<=inv:get_size("reward") do
-				local stack = inv:get_stack("reward", i)
-				if stack:get_count() > 0 then
-					table.insert(reward.list, stack:to_string())
-				end
-				i = i + 1
-			end
-			mission.reward = reward;
-
-			local context = {}
-			context.list = {}
-			i = 1
-			while i<=inv:get_size("transport") do
-				local stack = inv:get_stack("transport", i)
-				if stack:get_count() > 0 then
-					table.insert(context.list, stack:to_string())
-				end
-				i = i + 1
-			end
-
-			mission.context = context
-
-			local toBookStack = inv:get_stack("to", 1)
-
-			if missions.is_book(toBookStack) then
-				-- to and mission books available
-
-				local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
-				if target == nil then
-					minetest.chat_send_player(sender:get_player_name(), "to-book malformed")
-					return
-				end
-
-				mission.target = target
-
-				missions.start_mission(sender, mission)
-
-			else
-				minetest.chat_send_player(sender:get_player_name(), "to-book not available")
-			end
+	end
+})
 
 
-		end
-
-		update_formspec(pos, meta)
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	local parts = formname:split(";")
+	local name = parts[1]
+	if name ~= "transportmission" then
+		return
 	end
 
-})
+	local pos = minetest.string_to_pos(parts[2])
+	if not pos then
+		return
+	end
+
+	local meta = minetest.get_meta(pos)
+	local playername = player:get_player_name()
+	local owner = meta:get_string("owner")
+
+	if playername == owner then
+		-- admin
+		if fields.save then
+
+			local name = fields.mission_name
+			meta:set_string("mission_name", fields.mission_name)
+
+			local time = tonumber(fields.time)
+			if time ~= nil then meta:set_int("time", time) end
+
+			local rewardxp = tonumber(fields.rewardxp)
+			if rewardxp~= nil then meta:set_int("rewardxp", rewardxp) end
+
+			local penaltyxp = tonumber(fields.penaltyxp)
+			if penaltyxp~= nil then meta:set_int("penaltyxp", penaltyxp) end
+
+			local entryxp = tonumber(fields.entryxp)
+			if entryxp~= nil then meta:set_int("entryxp", entryxp) end
+
+		end
+	else
+		-- user
+	end
+
+	if fields.userview then
+		show_formspec(pos, meta, player, "user")
+	end
+
+	if fields.start then
+		local inv = meta:get_inventory()
+
+		local mission = {};
+		mission.name = meta:get_string("mission_name")
+		mission.type = "transport"
+		mission.time = meta:get_int("time")
+
+		if has_xp_redo_mod then
+			mission.xp = {
+				reward = meta:get_int("rewardxp"),
+				penalty = meta:get_int("penaltyxp")
+			}
+		end
+
+		local reward = {}
+		reward.list = {}
+		local i=1
+		while i<=inv:get_size("reward") do
+			local stack = inv:get_stack("reward", i)
+			if stack:get_count() > 0 then
+				table.insert(reward.list, stack:to_string())
+			end
+			i = i + 1
+		end
+		mission.reward = reward;
+
+		local context = {}
+		context.list = {}
+		i = 1
+		while i<=inv:get_size("transport") do
+			local stack = inv:get_stack("transport", i)
+			if stack:get_count() > 0 then
+				table.insert(context.list, stack:to_string())
+			end
+			i = i + 1
+		end
+
+		mission.context = context
+
+		local toBookStack = inv:get_stack("to", 1)
+
+		if missions.is_book(toBookStack) then
+			-- to and mission books available
+
+			local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
+			if target == nil then
+				minetest.chat_send_player(playername, "to-book malformed")
+				return
+			end
+
+			mission.target = target
+
+			missions.start_mission(player, mission)
+
+		else
+			minetest.chat_send_player(playername, "to-book not available")
+		end
+
+
+	end
+
+
+end)
 
