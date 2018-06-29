@@ -91,7 +91,8 @@ Note: **Android screenshot**
 missionSpec = {
 	name = "Mission name",
 	type = "transport", -- "build", "craft", "dig"
-	time = 300, --seconds
+	time = 300, -- seconds
+	cooldown = 600, -- seconds between same mission (name), optional
 	xp = { -- optional
 		reward = 100,
 		penalty = 50

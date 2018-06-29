@@ -51,15 +51,27 @@ missions.book_to_pos = function(bookstack)
 	return minetest.deserialize(meta:get_string("text"))
 end
 
-
 missions.start_mission = function(player, mission)
 
+	local playername = player:get_player_name()
+
 	-- mark start of mission
-	mission.start = os.time(os.date("!*t"))
+	local now = os.time(os.date("!*t"))
+	mission.start = now
+
+	if mission.cooldown and mission.cooldown > 0 then
+		-- check cooldown timer
+		last_time = missions.cooldown_get(mission.name, playername)
+
+		if last_time > 0 and last_time < mission.cooldown then
+			local remaining = mission.cooldown - last_time
+			minetest.chat_send_player(playername, "Mission not cooled down, wait " .. remaining .. " seconds")
+			return
+		end
+	end
 
 	-- print(dump(mission)) --XXX
 
-	local playername = player:get_player_name()
 
 	if has_xp_redo_mod and mission.entryxp then
 		local xp = xp_redo.get_xp(playername)
@@ -135,6 +147,8 @@ local check_player_mission = function(player, mission, remaining)
 	if finished then
 		-- mission finished
 
+		-- reset cooldown timer
+		missions.cooldown_reset(mission.name, player:get_player_name())
 
 		missions.hud_remove_mission(player, mission)
 		missions.remove_mission(player, mission)
@@ -260,66 +274,4 @@ missions.update_mission = function(player, mission, stack)
 
 	return count
 end
-
-
-minetest.register_on_placenode(function(pos, newnode, player, oldnode, itemstack)
-	if player and player:is_player() and newnode and newnode.name then
-
-		local playername = player:get_player_name()
-		local playermissions = missions.list[playername]
-		if playermissions ~= nil then
-			for j,mission in pairs(playermissions) do
-				if mission.type == "build" then
-					local stack = ItemStack(newnode.name)
-					stack:set_count(1)
-
-					if missions.update_mission(player, mission, stack) > 0 then
-						return
-					end
-				end
-			end
-		end
-	end
-end)
-
--- dig mission
-minetest.register_on_dignode(function(pos, oldnode, digger)
-	if digger ~= nil and digger:is_player() then
-		local playername = digger:get_player_name()
-		local playermissions = missions.list[playername]
-		if playermissions ~= nil then
-			for j,mission in pairs(playermissions) do
-				if mission.type == "dig" then
-					local stack = ItemStack(oldnode.name)
-					stack:set_count(1)
-
-					if missions.update_mission(digger, mission, stack) > 0 then
-						return
-					end
-				end
-			end
-		end
-	end
-end)
-
-
--- craft mission
-minetest.register_on_craft(function(itemstack, player, old_craft_grid, craft_inv)
-	if player and player:is_player() then
-		local playername = player:get_player_name()
-		local playermissions = missions.list[playername]
-		if playermissions ~= nil then
-			for j,mission in pairs(playermissions) do
-				if mission.type == "craft" then
-					local stack = ItemStack(itemstack:to_string())
-					if missions.update_mission(player, mission, stack) > 0 then
-						return
-					end
-				end
-			end
-		end
-	end
-end)
-
-
 

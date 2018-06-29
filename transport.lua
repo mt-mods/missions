@@ -49,10 +49,13 @@ local show_formspec = function(pos, meta, player, type)
 			showif(has_xp_redo_mod, "field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
 
 			-- col 5
-			"field[0,5;8,1;mission_description;Mission description;" .. mission_description .. "]" ..
+			"field[6,5.5;2,1;cooldown;Cooldown;" .. meta:get_int("cooldown") .. "]" ..
 
 			-- col 6
-			"list[current_player;main;0,6;8,1;]"
+			"field[0,6.5;8,1;mission_description;Mission description;" .. mission_description .. "]" ..
+
+			-- col 7
+			"list[current_player;main;0,7.5;8,1;]"
 	end
 
 	if type == "user" then
@@ -109,6 +112,7 @@ minetest.register_node("missions:transport", {
 		inv:set_size("reward", 3)
 		inv:set_size("transport", 3)
 		meta:set_int("time", 300)
+		meta:set_int("cooldown", 0)
 		meta:set_string("mission_name", "My mission")
 		meta:set_string("mission_description", "")
 
@@ -216,6 +220,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			local time = tonumber(fields.time)
 			if time ~= nil then meta:set_int("time", time) end
 
+			local cooldown = tonumber(fields.cooldown)
+			if cooldown ~= nil then meta:set_int("cooldown", cooldown) end
+
 			local rewardxp = tonumber(fields.rewardxp)
 			if rewardxp~= nil then meta:set_int("rewardxp", rewardxp) end
 
@@ -241,6 +248,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		mission.name = meta:get_string("mission_name")
 		mission.type = "transport"
 		mission.time = meta:get_int("time")
+		mission.cooldown = meta:get_int("cooldown")
 
 		if has_xp_redo_mod then
 			mission.xp = {
