@@ -17,12 +17,10 @@ local show_formspec = function(pos, meta, player, type)
 
 	local distance = 0
 
-	local toBookStack = inv:get_stack("to", 1)
-	if toBookStack and missions.is_book(toBookStack) then
-		local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
-		if target then
-			distance = math.floor(vector.distance(pos, target))
-		end
+	local to_pos = missions.book_to_pos(inv:get_stack("to", 1))
+
+	if to_pos then
+		distance = math.floor(vector.distance(pos, to_pos))
 	end
 
 	local pos_str = pos.x..","..pos.y..","..pos.z
@@ -276,23 +274,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		mission.context = context
 
-		local toBookStack = inv:get_stack("to", 1)
+		local to_pos = missions.book_to_pos(inv:get_stack("to", 1))
 
-		if missions.is_book(toBookStack) then
+		if to_pos then
+			-- TODO: validate on setup
 			-- to and mission books available
-
-			local target = minetest.deserialize(toBookStack:get_meta():get_string("text"))
-			if target == nil then
-				minetest.chat_send_player(playername, "to-book malformed")
-				return
-			end
-
-			mission.target = target
+			mission.target = to_pos
 
 			missions.start_mission(player, mission)
 
 		else
-			minetest.chat_send_player(playername, "to-book not available")
+			minetest.chat_send_player(playername, "to-book not available/valid")
 		end
 
 

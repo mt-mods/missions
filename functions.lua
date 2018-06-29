@@ -16,6 +16,41 @@ missions.load_missions = function()
 	-- TODO
 end
 
+-- create a book for given pos and title
+missions.pos_to_book = function(pos, title)
+	minetest.pos_to_string(pos)
+
+	local stack = ItemStack("default:book_written")
+	local stackMeta = stack:get_meta()
+
+	local data = {}
+
+	data.owner = "missions"
+	data.title = title or "Coordinate"
+	data.description = data.title
+	data.text = minetest.serialize({x=pos.x, y=pos.y, z=pos.z, title=data.title})
+	data.page = 1
+	data.page_max = 1
+
+	stack:get_meta():from_table({ fields = data })
+
+	return stack
+end
+
+-- parse a position from a book stack (returns pos+title)
+missions.book_to_pos = function(bookstack)
+	if not bookstack or not missions.is_book(bookstack) then
+		return
+	end
+
+	local meta = bookstack:get_meta()
+	if not meta:get_string("owner") == "missions" then
+		return
+	end
+
+	return minetest.deserialize(meta:get_string("text"))
+end
+
 
 missions.start_mission = function(player, mission)
 

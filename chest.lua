@@ -1,51 +1,49 @@
 
 
-local update_formspec = function(meta)
-	local formspec = 
-		"size[8,9]" ..
-		default.gui_bg ..
-		default.gui_bg_img ..
-		default.gui_slots ..
-		"list[context;main;0,0.3;8,3;]" ..
+local show_formspec = function(pos, meta, player, type)
 
-		"field[1,4;4,1;title;Title;" .. meta:get_string("title") .. "]" ..
-		"button[5,3.5;2,1;save;Save]" ..
-		"list[context;ref;7,3.3;1,1;]" ..
+	local pos_str = pos.x..","..pos.y..","..pos.z
+	local formspec = "size[8,9;]"
 
-		"list[current_player;main;0,4.85;8,1;]" ..
-		"list[current_player;main;0,6.08;8,3;8]" ..
-		"listring[current_player;main]" ..
-		default.get_hotbar_bg(0,4.85)
+	if type == "admin" then
+	end
 
-	meta:set_string("formspec", formspec)
+	if type == "user" then
+		formspec = formspec ..
+			default.gui_bg ..
+			default.gui_bg_img ..
+			default.gui_slots ..
+			"list[nodemeta:" .. pos_str .. ";main;0,0.3;8,3;]" ..
+
+			"field[1,4;4,1;title;Title;" .. meta:get_string("title") .. "]" ..
+			"button[5,3.5;2,1;save;Save]" ..
+			"list[nodemeta:" .. pos_str .. ";ref;7,3.3;1,1;]" ..
+
+			"list[current_player;main;0,4.85;8,1;]" ..
+			"list[current_player;main;0,6.08;8,3;8]" ..
+			"listring[current_player;main]" ..
+			default.get_hotbar_bg(0,4.85)
+	end
+
+	minetest.show_formspec(player:get_player_name(), "missionchest;"..minetest.pos_to_string(pos), formspec)
+
 end
+
 
 local create_book_ref = function(pos)
 	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-
-	local new_stack = ItemStack("default:book_written")
-	local stackMeta = new_stack:get_meta()
-
-	-- remove old book
-	inv:remove_item("ref", new_stack)
-
-
-	local data = {}
 	local title = meta:get_string("title")
 
-	data.owner = "missions"
-	data.title = "Mission chest (" .. title .. ")"
-	data.description = data.title
-	data.text = minetest.serialize({x=pos.x, y=pos.y, z=pos.z, title=title})
-	data.page = 1
-	data.page_max = 1
+	local bookStack = missions.pos_to_book(pos, title)
 
-	new_stack:get_meta():from_table({ fields = data })
+	local inv = meta:get_inventory()
 
-	if inv:room_for_item("ref", new_stack) then
+	-- remove old book
+	inv:remove_item("ref", bookStack)
+
+	if inv:room_for_item("ref", bookStack) then
 		-- put written book back
-		inv:add_item("ref", new_stack)
+		inv:add_item("ref", bookStack)
 	end
 
 end
@@ -81,8 +79,24 @@ minetest.register_node("missions:missionchest", {
 
 		meta:set_string("title", "My chest")
 		meta:set_string("infotext", "Mission chest")
-		update_formspec(meta)
 		create_book_ref(pos)
+	end,
+
+	on_rightclick = function(pos, node, clicker)
+
+		if not clicker or not clicker:is_player() then
+			return
+		end
+
+		local meta = minetest.get_meta(pos)
+		local owner = meta:get_string("owner")
+		local playername = clicker:get_player_name()
+
+		if playername == owner then
+			show_formspec(pos, meta, clicker, "user")
+		else
+			show_formspec(pos, meta, clicker, "user")
+		end
 	end,
 
 	allow_metadata_inventory_move = function(pos, from_list, from_index, to_list, to_index, count, player)
@@ -128,18 +142,33 @@ minetest.register_node("missions:missionchest", {
 			-- remove from inventory
 			inv:remove_item("main", stack)
 		end
-	end,
-
-	on_receive_fields = function(pos, formname, fields, sender)
-		local meta = minetest.get_meta(pos)
-		local owner = meta:get_string("owner")
-
-		if fields.save and sender:get_player_name() == owner then
-			meta:set_string("title", fields.title)
-		end
-
-		update_formspec(meta)
-		create_book_ref(pos)
 	end
 })
+
+
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	local parts = formname:split(";")
+	local name = parts[1]
+	if name ~= "missionchest" then
+		return
+	end
+
+	local pos = minetest.string_to_pos(parts[2])
+	if not pos then
+		return
+	end
+
+	local meta = minetest.get_meta(pos)
+	local playername = player:get_player_name()
+	local owner = meta:get_string("owner")
+
+	if playername == owner then
+		if fields.save and playername == owner then
+			meta:set_string("title", fields.title)
+			meta:set_string("infotext", "Mission chest (" .. fields.title .. ")")
+		end
+
+		create_book_ref(pos)
+	end
+end)
 
