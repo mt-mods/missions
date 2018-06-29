@@ -81,6 +81,7 @@ minetest.register_node("missions:missionchest", {
 
 		meta:set_string("title", "My chest")
 		meta:set_string("infotext", "Mission chest")
+		--TODO: setting to throw away inserted stuff (player with give)
 		create_book_ref(pos)
 	end,
 

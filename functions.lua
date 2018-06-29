@@ -72,6 +72,9 @@ missions.start_mission = function(player, mission)
 
 	-- print(dump(mission)) --XXX
 
+	if mission.type == "transport" then
+		-- TODO: check chest(s) for reward first
+	end
 
 	if has_xp_redo_mod and mission.entryxp then
 		local xp = xp_redo.get_xp(playername)
@@ -127,9 +130,14 @@ local check_player_mission = function(player, mission, remaining)
 	end
 
 	local finished = false;
+	local aborted = false;
 
 	if mission.type == "transport" or mission.type == "build" or mission.type == "dig" or mission.type == "craft" then
-		-- check transport list
+
+		-- check if reward is still there, otherwise abort
+		--TODO
+
+		-- check context list
 		local openCount = 0
 		for i,itemStr in pairs(mission.context.list) do
 			-- check if items placed
