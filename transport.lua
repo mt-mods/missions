@@ -109,6 +109,8 @@ minetest.register_node("missions:transport", {
 		meta:set_string("owner", playername)
 	end,
 
+	can_dig = missions.only_owner_can_dig,
+
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()

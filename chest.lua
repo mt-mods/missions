@@ -72,6 +72,13 @@ minetest.register_node("missions:missionchest", {
 		meta:set_string("owner", placer:get_player_name() or "")
 	end,
 
+	can_dig = function(pos, player)
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+
+		return missions.only_owner_can_dig(pos, player) and inv:is_empty("main")
+	end,
+
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
 		local inv = meta:get_inventory()

@@ -253,6 +253,16 @@ minetest.register_globalstep(function(dtime)
 	end
 end)
 
+missions.only_owner_can_dig = function(pos, player)
+	if not player then
+		return false
+	end
+
+	local meta = minetest.get_meta(pos)
+	local playername = player:get_player_name() or ""
+	return meta:get_string("owner") == playername
+end
+
 
 
 -- transport, dig, craft, build mission
