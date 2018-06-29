@@ -101,7 +101,8 @@ minetest.register_node("missions:transport", {
 
 	after_place_node = function(pos, placer)
 		local meta = minetest.get_meta(pos)
-		meta:set_string("owner", placer:get_player_name() or "")
+		local playername = placer:get_player_name() or ""
+		meta:set_string("owner", playername)
 	end,
 
 	on_construct = function(pos)
@@ -156,22 +157,22 @@ minetest.register_node("missions:transport", {
 
 	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.get_meta(pos)
+		local has_give = minetest.check_player_privs(player, {give=true})
 
 		-- owner
 		if player:get_player_name() == meta:get_string("owner") then
 
 			local name = stack:get_name()
+			local inv = minetest.get_meta(pos):get_inventory()
 
-			if listname == "from" or listname == "to" or listname == "book" then
-				if name == "default:book_written" then
-					return stack:get_count()
-				else
-					-- only written books allowed
-					return 0
-				end
+			if listname == "to" and name == "default:book_written" then
+				inv:set_stack(listname, index, stack)
 			end
 
-			return stack:get_count()
+			if listname == "reward" or listname == "transport" then
+				inv:set_stack(listname, index, stack)
+			end
+
 		end
 
 		-- non-owner
@@ -183,7 +184,11 @@ minetest.register_node("missions:transport", {
 
 		-- owner
 		if player:get_player_name() == meta:get_string("owner") then
-			return stack:get_count()
+			local inv = minetest.get_meta(pos):get_inventory()
+			local fake_stack = inv:get_stack(listname, index)
+			fake_stack:take_item(stack:get_count())
+			inv:set_stack(listname, index, fake_stack)
+			return 0
 		end
 
 		-- not allowed
