@@ -54,6 +54,8 @@ local show_formspec = function(pos, meta, player, type)
 			-- col 6
 			"field[0,6.5;8,1;mission_description;Mission description;" .. mission_description .. "]" ..
 
+			--TODO: entryxp
+
 			-- col 7
 			"list[current_player;main;0,7.5;8,1;]"
 	end
@@ -71,12 +73,14 @@ local show_formspec = function(pos, meta, player, type)
 			-- col 3
 			"label[0,3;Reward]" ..
 			"list[nodemeta:" .. pos_str .. ";reward;2,3;3,1;]" ..
-			showif(has_xp_redo_mod, "field[6,3.5;2,1;rewardxp;XP-Reward;" .. meta:get_int("rewardxp") .. "]") ..
+			showif(has_xp_redo_mod, "label[6,3.5;XP-Reward: " .. meta:get_int("rewardxp") .. "]") ..
 
 			-- col 4
 			"label[0,4;Transport]" ..
 			"list[nodemeta:" .. pos_str .. ";transport;2,4;3,1;]" ..
-			showif(has_xp_redo_mod, "field[6,4.5;2,1;penaltyxp;XP-Penalty;" .. meta:get_int("penaltyxp") .. "]") ..
+			showif(has_xp_redo_mod, "label[6,4.5;XP-Penalty: " .. meta:get_int("penaltyxp") .. "]") ..
+
+			--TODO: entryxp
 
 			-- col 5,6,7,8
 			"label[0,5;" .. mission_description .. "]"
@@ -212,6 +216,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	local meta = minetest.get_meta(pos)
 	local playername = player:get_player_name()
+	local has_give_xp_priv = minetest.check_player_privs(player, {givexp=true})
 	local owner = meta:get_string("owner")
 
 	if playername == owner then
@@ -220,7 +225,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 			meta:set_string("mission_name", fields.mission_name)
 			meta:set_string("mission_description", fields.mission_description)
-			meta:set_string("infotext", "Transport-mission: " .. fields.mission_name)
+			meta:set_string("infotext", "Transport-mission: " .. fields.mission_name .. " (" .. owner .. ")")
 
 			local time = tonumber(fields.time)
 			if time ~= nil then meta:set_int("time", time) end
@@ -229,10 +234,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			if cooldown ~= nil then meta:set_int("cooldown", cooldown) end
 
 			local rewardxp = tonumber(fields.rewardxp)
-			if rewardxp~= nil then meta:set_int("rewardxp", rewardxp) end
+			if rewardxp~= nil and has_give_xp_priv then meta:set_int("rewardxp", rewardxp) end
 
 			local penaltyxp = tonumber(fields.penaltyxp)
-			if penaltyxp~= nil then meta:set_int("penaltyxp", penaltyxp) end
+			if penaltyxp~= nil and has_give_xp_priv then meta:set_int("penaltyxp", penaltyxp) end
 
 			local entryxp = tonumber(fields.entryxp)
 			if entryxp~= nil then meta:set_int("entryxp", entryxp) end

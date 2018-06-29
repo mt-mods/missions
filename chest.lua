@@ -1,29 +1,31 @@
 
+local showif = function(cond, str)
+	if cond then
+		return str
+	else
+		return ""
+	end
+end
 
 local show_formspec = function(pos, meta, player, type)
 
 	local pos_str = pos.x..","..pos.y..","..pos.z
 	local formspec = "size[8,9;]"
 
-	if type == "admin" then
-	end
+	formspec = formspec ..
+		default.gui_bg ..
+		default.gui_bg_img ..
+		default.gui_slots ..
+		"list[nodemeta:" .. pos_str .. ";main;0,0.3;8,3;]" ..
 
-	if type == "user" then
-		formspec = formspec ..
-			default.gui_bg ..
-			default.gui_bg_img ..
-			default.gui_slots ..
-			"list[nodemeta:" .. pos_str .. ";main;0,0.3;8,3;]" ..
+		"field[1,4;4,1;title;Title;" .. meta:get_string("title") .. "]" ..
+		"button[5,3.5;2,1;save;Save]" ..
+		showif(type == "admin", "list[nodemeta:" .. pos_str .. ";ref;7,3.3;1,1;]") ..
 
-			"field[1,4;4,1;title;Title;" .. meta:get_string("title") .. "]" ..
-			"button[5,3.5;2,1;save;Save]" ..
-			"list[nodemeta:" .. pos_str .. ";ref;7,3.3;1,1;]" ..
-
-			"list[current_player;main;0,4.85;8,1;]" ..
-			"list[current_player;main;0,6.08;8,3;8]" ..
-			"listring[current_player;main]" ..
-			default.get_hotbar_bg(0,4.85)
-	end
+		"list[current_player;main;0,4.85;8,1;]" ..
+		"list[current_player;main;0,6.08;8,3;8]" ..
+		"listring[current_player;main]" ..
+		default.get_hotbar_bg(0,4.85)
 
 	minetest.show_formspec(player:get_player_name(), "missionchest;"..minetest.pos_to_string(pos), formspec)
 
@@ -93,7 +95,7 @@ minetest.register_node("missions:missionchest", {
 		local playername = clicker:get_player_name()
 
 		if playername == owner then
-			show_formspec(pos, meta, clicker, "user")
+			show_formspec(pos, meta, clicker, "admin")
 		else
 			show_formspec(pos, meta, clicker, "user")
 		end
@@ -121,28 +123,23 @@ minetest.register_node("missions:missionchest", {
 		local playermissions = missions.list[player:get_player_name()]
 
 		if playermissions == nil then
-			return 0
+			-- without missions
+			return stack:get_count()
 		end
 
 		for i,mission in pairs(playermissions) do
 			if mission.target and mission.type == "transport" and missions.pos_equal(pos, mission.target) then
 				-- mission target matches
 				local movedItems = missions.update_mission(player, mission, stack)
+				-- with mission
 				return movedItems
 			end
 		end
 
-		return 0
-	end,
-
-	on_metadata_inventory_put = function(pos, listname, index, stack, player)
-		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-		if listname == "main" then
-			-- remove from inventory
-			inv:remove_item("main", stack)
-		end
+		-- without mission
+		return stack:get_count()
 	end
+
 })
 
 
