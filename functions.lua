@@ -178,7 +178,7 @@ local check_player_mission = function(player, mission, remaining)
 
 		local two = player:hud_add({
 			hud_elem_type = "text",
-			name = "award_au",
+			name = "title1",
 			number = 0xFFFFFF,
 			scale = {x = 100, y = 20},
 			text = "Mission complete!",
@@ -189,7 +189,7 @@ local check_player_mission = function(player, mission, remaining)
 
 		local three = player:hud_add({
 			hud_elem_type = "text",
-			name = "award_title",
+			name = "title2",
 			number = 0xFFFFFF,
 			scale = {x = 100, y = 20},
 			text = mission.name,
@@ -202,8 +202,8 @@ local check_player_mission = function(player, mission, remaining)
 			hud_elem_type = "image",
 			name = "award_icon",
 			scale = {x = 4, y = 4},
-			text = "default_gold_ingot.png",
-			position = {x = 0.4, y = 0},
+			text = "missions_m_overlay.png",
+			position = {x = 0.5, y = 0},
 			offset = {x = -81.5, y = 126},
 			alignment = {x = 0, y = -1}
 		})

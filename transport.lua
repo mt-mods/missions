@@ -24,10 +24,12 @@ local show_formspec = function(pos, meta, player, type)
 	end
 
 	local pos_str = pos.x..","..pos.y..","..pos.z
-	local formspec = "size[8,10;]"
+	local formspec = ""
 
 	if type == "admin" then
 		formspec = formspec ..
+			"size[8,9;]" ..
+
 			-- col 1
 			"field[0,1.5;4,1;mission_name;Mission name;" .. mission_name .. "]" ..
 			"button_exit[4,1;2,1;save;Save]" ..
@@ -62,6 +64,8 @@ local show_formspec = function(pos, meta, player, type)
 
 	if type == "user" then
 		formspec = formspec ..
+			"size[8,6;]" ..
+
 			-- col 1
 			"label[0,1.5;" .. mission_name .. "]" ..
 			"button_exit[4,1;4,1;start;Start]" ..
@@ -82,7 +86,7 @@ local show_formspec = function(pos, meta, player, type)
 
 			--TODO: entryxp
 
-			-- col 5,6,7,8
+			-- col 5
 			"label[0,5;" .. mission_description .. "]"
 	end
 
@@ -250,7 +254,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.userview then
-		show_formspec(pos, meta, player, "user")
+		minetest.after(0, function()
+			show_formspec(pos, meta, player, "user")
+		end)
 	end
 
 	if fields.start then
