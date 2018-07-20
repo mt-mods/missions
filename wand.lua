@@ -11,14 +11,6 @@ minetest.register_craftitem("missions:wand_chest", {
 	stack_max = 1
 })
 
-local show_name_formspec = function(player, pos)
-	local formspec = "size[8,1;]" ..
-			"field[0,0.5;6,1;name;Name;]" ..
-			"button_exit[6,0.1;2,1;save;Save]";
-
-	minetest.show_formspec(player:get_player_name(), "mission_wand_name;" .. minetest.pos_to_string(pos), formspec)
-end
-
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local parts = formname:split(";")
 	local name = parts[1]
@@ -54,7 +46,14 @@ minetest.register_craftitem("missions:wand", {
 	inventory_image = "missions_wand.png",
 	on_use = function(itemstack, player, pointed_thing)
 		if pointed_thing and pointed_thing.type == "node" and pointed_thing.under then
-			show_name_formspec(player, pointed_thing.under)
+			local formspec = "size[8,1;]" ..
+				"field[0,0.5;6,1;name;Name;]" ..
+				"button_exit[6,0.1;2,1;save;Save]";
+
+			minetest.show_formspec(player:get_player_name(),
+				"mission_wand_name;" .. minetest.pos_to_string(pointed_thing.under),
+				formspec
+			)
 		end
 
 		return itemstack
