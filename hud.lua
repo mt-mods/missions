@@ -4,10 +4,8 @@ local HUD_ALIGNMENT = {x = 1, y = 0}
 
 local hud = {} -- playerName -> {}
 
--- number of context items displayed in hud
-local hud_context_count = 3
 
--- returns the image (itam, node, tool) or ""
+-- returns the image (item, node, tool) or ""
 local get_image = function(name)
 	-- minetest.registered_items[name].inventory_image
 	-- minetest.registered_tools[name].inventory_image
@@ -71,40 +69,6 @@ minetest.register_on_joinplayer(function(player)
 		scale = {x = 100, y = 100},
 		number = 0x00FF00
 	})
-
-	data.context = {} -- table<id>
-	data.contextcount = {} -- table<id>
-
-	local i = 0
-	while i < hud_context_count do -- 0..n-1
-
-		local yOffset = 110 + (i * 50)
-
-		local count = player:hud_add({
-			hud_elem_type = "text",
-			position = HUD_POSITION,
-			offset = {x = 0,   y = yOffset},
-			text = "",
-			alignment = HUD_ALIGNMENT,
-			scale = {x = 100, y = 100},
-			number = 0xFFFFFF
-		})
-
-		local ctx = player:hud_add({
-			hud_elem_type = "image",
-			position = HUD_POSITION,
-			offset = {x = 60, y = yOffset},
-			text = "",
-			alignment = HUD_ALIGNMENT,
-			scale = {x = 1, y = 1}
-		})
-
-		table.insert(data.context, ctx)
-		table.insert(data.contextcount, count)
-
-		i = i + 1
-	end
-
 
 	hud[playername] = data
 end)
@@ -192,33 +156,6 @@ missions.hud_update = function(player, playermissions)
 			player:hud_change(data.time, "number", 0xFF0000)
 			player:hud_change(data.mission, "number", 0xFF0000)
 		end
-
-		if topMission.context and topMission.context.list then
-
-			local i = 1
-			while i <= hud_context_count do -- 1..n
-				local ctx = topMission.context.list[i]
-
-				if ctx then
-					local stack = ItemStack(ctx)
-					if stack:get_count() > 0 then
-						local img = get_image(stack:get_name());
-						player:hud_change(data.context[i], "text", img)
-						player:hud_change(data.contextcount[i], "text", stack:get_count() .. "x")
-					else
-						player:hud_change(data.context[i], "text", "")
-						player:hud_change(data.contextcount[i], "text", "")
-					end
-				else
-					player:hud_change(data.context[i], "text", "")
-					player:hud_change(data.contextcount[i], "text", "")
-				end
-
-				i = i + 1
-			end
-
-		end
-
 	else
 		-- no missions running
 		player:hud_change(data.title, "text", "")
