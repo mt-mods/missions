@@ -10,5 +10,6 @@ dofile(MP.."/functions.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/hud.lua")
 dofile(MP.."/block.lua")
+dofile(MP.."/wand.lua")
 
 print("[OK] Missions")

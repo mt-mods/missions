@@ -19,7 +19,7 @@ minetest.register_globalstep(function(dtime)
 		local players = minetest.get_connected_players()
 		for i,player in pairs(players) do
 			local playername = player:get_player_name()
-			//TODO
+			-- TODO
 		end
 
 		timer = 0
