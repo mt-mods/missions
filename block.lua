@@ -27,8 +27,38 @@ minetest.register_node("missions:mission", {
 		-- TODO
 	end,
 
-	on_rightclick = function(pos, node, clicker)
+	on_rightclick = function(pos, node, player)
+
+		local formspec = "size[8,8;]" ..
+			"field[0,0.5; 6,1;name;Name;]" ..
+			"button_exit[6,0.1; 2,1;save;Save]" ..
+			"textlist[0,1.5; 8,6;statements;#ee0000 abc,#00ee00 def,#0000ee ghi;2;true]"
+
+		minetest.show_formspec(player:get_player_name(),
+			"mission_block;" .. minetest.pos_to_string(pos),
+			formspec
+		)
 
 		-- TODO
 	end
 })
+
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	local parts = formname:split(";")
+	local name = parts[1]
+	if name ~= "mission_block" then
+		return
+	end
+
+	local pos = minetest.string_to_pos(parts[2])
+
+
+	print(dump(pos))
+	print(dump(fields))
+
+end)
+
+
+
+
+
