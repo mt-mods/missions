@@ -22,42 +22,11 @@ minetest.register_node("missions:mission", {
 
 	on_construct = function(pos)
 		local meta = minetest.get_meta(pos)
-		local inv = meta:get_inventory()
-
-		-- TODO
+		meta:set_string("steps", minetest.serialize({}))
 	end,
 
-	on_rightclick = function(pos, node, player)
-
-		local formspec = "size[8,8;]" ..
-			"field[0,0.5; 6,1;name;Name;]" ..
-			"button_exit[6,0.1; 2,1;save;Save]" ..
-			"textlist[0,1.5; 8,6;statements;#ee0000 abc,#00ee00 def,#0000ee ghi;2;true]"
-
-		minetest.show_formspec(player:get_player_name(),
-			"mission_block;" .. minetest.pos_to_string(pos),
-			formspec
-		)
-
-		-- TODO
-	end
+	on_rightclick = missions.form.missionblock
 })
-
-minetest.register_on_player_receive_fields(function(player, formname, fields)
-	local parts = formname:split(";")
-	local name = parts[1]
-	if name ~= "mission_block" then
-		return
-	end
-
-	local pos = minetest.string_to_pos(parts[2])
-
-
-	print(dump(pos))
-	print(dump(fields))
-
-end)
-
 
 
 

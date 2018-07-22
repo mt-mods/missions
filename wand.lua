@@ -1,4 +1,6 @@
 
+local FORMNAME = "mission_wand_name"
+
 minetest.register_craftitem("missions:wand_position", {
 	description = "Mission wand with position",
 	inventory_image = "missions_wand_position.png",
@@ -14,7 +16,7 @@ minetest.register_craftitem("missions:wand_chest", {
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local parts = formname:split(";")
 	local name = parts[1]
-	if name ~= "mission_wand_name" then
+	if name ~= FORMNAME then
 		return
 	end
 
@@ -51,7 +53,7 @@ minetest.register_craftitem("missions:wand", {
 				"button_exit[6,0.1;2,1;save;Save]";
 
 			minetest.show_formspec(player:get_player_name(),
-				"mission_wand_name;" .. minetest.pos_to_string(pointed_thing.under),
+				FORMNAME .. ";" .. minetest.pos_to_string(pointed_thing.under),
 				formspec
 			)
 		end
