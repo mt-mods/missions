@@ -1,16 +1,31 @@
 
 local FORMNAME = "mission_block_step_walkto"
 
+local get_inv_name = function(player)
+	return "missionwalkto" .. player:get_player_name()
+end
+
+local get_inv = function(player)
+	local inv = minetest.get_inventory({type="detached", name=get_inv_name(player)})
+
+	if not inv then
+		inv = minetest.create_detached_inventory(get_inv_name(player))
+	end
+
+	return inv
+end
+
+minetest.create_detached_inventory("test")
+
 missions.form.walkto = function(pos, node, player)
 
-	local inv = minetest.get_inventory({type="node", pos=pos})
-	inv:set_size("walkto_inv", 1)
-
-	local pos_str = pos.x..","..pos.y..","..pos.z
+	local inv = get_inv(player)
+	--inv:set_size("main", 1)
 
 	local formspec = "size[8,8;]" ..
-		"label[0,0;Step: Walk to]" ..
-		"list[nodemeta:" .. pos_str .. ";walkto_inv;0,1;1,1;]" ..
+		"label[0,0;Step Walk to]" ..
+		--"list[detached;" .. get_inv_name(player) .. ";0,1;1,1;]" ..
+		"list[detached;test;0,1;1,1;]" ..
 		"list[current_player;main;0,2;8,1;]"
 
 	minetest.show_formspec(player:get_player_name(),
