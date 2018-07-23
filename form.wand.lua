@@ -9,20 +9,27 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	local pos = minetest.string_to_pos(parts[2])
+	local posStr = minetest.pos_to_string(pos)
+	local node = minetest.get_node(pos)
 
 	if not fields.name then
 		return
 	end
 
+
 	local inv = player:get_inventory()
 	local stack = ItemStack("missions:wand_position")
-	local meta = stack:get_meta()
-	
 
-	local posStr = minetest.pos_to_string(pos)
+	if node.name == "default:chest" or node.name == "default:chest_locked" then
+		stack = ItemStack("missions:wand_chest")
+	end
+
+	local meta = stack:get_meta()
 	meta:set_string("pos", posStr)
 	meta:set_string("name", fields.name)
-	meta:set_string("description", "Mission wand to position: " .. posStr .. " with name: '" .. fields.name .. "'")
+	meta:set_string("description", "Mission wand to position: " .. posStr .. 
+		" with name: '" .. fields.name .. 
+		"' and node '" .. node.name .. "'")
 
 	if inv:contains_item("main", "missions:wand") and inv:room_for_item("main", stack) then
 		inv:remove_item("main", "missions:wand")

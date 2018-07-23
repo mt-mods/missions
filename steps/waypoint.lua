@@ -43,7 +43,8 @@ missions.register_step({
 			--TODO: escape
 			"label[0,2;" .. stepdata.name .. "]" ..
 
-			"list[current_player;main;0,3;8,1;]"
+			"list[current_player;main;0,3;8,1;]" ..
+			"button_exit[0,7;8,1;save;Save]"
 
 		return formspec;
 	end,

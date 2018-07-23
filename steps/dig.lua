@@ -22,7 +22,7 @@ missions.register_step({
 			"label[0,0;Dig any nodes]" ..
 	
 			"field[0,2;8,1;count;Count;" .. stepdata.count ..  "]" ..
-			"button_exit[0,4;8,1;save;Save]"
+			"button_exit[0,7;8,1;save;Save]"
 
 		return formspec;
 	end,
