@@ -7,7 +7,9 @@ local get_inv = function(player)
 	return minetest.get_inventory({type="detached",name=get_inv_name(player)})
 end
 
+local hud = {} -- playerName -> {}
 
+-- setup detached inv for wand placement
 minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 	local inv = minetest.create_detached_inventory(get_inv_name(player), {
@@ -65,6 +67,31 @@ missions.register_step({
 		end
 
 		--TODO: timeout,name
+	end,
+
+	on_step_enter = function(step, stepdata, player)
+		hud[player:get_player_name()] = player:hud_add({
+			hud_elem_type = "waypoint",
+			name = stepdata.name,
+			text = "m",
+			number = 0x0000FF,
+			world_pos = stepdata.pos
+		})
+	end,
+
+	on_step_interval = function(step, stepdata, player, success, failed)
+		-- TODO: check if player entered position
+	end,
+
+	on_step_exit = function(step, stepdata, player)
+		local idx = hud[player:get_player_name()]
+		if idx then
+			player:hud_remove(idx)
+			hud[player:get_player_name()] = nil
+		end
 	end
 
+
 })
+
+

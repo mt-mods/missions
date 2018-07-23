@@ -31,6 +31,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
+	-- TODO: priv/player check
+
 	local pos = minetest.string_to_pos(parts[2])
 	local node = minetest.get_node(pos)
 

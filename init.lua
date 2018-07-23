@@ -7,6 +7,7 @@ missions = {
 
 -- forms
 dofile(MP.."/form.missionblock.lua")
+dofile(MP.."/form.missionblock_user.lua")
 dofile(MP.."/form.newstep.lua")
 dofile(MP.."/form.wand.lua")
 
