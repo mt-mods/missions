@@ -56,7 +56,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				end)
 			end
 
-			spec.update(fields, player, step, stepdata, show_editor)
+			local show_mission = function()
+				minetest.after(0.1, function()
+					missions.form.missionblock(pos, node, player)
+				end)
+			end
+
+			spec.update(fields, player, step, stepdata, show_editor, show_mission)
 
 			-- write back data
 			missions.set_steps(pos, steps)

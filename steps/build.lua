@@ -28,12 +28,16 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor)
+	update = function(fields, player, step, stepdata, show_editor, show_mission)
 		if fields.count then
 			local count = tonumber(fields.count)
 			if count and count > 0 then
 				stepdata.count = count
 			end
+		end
+
+		if fields.save then
+			show_mission()
 		end
 	end,
 

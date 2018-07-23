@@ -28,8 +28,8 @@ missions.form.missionblock = function(pos, node, player)
 		"label[0,0;Mission editor]" ..
 		"button_exit[5.5,1;2,1;add;Add]" ..
 		"button_exit[5.5,2;2,1;edit;Edit]" ..
-		"button[5.5,3;2,1;up;Up]" ..
-		"button[5.5,4;2,1;down;Down]" ..
+		"button_exit[5.5,3;2,1;up;Up]" ..
+		"button_exit[5.5,4;2,1;down;Down]" ..
 		"button_exit[5.5,5;2,1;remove;Remove]" ..
 		"button_exit[5.5,6;2,1;user;User]" ..
 		steps_list .. 
@@ -87,7 +87,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		if step then
 			local stepdata = step.data
-			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			minetest.after(0.1, function()
+				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			end)
 		end
 	end
 
@@ -104,11 +106,33 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.up then
-		--TODO
+		local steps = missions.get_steps(pos)
+		local selected_step = meta:get_int("selected_step")
+		if selected_step > 1 then
+			local tmp = steps[selected_step-1]
+			steps[selected_step-1] = steps[selected_step]
+			steps[selected_step] = tmp
+			missions.set_steps(pos, steps)
+		end
+
+		minetest.after(0.1, function()
+			missions.form.missionblock(pos, node, player)
+		end)
 	end
 
 	if fields.down then
-		--TODO
+		local steps = missions.get_steps(pos)
+		local selected_step = meta:get_int("selected_step")
+		if selected_step < #steps then
+			local tmp = steps[selected_step+1]
+			steps[selected_step+1] = steps[selected_step]
+			steps[selected_step] = tmp
+			missions.set_steps(pos, steps)
+		end
+
+		minetest.after(0.1, function()
+			missions.form.missionblock(pos, node, player)
+		end)
 	end
 
 	if fields.user then

@@ -18,12 +18,16 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor)
+	update = function(fields, player, step, stepdata, show_editor, show_mission)
 		if fields.xp then
 			local xp = tonumber(fields.xp)
 			if xp and xp > 0 then
 				stepdata.xp = xp
 			end
+		end
+
+		if fields.save then
+			show_mission()
 		end
 	end,
 

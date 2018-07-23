@@ -49,7 +49,7 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor)
+	update = function(fields, player, step, stepdata, show_editor, show_mission)
 		if fields.read then
 			local inv = get_inv(player)
 			local stack = inv:get_stack("main", 1)
@@ -61,10 +61,20 @@ missions.register_step({
 
 				stepdata.pos = pos
 				stepdata.name = name
-				--TODO: how to handle used wand: give it back to user?
+
+
+				--move item back to user
+				inv:remove_item("main", stack)
+
+				local playerInv = player:get_inventory()
+				playerInv:add_item("main", stack)
 			end
 
 			show_editor()
+		end
+
+		if fields.save then
+			show_mission()
 		end
 	end,
 
