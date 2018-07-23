@@ -27,7 +27,7 @@ dofile(MP.."/executor.hud.lua")
 dofile(MP.."/register_step.lua")
 
 -- step specs
-dofile(MP.."/steps/walkto.lua")
+dofile(MP.."/steps/waypoint.lua")
 dofile(MP.."/steps/dig.lua")
 dofile(MP.."/steps/build.lua")
 

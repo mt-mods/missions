@@ -1,6 +1,6 @@
 
 local get_inv_name = function(player)
-	return "mission_walkto_" .. player:get_player_name()
+	return "mission_waypoint_" .. player:get_player_name()
 end
 
 local get_inv = function(player)
@@ -26,8 +26,8 @@ end)
 
 missions.register_step({
 
-	type = "walkto",
-	name = "Walk to",
+	type = "waypoint",
+	name = "Waypoint",
 
 	create = function()
 		return {pos=nil, name=""}
