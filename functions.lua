@@ -40,11 +40,11 @@ missions.only_owner_can_dig = function(pos, player)
 		return false
 	end
 
-	--TODO: check protection_bypass
+	local has_override = minetest.check_player_privs(player, "protection_bypass")
 
 	local meta = minetest.get_meta(pos)
 	local playername = player:get_player_name() or ""
-	return meta:get_string("owner") == playername
+	return meta:get_string("owner") == playername or has_override
 end
 
 
