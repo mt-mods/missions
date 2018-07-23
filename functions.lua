@@ -9,6 +9,17 @@ missions.load_missions = function()
 	-- TODO
 end
 
+missions.format_time = function(seconds)
+	local minutes = math.floor(seconds / 60)
+	local secs = seconds - (minutes * 60)
+	if secs < 10 then
+		return minutes .. ":0" .. secs
+	else
+		return minutes .. ":" ..secs
+	end
+	--TODO: hours/days
+end
+
 -- mission steps setter/getter
 missions.get_steps = function(pos)
 	local meta = minetest.get_meta(pos)
@@ -22,22 +33,6 @@ missions.set_steps = function(pos, steps)
 	meta:set_string("steps", minetest.serialize(steps))
 end
 
-
--- timeout check
-local timer = 0
-minetest.register_globalstep(function(dtime)
-	timer = timer + dtime;
-	if timer >= 1 then
-		local now = os.time(os.date("!*t"))
-		local players = minetest.get_connected_players()
-		for i,player in pairs(players) do
-			local playername = player:get_player_name()
-			-- TODO
-		end
-
-		timer = 0
-	end
-end)
 
 -- node register helper
 missions.only_owner_can_dig = function(pos, player)

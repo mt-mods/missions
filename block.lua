@@ -17,6 +17,9 @@ minetest.register_node("missions:mission", {
 		local playername = placer:get_player_name() or ""
 		meta:set_string("owner", playername)
 		meta:set_int("selected_step", 1)
+		meta:set_int("time", 300)
+		meta:set_string("name", "")
+		meta:set_string("description", "")
 	end,
 
 	can_dig = missions.only_owner_can_dig,

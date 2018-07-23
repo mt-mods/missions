@@ -6,6 +6,7 @@ missions.form.missionblock = function(pos, node, player)
 	local meta = minetest.get_meta(pos)
 	local selected_step = meta:get_int("selected_step")
 	local name = meta:get_string("name")
+	local time = meta:get_string("time")
 	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
 
@@ -37,7 +38,8 @@ missions.form.missionblock = function(pos, node, player)
 
 		--right
 		"field[8,1;8,1;name;Name;" .. name ..  "]" ..
-		"textarea[8,2;8,6;description;Description;" .. description .. "]" ..
+		"field[8,2;8,1;time;Time (seconds);" .. time ..  "]" ..
+		"textarea[8,3;8,5;description;Description;" .. description .. "]" ..
 		"button_exit[0,7;16,1;save;Save]"
 
 	minetest.show_formspec(player:get_player_name(),
@@ -93,6 +95,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.name then
 		meta:set_string("name", fields.name)
+	end
+
+	if fields.time then
+		meta:set_string("time", fields.time)
 	end
 
 	if fields.description then

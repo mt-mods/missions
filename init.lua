@@ -1,3 +1,4 @@
+local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
 local MP = minetest.get_modpath("missions")
 
@@ -18,12 +19,19 @@ dofile(MP.."/hud.lua")
 dofile(MP.."/block.lua")
 dofile(MP.."/wand.lua")
 
+-- executor
+dofile(MP.."/executor.lua")
+dofile(MP.."/executor.hud.lua")
 
 -- step register
 dofile(MP.."/register_step.lua")
 
 -- step specs
 dofile(MP.."/steps/walkto.lua")
+
+if has_xp_redo_mod then
+	dofile(MP.."/steps/checkxp.lua")
+end
 
 
 print("[OK] Missions")

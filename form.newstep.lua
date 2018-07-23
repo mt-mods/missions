@@ -8,7 +8,7 @@ missions.form.newstep = function(pos, node, player)
 
 	for i,spec in ipairs(missions.steps) do
 		step_buttons = step_buttons ..
-			"button_exit[0," .. i-1+offset .. ";2,1;" .. spec.type .. ";" .. spec.name .. "]"
+			"button_exit[0," .. i-1+offset .. ";4,1;" .. spec.type .. ";" .. spec.name .. "]"
 	end
 
 	local formspec = "size[8,8;]" ..
@@ -57,8 +57,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end)
 		end
 	end
-
-	print(dump(fields))
 
 end)
 
