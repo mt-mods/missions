@@ -9,8 +9,13 @@ missions.form.missionblock = function(pos, node, player)
 	local time = meta:get_string("time")
 	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
+	local has_override = minetest.check_player_privs(player, "protection_bypass")
 
-	-- TODO: user-view entry
+	-- check if plain user rightclicks
+	if player:get_player_name() ~= owner and not has_override then
+		missions.form.missionblock_user(pos, node, player)
+		return
+	end
 
 	local steps = missions.get_steps(pos)
 
