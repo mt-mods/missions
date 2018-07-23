@@ -55,7 +55,7 @@ missions.hud_update = function(player, mission, remainingTime)
 		local now = os.time(os.date("!*t"))
 		local remainingTime = mission.time - (now - mission.start)
 
-		local percent = tonumber((mission.currentstep-1) / #mission.steps * 100)
+		local percent = math.floor((mission.currentstep-1) / #mission.steps * 100)
 
 		player:hud_change(data.title, "text", "Mission: " .. mission.name)
 		player:hud_change(data.mission, "text", "Completed: " .. percent .. "%")

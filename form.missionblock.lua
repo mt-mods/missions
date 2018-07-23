@@ -12,8 +12,6 @@ missions.form.missionblock = function(pos, node, player)
 
 	-- TODO: user-view entry
 
-	print(meta:get_string("steps")) --XXX
-
 	local steps = missions.get_steps(pos)
 
 	-- steps list
