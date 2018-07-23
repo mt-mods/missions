@@ -34,3 +34,11 @@ minetest.register_node("missions:mission", {
 
 
 
+minetest.register_craft({
+	output = "missions:mission",
+	recipe = {
+		{"missions:wand", "", "missions:wand"},
+		{"", "default:goldblock", ""},
+		{"", "default:paper", ""}
+	}
+})
