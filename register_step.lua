@@ -5,6 +5,14 @@ missions.register_step = function(spec)
 	table.insert(missions.steps, spec)
 end
 
+missions.get_step_spec_by_type = function(type)
+	for i,spec in ipairs(missions.steps) do
+		if type == spec.type then
+			-- step spec found
+			return spec			
+		end
+	end
+end
 
 local FORMNAME = "mission_block_editstep"
 

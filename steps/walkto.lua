@@ -30,7 +30,7 @@ missions.register_step({
 	name = "Walk to",
 
 	create = function()
-		return {pos=nil, name="", time=300}
+		return {pos=nil, name=""}
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
@@ -65,22 +65,25 @@ missions.register_step({
 
 			show_editor()
 		end
-
-		--TODO: timeout,name
 	end,
 
-	on_step_enter = function(step, stepdata, player)
+	on_step_enter = function(step, stepdata, player, success, failed)
 		hud[player:get_player_name()] = player:hud_add({
 			hud_elem_type = "waypoint",
-			name = stepdata.name,
+			name = "Mission-waypoint: " .. stepdata.name,
 			text = "m",
-			number = 0x0000FF,
+			number = 0xFF0000,
 			world_pos = stepdata.pos
 		})
 	end,
 
 	on_step_interval = function(step, stepdata, player, success, failed)
-		-- TODO: check if player entered position
+		local pos = player:get_pos()
+
+		local distance = vector.distance(player:get_pos(), stepdata.pos)
+		if distance < 3 then
+			success()
+		end
 	end,
 
 	on_step_exit = function(step, stepdata, player)

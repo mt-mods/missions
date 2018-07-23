@@ -11,9 +11,9 @@ missions.form.missionblock_user = function(pos, node, player)
 
 	local formspec = "size[8,8;]" ..
 		"label[0,0;Mission by " .. owner .. "]" ..
-		"label[0,0;Time: " .. missions.format_time(time) .. "]" ..
-		"label[0,1;" .. name .. "]" ..
-		"label[0,3;" .. description .. "]" ..
+		"label[0,1;Time: " .. missions.format_time(time) .. "]" ..
+		"label[0,2;" .. name .. "]" ..
+		"label[0,4;" .. description .. "]" .. --TODO: multiline desc
 		"button_exit[5.5,1;2,1;start;Start]"
 
 	minetest.show_formspec(player:get_player_name(),

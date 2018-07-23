@@ -43,6 +43,7 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 missions.hud_update = function(player, mission, remainingTime)
+
 	local playername = player:get_player_name()
 	local data = hud[playername]
 
@@ -51,8 +52,13 @@ missions.hud_update = function(player, mission, remainingTime)
 	end
 
 	if mission then
+		local now = os.time(os.date("!*t"))
+		local remainingTime = mission.time - (now - mission.start)
+
+		local percent = tonumber((mission.currentstep-1) / #mission.steps * 100)
+
 		player:hud_change(data.title, "text", "Mission: " .. mission.name)
-		player:hud_change(data.mission, "text", "")
+		player:hud_change(data.mission, "text", "Completed: " .. percent .. "%")
 		player:hud_change(data.time, "text", "" .. missions.format_time(remainingTime))
 
 		if remainingTime > 60 then
