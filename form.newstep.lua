@@ -27,8 +27,21 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local node = minetest.get_node(pos)
 
 	if fields.walkto then
+		local steps = missions.get_steps(pos)
+		print(#steps)
+
+		table.insert(steps, {
+			type="walkto",
+			name="Walk to",
+			time=300,
+			pos=nil
+		})
+
+		missions.set_steps(pos, steps)
+		local stepnumber = #steps+1
+
 		minetest.after(0.1, function()
-			missions.form.walkto(pos, node, player)
+			missions.form.walkto(pos, node, player, stepnumber)
 		end)
 	end
 

@@ -16,13 +16,13 @@ minetest.register_node("missions:mission", {
 		local meta = minetest.get_meta(pos)
 		local playername = placer:get_player_name() or ""
 		meta:set_string("owner", playername)
+		meta:set_int("selected_step", 1)
 	end,
 
 	can_dig = missions.only_owner_can_dig,
 
 	on_construct = function(pos)
-		local meta = minetest.get_meta(pos)
-		meta:set_string("steps", minetest.serialize({}))
+		missions.set_steps(pos, {})
 	end,
 
 	on_rightclick = missions.form.missionblock

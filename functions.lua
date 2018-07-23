@@ -1,12 +1,25 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
-
+-- running player missions
 missions.save_missions = function()
 	-- TODO
 end
 
 missions.load_missions = function()
 	-- TODO
+end
+
+-- mission steps setter/getter
+missions.get_steps = function(pos)
+	local meta = minetest.get_meta(pos)
+	local steps = minetest.deserialize(meta:get_string("steps"))
+
+	return steps	
+end
+
+missions.set_steps = function(pos, steps)
+	local meta = minetest.get_meta(pos)
+	meta:set_string("steps", minetest.serialize(steps))
 end
 
 
@@ -26,10 +39,13 @@ minetest.register_globalstep(function(dtime)
 	end
 end)
 
+-- node register helper
 missions.only_owner_can_dig = function(pos, player)
 	if not player then
 		return false
 	end
+
+	--TODO: check protection_bypass
 
 	local meta = minetest.get_meta(pos)
 	local playername = player:get_player_name() or ""
