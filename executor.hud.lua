@@ -61,7 +61,7 @@ missions.hud_update_status = function(player, status)
 		return
 	end
 
-	player:hud_change(data.title, "text", "Status: " .. status)
+	player:hud_change(data.title, "text", status)
 end
 
 missions.hud_update = function(player, mission, remainingTime)
@@ -81,7 +81,7 @@ missions.hud_update = function(player, mission, remainingTime)
 
 		player:hud_change(data.title, "text", "Mission: " .. mission.name)
 		player:hud_change(data.mission, "text", "Completed: " .. percent .. "%")
-		player:hud_change(data.time, "text", "" .. missions.format_time(remainingTime))
+		player:hud_change(data.time, "text", "Time: " .. missions.format_time(remainingTime))
 
 		if remainingTime > 60 then
 			player:hud_change(data.time, "number", 0x00FF00)

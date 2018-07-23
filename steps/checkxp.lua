@@ -33,14 +33,7 @@ missions.register_step({
 		else
 			failed("Not enough xp, " .. stepdata.xp .. " needed!")
 		end
-	end,
-
-	on_step_interval = function(step, stepdata, player, success, failed)
-	end,
-
-	on_step_exit = function(step, stepdata, player)
 	end
-
 
 })
 
