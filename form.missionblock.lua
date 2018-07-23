@@ -13,6 +13,7 @@ missions.form.missionblock = function(pos, node, player)
 	-- steps list
 	local steps_list = "textlist[0,1;5,6;steps;"
 	for i,step in ipairs(steps) do
+		--TODO: escape
 		steps_list = steps_list .. i .. ": " .. step.name .. ","
 	end
 	steps_list = steps_list .. ";" .. selected_step .. "]";
@@ -65,7 +66,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.edit then
-		--TODO
+		local stepnumber = meta:get_int("selected_step")
+		local steps = missions.get_steps(pos)
+
+		local step = steps[stepnumber]
+
+		if step then
+			local stepdata = step.data
+			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+		end
 	end
 
 	if fields.up then
@@ -83,8 +92,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step)
 		end
 	end
-
-	print(dump(fields)) --XXX
 
 end)
 

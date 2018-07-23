@@ -3,9 +3,17 @@ local FORMNAME = "mission_block_newstep"
 
 missions.form.newstep = function(pos, node, player)
 
+	local step_buttons = ""
+	local offset = 1
+
+	for i,spec in ipairs(missions.steps) do
+		step_buttons = step_buttons ..
+			"button_exit[0," .. i-1+offset .. ";2,1;" .. spec.type .. ";" .. spec.name .. "]"
+	end
+
 	local formspec = "size[8,8;]" ..
 		"label[0,0;New step]" ..
-		"button_exit[0,1;2,1;walkto;Walk to]"
+		step_buttons
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),
@@ -26,27 +34,30 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local pos = minetest.string_to_pos(parts[2])
 	local node = minetest.get_node(pos)
 
-	if fields.walkto then
-		local steps = missions.get_steps(pos)
-		print(#steps)
 
-		table.insert(steps, {
-			type="walkto",
-			name="Walk to",
-			time=300,
-			pos=nil
-		})
+	for i,spec in ipairs(missions.steps) do
+		if fields[spec.type] then
+			local stepdata = spec.create()
+			local step = {
+				type = spec.type,
+				name = spec.name,
+				data = stepdata
+			}
 
-		missions.set_steps(pos, steps)
-		local stepnumber = #steps+1
+			local steps = missions.get_steps(pos)
+			table.insert(steps, step)
 
-		minetest.after(0.1, function()
-			missions.form.walkto(pos, node, player, stepnumber)
-		end)
+			missions.set_steps(pos, steps)
+			local stepnumber = #steps
+
+			minetest.after(0.1, function()
+				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			end)
+		end
 	end
 
-	print(dump(pos)) --XXX
 	print(dump(fields))
 
 end)
+
 
