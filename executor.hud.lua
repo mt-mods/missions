@@ -39,8 +39,30 @@ minetest.register_on_joinplayer(function(player)
 		number = 0x00FF00
 	})
 
+	data.status = player:hud_add({
+		hud_elem_type = "text",
+		position = HUD_POSITION,
+		offset = {x = 0,   y = 105},
+		text = "",
+		alignment = HUD_ALIGNMENT,
+		scale = {x = 100, y = 100},
+		number = 0x00FF00
+	})
+
+
 	hud[playername] = data
 end)
+
+missions.hud_update_status = function(player, status)
+	local playername = player:get_player_name()
+	local data = hud[playername]
+
+	if not data then
+		return
+	end
+
+	player:hud_change(data.title, "text", "Status: " .. status)
+end
 
 missions.hud_update = function(player, mission, remainingTime)
 
@@ -72,6 +94,7 @@ missions.hud_update = function(player, mission, remainingTime)
 		player:hud_change(data.title, "text", "")
 		player:hud_change(data.mission, "text", "")
 		player:hud_change(data.time, "text", "")
+		player:hud_change(data.status, "text", "")
 	end
 end
 

@@ -3,23 +3,24 @@ local counter = {} -- playername -> count
 
 missions.register_step({
 
-	type = "simpledig",
-	name = "Dig nodes",
+	type = "simplebuild",
+	name = "Place nodes",
 
 	create = function()
 		return {count=100}
 	end,
 
+
 	get_status = function(step, stepdata, player)
 		local name = player:get_player_name()
 		local current_count = counter[name] or 0
 		local rest = stepdata.count - (current_count - stepdata.start)
-		return "Dig " .. rest .. " nodes"
+		return "Place " .. rest .. " nodes"
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
 		local formspec = "size[8,8;]" ..
-			"label[0,0;Dig any nodes]" ..
+			"label[0,0;Place any nodes]" ..
 	
 			"field[0,2;8,1;count;Count;" .. stepdata.count ..  "]" ..
 			"button_exit[0,4;8,1;save;Save]"
@@ -55,9 +56,9 @@ missions.register_step({
 
 })
 
-minetest.register_on_dignode(function(pos, oldnode, digger)
-	if digger ~= nil and digger:is_player() then
-		local name = digger:get_player_name()
+minetest.register_on_placenode(function(pos, newnode, player, oldnode, itemstack)
+	if player ~= nil and player:is_player() then
+		local name = player:get_player_name()
 		local count = counter[name]
 		if not count then
 			count = 0

@@ -46,7 +46,6 @@ missions.start = function(pos, player)
 end
 
 local update_mission = function(mission, player)
-	missions.hud_update(player, mission)
 
 	local now = os.time(os.date("!*t"))
 	local remainingTime = mission.time - (now - mission.start)
@@ -62,6 +61,8 @@ local update_mission = function(mission, player)
 
 	local spec = missions.get_step_spec_by_type(step.type)
 
+	missions.hud_update(player, mission)
+
 	local success = false
 	local failed = false
 	
@@ -73,6 +74,7 @@ local update_mission = function(mission, player)
 		failed = true
 		minetest.chat_send_player(playername, "Mission failed: " .. msg)
 		set_current_mission(player, nil)
+		missions.hud_update_status(player, "")
 		if spec.on_step_exit then
 			spec.on_step_exit(step, step.data, player)
 		end
@@ -104,6 +106,15 @@ local update_mission = function(mission, player)
 	if failed then
 		return
 	end
+
+
+	if spec.get_status then
+		local status = spec.get_status(step, step.data, player)
+		missions.hud_update_status(player, status)
+	else
+		missions.hud_update_status(player, "")
+	end
+
 
 	if success then
 		mission.currentstep = mission.currentstep + 1

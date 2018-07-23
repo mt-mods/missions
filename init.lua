@@ -29,6 +29,7 @@ dofile(MP.."/register_step.lua")
 -- step specs
 dofile(MP.."/steps/walkto.lua")
 dofile(MP.."/steps/dig.lua")
+dofile(MP.."/steps/build.lua")
 
 if has_xp_redo_mod then
 	dofile(MP.."/steps/checkxp.lua")
