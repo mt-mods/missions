@@ -241,8 +241,14 @@ local intercept_chest = function(name)
 	end
 end
 
+local has_more_chests_mod = minetest.get_modpath("more_chests")
+
 intercept_chest("default:chest")
 intercept_chest("default:chest_open")
+
+if has_more_chests_mod then
+	intercept_chest("more_chests:dropbox")
+end
 -- TODO: protected, technic-chests
 
 

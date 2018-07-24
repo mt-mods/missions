@@ -20,7 +20,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local inv = player:get_inventory()
 	local stack = ItemStack("missions:wand_position")
 
-	if node.name == "default:chest" or node.name == "default:chest_locked" then
+	if node.name == "default:chest" or node.name == "default:chest_locked" or node.name == "more_chests:dropbox" then
 		stack = ItemStack("missions:wand_chest")
 	end
 
