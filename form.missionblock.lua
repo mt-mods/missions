@@ -118,6 +118,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			steps[selected_step-1] = steps[selected_step]
 			steps[selected_step] = tmp
 			missions.set_steps(pos, steps)
+			meta:set_int("selected_step", selected_step - 1)
 		end
 
 		minetest.after(0.1, function()
@@ -133,6 +134,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			steps[selected_step+1] = steps[selected_step]
 			steps[selected_step] = tmp
 			missions.set_steps(pos, steps)
+			meta:set_int("selected_step", selected_step + 1)
 		end
 
 		minetest.after(0.1, function()

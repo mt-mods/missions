@@ -14,7 +14,7 @@ minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 	local inv = minetest.create_detached_inventory(get_inv_name(player), {
 		allow_put = function(inv, listname, index, stack, player)
-			if stack:get_name() == "missions:wand_position" then
+			if stack:get_name() == "missions:wand_position" and inv:is_empty("main") then
 				return 1
 			end
 

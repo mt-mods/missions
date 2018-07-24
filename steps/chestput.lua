@@ -7,24 +7,42 @@ local get_inv = function(player)
 	return minetest.get_inventory({type="detached",name=get_inv_name(player)})
 end
 
+local hud = {} -- playerName -> {}
+local remainingItems = {} -- playerName -> ItemStack
 
 -- setup detached inv
 minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 	local inv = minetest.create_detached_inventory(get_inv_name(player), {
+		allow_put = function(inv, listname, index, stack, player)
+			if not inv:is_empty(listname) then
+				return 0
+			end
+
+			if listname == "target" and stack:get_name() == "missions:wand_chest" then
+				return stack:get_count()
+			end
+
+			if listname == "main" then
+				return stack:get_count()
+			end
+
+			return 0
+		end,
+		allow_take = function(inv, listname, index, stack, player)
+			-- remove from det inv
+			inv:remove_item(listname, stack)
+			-- give player nothing
+			return 0
+		end,
 		on_put = function(inv, listname, index, stack, player)
 			-- copy stack
 			local playerInv = player:get_inventory()
 			playerInv:add_item("main", stack)
 		end,
-		allow_take = function(inv, listname, index, stack, player)
-			-- remove from det inv
-			inv:remove_item("main", stack)
-			-- give player nothing
-			return 0
-		end
 	})
 	inv:set_size("main", 1)
+	inv:set_size("target", 1)
 end)
 
 missions.register_step({
@@ -33,7 +51,18 @@ missions.register_step({
 	name = "Put in chest",
 
 	create = function()
-		return {count=1, name="default:cobble"}
+		return {stack="", pos=nil, name="", description="", visible=1}
+	end,
+
+	get_status = function(step, stepdata, player)
+		local status = stepdata.description
+
+		local str = remainingItems[player:get_player_name()]
+		if str then
+			status = status .. " " .. str
+		end
+
+		return status
 	end,
 
 	validate = function(pos, node, player, step, stepdata)
@@ -41,12 +70,44 @@ missions.register_step({
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
-		--TODO: populate inv
+		local inv = get_inv(player)
+		inv:set_stack("main", 1, ItemStack(stepdata.stack))
+
+		local name = ""
+
+		if stepdata.pos then
+			local distance = vector.distance(pos, stepdata.pos)
+			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
+				"Distance: " .. math.floor(distance) .. " m"
+		end
+
+		if stepdata.name then
+			name = name .. " with name '" .. stepdata.name .. "'"
+		end
+
+		local visibleText
+
+		if stepdata.visible == 1 then
+			visibleText = "Waypoint: Visible"
+		else
+			visibleText = "Waypoint: Hidden"
+		end
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Put items in chest]" ..
-			"list[detached:" .. get_inv_name(player) .. ";main;0,1;1,1;]" ..
-			--"button_exit[1,1;4,1;read;Read items]" ..
+
+			"label[0,1;Items]" ..
+			"list[detached:" .. get_inv_name(player) .. ";main;2,1;1,1;]" ..
+
+			"label[3,1;Target]" ..
+			"list[detached:" .. get_inv_name(player) .. ";target;4,1;1,1;]" ..
+
+			"label[0,2;" .. name .. "]" ..
+
+			"field[0,3;8,1;description;Description;" .. stepdata.description .. "]" ..
+
+			"button_exit[0,5;8,1;togglevisible;" .. visibleText .. "]" ..
 
 			"list[current_player;main;0,6;8,1;]" ..
 			"button_exit[0,7;8,1;save;Save]"
@@ -55,26 +116,78 @@ missions.register_step({
 	end,
 
 	update = function(fields, player, step, stepdata, show_editor, show_mission)
-		--TODO
 
-		if fields.read then
+		if fields.description then
+			stepdata.description = fields.description
+		end
+
+		if fields.togglevisible then
+			if stepdata.visible == 1 then
+				stepdata.visible = 0
+			else
+				stepdata.visible = 1
+			end
+
+			show_editor()
 		end
 
 		if fields.save then
+			local inv = get_inv(player)
+			local stack = inv:get_stack("main", 1)
+
+			if not stack:is_empty() then
+				stepdata.stack = stack:to_string()
+			end
+
+			stack = inv:get_stack("target", 1)
+
+			if not stack:is_empty() then
+				local meta = stack:get_meta()
+				local pos = minetest.string_to_pos(meta:get_string("pos"))
+				local name = meta:get_string("name")
+
+				stepdata.pos = pos
+				stepdata.name = name
+			end
+
 			show_mission()
 		end
 	end,
 
 	on_step_enter = function(step, stepdata, player, success, failed)
-		--TODO
+		-- set stack
+		remainingItems[player:get_player_name()] = stepdata.stack
+
+		-- set hud, if enabled
+		if stepdata.visible == 1 then
+			hud[player:get_player_name()] = player:hud_add({
+				hud_elem_type = "waypoint",
+				name = "Chest: " .. stepdata.name,
+				text = "m",
+				number = 0xFF0000,
+				world_pos = stepdata.pos
+			})
+		end
 	end,
 
 	on_step_interval = function(step, stepdata, player, success, failed)
-		--TODO
+		local str = remainingItems[player:get_player_name()]
+		if str then
+			if ItemStack(str):get_count() == 0 then
+				success()
+			end
+		else
+			success()
+		end
 	end,
 
 	on_step_exit = function(step, stepdata, player)
-		--TODO
+		remainingItems[player:get_player_name()] = ""
+		local idx = hud[player:get_player_name()]
+		if idx then
+			player:hud_remove(idx)
+			hud[player:get_player_name()] = nil
+		end
 	end
 
 
@@ -88,14 +201,37 @@ local intercept_chest = function(name)
 		local delegate_take = def.on_metadata_inventory_take
 
 		def.on_metadata_inventory_put = function(pos, listname, index, stack, player)
-			print("Put Stack: " .. stack:get_name())
+			if player and player:is_player() then
+				local remStack = ItemStack(remainingItems[player:get_player_name()])
+				
+				if remStack:get_name() == stack:get_name() then
+					local count = remStack:get_count() - stack:get_count()
+					if count < 0 then count = 0 end
+
+					remStack:set_count(count)
+					remainingItems[player:get_player_name()] = remStack:to_string()
+				end
+
+				--print("Put Stack: " .. stack:get_name())
+			end
 
 			--delegate
 			delegate_put(pos, listname, index, stack, player)
 		end
 
 		def.on_metadata_inventory_take = function(pos, listname, index, stack, player)
-			print("Take Stack: " .. stack:get_name())
+			if player and player:is_player() then
+				local remStack = ItemStack(remainingItems[player:get_player_name()])
+
+				if remStack:get_name() == stack:get_name() then
+					local count = remStack:get_count() + stack:get_count()
+					if count > remStack: get_stack_max() then count = remStack:get_stack_max() end
+
+					remStack:set_count(count)
+					remainingItems[player:get_player_name()] = remStack:to_string()
+				end
+				--print("Take Stack: " .. stack:get_name())
+			end
 
 			--delegate
 			delegate_take(pos, listname, index, stack, player)
