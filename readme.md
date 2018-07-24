@@ -1,133 +1,60 @@
 Minetest mission mod (missions)
 ======
 
-Minetest mod for in-game mission creation
-Adds blocks to create missions with rewards, timeout and penalties
+Minetest mod for in-game mission creation (for players and admins)
+Adds a mission block to create missions and a mission-wand to mark positions and chests
 
 * Github: [https://github.com/thomasrudin-mt/missions](https://github.com/thomasrudin-mt/missions)
 * Forum Topic: [https://forum.minetest.net/viewtopic.php?f=9&t=20125](https://forum.minetest.net/viewtopic.php?f=9&t=20125)
 
-Supported missions:
-* Transport (to mission-chest)
-* Craft
-* Build
-* Dig
+Features:
+* In-game mission builder
+* Craftable mission-block and wand
+* Create epic quests
+* Missions can span multiple days
+* Running missions persist across login/logout and server-restart
+
+Supported mission-steps:
+* Build (place any nodes)
+* Dig nodes (any)
+* Put items in Chest
+* Waypoint (hidden and visible in hud)
+* Reward player with items from a chest
+* Message (show a message with a title)
+
+Extended mission-steps (dependent on other mods):
+* Check xp (if xp mod enabled)
+* Give xp (if xp mod enabled and privs available)
 
 # Install
 
 * Unzip/Clone it to your worldmods folder
 
-# Blocks
+# Crafting
 
-The blocks have no recipe because they should be used by a admin or creative-player.
-The nature of the mission-reward could be abused for cheating if a survival-player could craft it.
+TODO: screenshots
 
-## Mission-chest (missions:chest)
+# Manual
 
-The mission chest acts as a target for transport-missions. The book in the right-click menu is used as a reference to it (placed in the transport block menu)
+## Create missions (in-game)
 
-# Mission-types
+TODO: screenshots
 
-## Transport (missions:transport)
+## Play missions
 
-A simple transport mission, in which blocks/items must be place in the target chest (displayed in hud, if started)
-This block can be configured only by its owner:
+TODO: screenshots
 
-* **Target**: The target mission-chest (book-reference)
-* **Time**: Time for the mission in seconds
-* **Reward**: Block/Items rewards if the mission is completed
-* **Transport**: Blocks/items to transport/craft. All items must be placed in the **to**-chest for mission completion
+## Create more mission-steps (specs)
 
-XP mod fields (for xp_redo, if enabled)
-
-* **XP-Reward** amount of xp to reward on completion
-* **XP-Penalty** amount of xp to take away if the mission fails (timeout) must be positive
-
-Buttons:
-
-* **Save** Saves the configuration
-* **Start** Starts the mission for the player
-
-## Build
-
-Build nodes
-
-## Dig
-
-Dig nodes/items
-
-## Craft
-
-Craft items
+TODO: screenshots
 
 # Depends
 
 * default
-* [xp-redo](https://github.com/thomasrudin-mt/xp_redo)?
-
-# Screenshots
-
-## Mission-blocks (chest and mission-types)
-![](screenshots/Minetest_2018-05-17-09-18-20.png?raw=true)
-Note: **Android screenshot**
-
-## Mission chest with book as reference
-![](screenshots/Minetest_2018-05-17-09-18-38.png?raw=true)
-
-## Example transport mission configuration
-![](screenshots/Minetest_2018-05-28-10-12-59.png?raw=true)
-
-## Running transport mission
-![](screenshots/Minetest_2018-05-17-10-28-35.png?raw=true)
-
-## Running dig-mission
-![](screenshots/Minetest_2018-05-28-10-13-28.png?raw=true)
-
-# Lua api
-
-## misssions.start_mission(player, missionSpec)
-
-```lua
-missionSpec = {
-	name = "Mission name",
-	type = "transport", -- "build", "craft", "dig"
-	time = 300, -- seconds
-	cooldown = 600, -- seconds between same mission (name), optional
-	xp = { -- optional
-		reward = 100,
-		penalty = 50
-	},
-	reward = {
-		"default:stone 50"
-	},
-
-	-- build, craft, dig, transport mission
-	context = {
-		list: {
-			"default:stone 10"
-		}
-	},
-
-	-- transport mission
-	target = {
-		x = 100,
-		y = 200,
-		z = 300,
-		title = "Town chest"
-	}
-}
-```
+* [xp_redo](https://github.com/thomasrudin-mt/xp_redo)?
+* [more_chests](https://github.com/minetest-mods/more_chests)?
 
 # Pull requests / bugs
 
 I'm happy for any bug reports or pull requests (code and textures)
 
-# TODO / Ideas
-
-* Kill mission
-* Goto mission
-* Walk mission
-* Display current missions in sfinv/unified inv
-* Mission stats / export
-* Persist missions across server-restart (player:set_attribute)
-* HUD improvements
