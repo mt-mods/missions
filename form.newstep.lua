@@ -40,6 +40,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	for i,spec in ipairs(missions.steps) do
 		if fields[spec.type] then
+
+			-- check privs
+			if spec.privs and not minetest.check_player_privs(player:get_player_name(), spec.privs) then
+				minetest.chat_send_player(player:get_player_name(), "Missing privs: " .. dump(spec.privs))
+				return
+			end
+
+
 			local stepdata = spec.create()
 			local step = {
 				type = spec.type,

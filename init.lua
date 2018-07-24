@@ -37,6 +37,7 @@ dofile(MP.."/steps/message.lua")
 
 if has_xp_redo_mod then
 	dofile(MP.."/steps/checkxp.lua")
+	dofile(MP.."/steps/givexp.lua")
 end
 
 
