@@ -30,12 +30,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
-	-- TODO: priv/player check
-
 	local pos = minetest.string_to_pos(parts[2])
 	local meta = minetest.get_meta(pos)
 	local node = minetest.get_node(pos)
 
+	if not missions.check_owner(pos, player) then
+		return
+	end
 
 	if fields.start then
 		local result = missions.validate_mission(pos, player)

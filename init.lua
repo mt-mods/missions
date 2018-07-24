@@ -12,13 +12,13 @@ dofile(MP.."/form.missionblock_user.lua")
 dofile(MP.."/form.newstep.lua")
 dofile(MP.."/form.wand.lua")
 
-
 dofile(MP.."/functions.lua")
 dofile(MP.."/validate.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/hud.lua")
 dofile(MP.."/block.lua")
 dofile(MP.."/wand.lua")
+
 
 -- executor
 dofile(MP.."/executor.lua")

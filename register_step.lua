@@ -36,12 +36,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
-	-- TODO: priv/player check
-
 	local pos = minetest.string_to_pos(parts[2])
 	local node = minetest.get_node(pos)
 	local stepnumber = tonumber(parts[3])
 	local spectype = parts[4]
+
+	if not missions.check_owner(pos, player) then
+		return
+	end
 
 	local steps = missions.get_steps(pos)
 

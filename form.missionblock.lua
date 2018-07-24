@@ -61,11 +61,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
-	-- TODO: priv/player check
-
 	local pos = minetest.string_to_pos(parts[2])
 	local meta = minetest.get_meta(pos)
 	local node = minetest.get_node(pos)
+
+	if not missions.check_owner(pos, player) then
+		return
+	end
 
 	if fields.add then
 		minetest.after(0.1, function()
@@ -159,8 +161,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.save then
 		local result = missions.validate_mission(pos, player)
 		if result.success then
+			meta:set_string("infotext", "Mission: " .. meta:get_string("name"))
 			minetest.chat_send_player(player:get_player_name(), "Mission valid")
 		else
+			meta:set_string("infotext", "Mission: (invalid: " .. result.msg .. ")")
 			minetest.chat_send_player(player:get_player_name(), "Mission invalid: " .. result.msg)
 		end
 	end

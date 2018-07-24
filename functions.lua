@@ -9,6 +9,11 @@ missions.load_missions = function()
 	-- TODO
 end
 
+missions.check_owner = function(pos, player)
+	local meta = minetest.get_meta(pos)
+	return player and player:is_player() and player:get_player_name() == meta:get_string("owner")
+end
+
 missions.format_time = function(seconds)
 	local minutes = math.floor(seconds / 60)
 	local secs = seconds - (minutes * 60)
