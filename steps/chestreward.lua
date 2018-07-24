@@ -60,6 +60,14 @@ missions.register_step({
 
 		local removeStack = ItemStack(stepdata.stack)
 
+		if stepdata.pos == nil then
+			return {
+				success=false,
+				failed=true,
+				msg="No position defined"
+			}
+		end
+
 		if inv:contains_item("main", removeStack) then
 			return {success=true}
 		else

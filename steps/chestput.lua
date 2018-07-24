@@ -51,18 +51,18 @@ missions.register_step({
 	name = "Put in chest",
 
 	create = function()
-		return {stack="", pos=nil, name="", description="", visible=1}
+		return {stack="", pos=nil, name="", visible=1}
 	end,
 
 	get_status = function(step, stepdata, player)
-		local status = stepdata.description
-
 		local str = remainingItems[player:get_player_name()]
 		if str then
-			status = status .. " " .. str
+			local stack = ItemStack(str)
+			--TODO: prettier item name
+			return "Put " .. stack:get_count() .. " x " .. stack:get_name() .. " into the chest"
+		else
+			return ""
 		end
-
-		return status
 	end,
 
 	validate = function(pos, step, stepdata)
@@ -70,6 +70,14 @@ missions.register_step({
 		local inv = meta:get_inventory()
 
 		local removeStack = ItemStack(stepdata.stack)
+
+		if stepdata.pos == nil then
+			return {
+				success=false,
+				failed=true,
+				msg="No position defined"
+			}
+		end
 
 		if inv:room_for_item("main", removeStack) then
 			return {success=true}
@@ -120,8 +128,6 @@ missions.register_step({
 
 			"label[0,2;" .. name .. "]" ..
 
-			"field[0,3;8,1;description;Description;" .. stepdata.description .. "]" ..
-
 			"button_exit[0,5;8,1;togglevisible;" .. visibleText .. "]" ..
 
 			"list[current_player;main;0,6;8,1;]" ..
@@ -131,10 +137,6 @@ missions.register_step({
 	end,
 
 	update = function(fields, player, step, stepdata, show_editor, show_mission)
-
-		if fields.description then
-			stepdata.description = fields.description
-		end
 
 		if fields.togglevisible then
 			if stepdata.visible == 1 then

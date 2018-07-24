@@ -48,6 +48,18 @@ missions.register_step({
 		return stepdata.description
 	end,
 
+	validate = function(pos, step, stepdata)
+		if stepdata.pos == nil then
+			return {
+				success=false,
+				failed=true,
+				msg="No position defined"
+			}
+		else
+			return {success=true}
+		end
+	end,
+
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
 
 		local name = ""

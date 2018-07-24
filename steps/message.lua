@@ -12,7 +12,6 @@ missions.register_step({
 		return {title="", message=""}
 	end,
 
-
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Show a message]" ..
