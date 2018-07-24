@@ -77,7 +77,7 @@ missions.register_step({
 			return {
 				success=false,
 				failed=true,
-				msg="Chest has not space for items: " .. stepdata.stack ..
+				msg="Chest has no space for items: " .. stepdata.stack ..
 					" chest-location: " .. stepdata.pos.x .. "/" .. stepdata.pos.y .. "/" .. stepdata.pos.z
 			}
 		end
