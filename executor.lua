@@ -1,21 +1,49 @@
 
 local MISSION_ATTRIBUTE_NAME = "currentmission"
+local CURRENT_MISSION_SPEC_VERSION = 1
 
 local playermissions = {}
 
---TODO: load missions from persistent store
+--persistence stuff
+
+minetest.register_on_joinplayer(function(player)
+	local missionStr = player:get_attribute(MISSION_ATTRIBUTE_NAME)
+
+	local mission = nil
+	if missionStr then
+		mission = minetest.deserialize(missionStr)
+	end
+
+	if mission and mission.version == CURRENT_MISSION_SPEC_VERSION then
+		-- only load if compatible with current spec
+		local step = mission.steps[mission.currentstep]
+		
+		-- reset init flag
+		step.initialized = false
+
+		-- store in variable
+		playermissions[player:get_player_name()] = mission
+	end
+end)
+
+minetest.register_on_leaveplayer(function(player)
+	playermissions[player:get_player_name()] = nil
+end)
 
 local get_current_mission = function(player)
-	-- load current mission from memory
 	return playermissions[player:get_player_name()]
 end
 
+local persist_mission = function(player, mission)
+	player:set_attribute(MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
+end
+
+
 local set_current_mission = function(player, mission)
-	--TODO: persistence
-	-- player:set_attribute(MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
 	playermissions[player:get_player_name()] = mission
 end
 
+-- start a mission
 missions.start = function(pos, player)
 	local mission = get_current_mission(player)
 	local playername = player:get_player_name()
@@ -34,6 +62,7 @@ missions.start = function(pos, player)
 	local meta = minetest.get_meta(pos)
 
 	mission = {
+		version = CURRENT_MISSION_SPEC_VERSION,
 		steps = steps,
 		currentstep = 1,
 		start = os.time(os.date("!*t")),
@@ -45,6 +74,7 @@ missions.start = function(pos, player)
 	set_current_mission(player, mission)
 end
 
+-- update the mission
 local update_mission = function(mission, player)
 
 	local now = os.time(os.date("!*t"))
@@ -123,17 +153,30 @@ local update_mission = function(mission, player)
 		end
 		return
 	end
-
-	
 end
 
+-- mission persist job
+local persistTimer = 0
+minetest.register_globalstep(function(dtime)
+	persistTimer = persistTimer + dtime;
+	if persistTimer >= 5 then
+		local players = minetest.get_connected_players()
+		for i,player in ipairs(players) do
+			local mission = get_current_mission(player)
+			persist_mission(player, mission)
+		end
 
+		persistTimer = 0
+	end
+end)
+
+-- mission update step
 local timer = 0
 minetest.register_globalstep(function(dtime)
 	timer = timer + dtime;
 	if timer >= 0.5 then
 		local players = minetest.get_connected_players()
-		for i,player in pairs(players) do
+		for i,player in ipairs(players) do
 			local playername = player:get_player_name()
 			local mission = get_current_mission(player)
 

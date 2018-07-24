@@ -1,14 +1,5 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
--- running player missions
-missions.save_missions = function()
-	-- TODO
-end
-
-missions.load_missions = function()
-	-- TODO
-end
-
 missions.check_owner = function(pos, player)
 	local meta = minetest.get_meta(pos)
 	return player and player:is_player() and player:get_player_name() == meta:get_string("owner")
