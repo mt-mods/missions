@@ -1,4 +1,31 @@
 
+local get_inv_name = function(player)
+	return "mission_chestput_" .. player:get_player_name()
+end
+
+local get_inv = function(player)
+	return minetest.get_inventory({type="detached",name=get_inv_name(player)})
+end
+
+
+-- setup detached inv
+minetest.register_on_joinplayer(function(player)
+	local playername = player:get_player_name()
+	local inv = minetest.create_detached_inventory(get_inv_name(player), {
+		on_put = function(inv, listname, index, stack, player)
+			-- copy stack
+			local playerInv = player:get_inventory()
+			playerInv:add_item("main", stack)
+		end,
+		allow_take = function(inv, listname, index, stack, player)
+			-- remove from det inv
+			inv:remove_item("main", stack)
+			-- give player nothing
+			return 0
+		end
+	})
+	inv:set_size("main", 1)
+end)
 
 missions.register_step({
 
@@ -9,10 +36,19 @@ missions.register_step({
 		return {count=1, name="default:cobble"}
 	end,
 
+	validate = function(pos, node, player, step, stepdata)
+		-- TODO
+	end,
+
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
+		--TODO: populate inv
+
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Put items in chest]" ..
-	
+			"list[detached:" .. get_inv_name(player) .. ";main;0,1;1,1;]" ..
+			--"button_exit[1,1;4,1;read;Read items]" ..
+
+			"list[current_player;main;0,6;8,1;]" ..
 			"button_exit[0,7;8,1;save;Save]"
 
 		return formspec;
@@ -20,6 +56,9 @@ missions.register_step({
 
 	update = function(fields, player, step, stepdata, show_editor, show_mission)
 		--TODO
+
+		if fields.read then
+		end
 
 		if fields.save then
 			show_mission()

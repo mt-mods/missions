@@ -19,6 +19,17 @@ minetest.register_on_joinplayer(function(player)
 			end
 
 			return 0
+		end,
+		on_put = function(inv, listname, index, stack, player)
+			-- copy stack
+			local playerInv = player:get_inventory()
+			playerInv:add_item("main", stack)
+		end,
+		allow_take = function(inv, listname, index, stack, player)
+			-- remove from det inv
+			inv:remove_item("main", stack)
+			-- give player nothing
+			return 0
 		end
 	})
 	inv:set_size("main", 1)
@@ -64,7 +75,6 @@ missions.register_step({
 			"label[0,0;Walk to (Step #" .. stepnumber .. ")]" ..
 
 			"list[detached:" .. get_inv_name(player) .. ";main;0,1;1,1;]" ..
-			"button_exit[1,1;4,1;read;Read position]" ..
 
 			--TODO: escape
 			"label[0,2;" .. name .. "]" ..
@@ -103,7 +113,7 @@ missions.register_step({
 			stepdata.description = fields.description
 		end
 
-		if fields.read then
+		if fields.save then
 			local inv = get_inv(player)
 			local stack = inv:get_stack("main", 1)
 
@@ -114,19 +124,8 @@ missions.register_step({
 
 				stepdata.pos = pos
 				stepdata.name = name
-
-
-				--move item back to user
-				inv:remove_item("main", stack)
-
-				local playerInv = player:get_inventory()
-				playerInv:add_item("main", stack)
 			end
 
-			show_editor()
-		end
-
-		if fields.save then
 			show_mission()
 		end
 	end,

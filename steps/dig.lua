@@ -4,7 +4,7 @@ local counter = {} -- playername -> count
 missions.register_step({
 
 	type = "simpledig",
-	name = "Dig nodes",
+	name = "Dig any nodes",
 
 	create = function()
 		return {count=100}
