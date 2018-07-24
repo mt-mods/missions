@@ -1,6 +1,6 @@
 
 local get_inv_name = function(player)
-	return "mission_chestreward_" .. player:get_player_name()
+	return "mission_givereward_" .. player:get_player_name()
 end
 
 local get_inv = function(player)
@@ -47,62 +47,25 @@ end)
 
 missions.register_step({
 
-	type = "chestreward",
-	name = "Reward from chest",
+	type = "givereward",
+	name = "Reward (give)",
+
+	privs = { give=true },
 
 	create = function()
-		return {stack="", pos=nil}
-	end,
-
-	validate = function(pos, step, stepdata)
-		local meta = minetest.get_meta(stepdata.pos)
-		local inv = meta:get_inventory()
-
-		local removeStack = ItemStack(stepdata.stack)
-
-		if stepdata.pos == nil then
-			return {
-				success=false,
-				failed=true,
-				msg="No position defined"
-			}
-		end
-
-		if inv:contains_item("main", removeStack) then
-			return {success=true}
-		else
-			return {
-				success=false,
-				failed=true,
-				msg="Chest does not contain the items: " .. stepdata.stack ..
-					" chest-location: " .. stepdata.pos.x .. "/" .. stepdata.pos.y .. "/" .. stepdata.pos.z
-			}
-		end
+		return {stack=""}
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
 		local inv = get_inv(player)
 		inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
-		local name = ""
-
-		if stepdata.pos then
-			local distance = vector.distance(pos, stepdata.pos)
-			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
-				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
-				"Distance: " .. math.floor(distance) .. " m"
-		end
 
 		local formspec = "size[8,8;]" ..
-			"label[0,0;Give items from chest]" ..
+			"label[0,0;Reward items (give)]" ..
 
 			"label[0,1;Items]" ..
 			"list[detached:" .. get_inv_name(player) .. ";main;2,1;1,1;]" ..
-
-			"label[3,1;Target]" ..
-			"list[detached:" .. get_inv_name(player) .. ";target;4,1;1,1;]" ..
-
-			"label[0,2;" .. name .. "]" ..
 
 			"list[current_player;main;0,6;8,1;]" ..
 			"button_exit[0,7;8,1;save;Save]"
@@ -120,34 +83,14 @@ missions.register_step({
 				stepdata.stack = stack:to_string()
 			end
 
-			stack = inv:get_stack("target", 1)
-
-			if not stack:is_empty() then
-				local meta = stack:get_meta()
-				local pos = minetest.string_to_pos(meta:get_string("pos"))
-
-				stepdata.pos = pos
-			end
-
 			show_mission()
 		end
 	end,
 
 	on_step_enter = function(step, stepdata, player, success, failed)
-		local meta = minetest.get_meta(stepdata.pos)
-		local inv = meta:get_inventory()
-
-		local removeStack = ItemStack(stepdata.stack)
-
-		if inv:contains_item("main", removeStack) then
-			removeStack = inv:remove_item("main", removeStack)
-			local player_inv = player:get_inventory()
-			player_inv:add_item("main", removeStack)
-			success()
-		else
-			failed("Items not available in chest: " .. stepdata.stack)
-		end
-
+		local player_inv = player:get_inventory()
+		player_inv:add_item("main", ItemStack(stepdata.stack))
+		success()
 	end
 
 })

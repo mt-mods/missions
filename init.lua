@@ -33,6 +33,7 @@ dofile(MP.."/steps/dig.lua")
 dofile(MP.."/steps/build.lua")
 dofile(MP.."/steps/chestput.lua")
 dofile(MP.."/steps/chestreward.lua")
+dofile(MP.."/steps/givereward.lua")
 dofile(MP.."/steps/message.lua")
 
 if has_xp_redo_mod then

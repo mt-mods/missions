@@ -20,6 +20,7 @@ Supported mission-steps:
 * Put items in Chest
 * Waypoint (hidden and visible in hud)
 * Reward player with items from a chest
+* Reward player with items (mission-build must have the **give** priv)
 * Message (show a message with a title)
 
 Extended mission-steps (dependent on other mods):
