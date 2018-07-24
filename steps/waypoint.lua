@@ -30,7 +30,11 @@ missions.register_step({
 	name = "Waypoint",
 
 	create = function()
-		return {pos=nil, name=""}
+		return {pos=nil, name="", radius=3, visible=1, description=""}
+	end,
+
+	get_status = function(step, stepdata, player)
+		return stepdata.description
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
@@ -48,6 +52,14 @@ missions.register_step({
 			name = name .. " with name '" .. stepdata.name .. "'"
 		end
 
+		local visibleText
+
+		if stepdata.visible == 1 then
+			visibleText = "Waypoint: Visible"
+		else
+			visibleText = "Waypoint: Hidden"
+		end
+
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Walk to (Step #" .. stepnumber .. ")]" ..
 
@@ -57,13 +69,40 @@ missions.register_step({
 			--TODO: escape
 			"label[0,2;" .. name .. "]" ..
 
-			"list[current_player;main;0,3;8,1;]" ..
+			"field[0,3;8,1;description;Description;" .. stepdata.description .. "]" ..
+
+			"field[0,4;4,1;radius;Radius;" .. stepdata.radius .. "]" ..
+			"button_exit[0,5;8,1;togglevisible;" .. visibleText .. "]" ..
+
+			"list[current_player;main;0,6;8,1;]" ..
 			"button_exit[0,7;8,1;save;Save]"
 
 		return formspec;
 	end,
 
 	update = function(fields, player, step, stepdata, show_editor, show_mission)
+
+		if fields.radius then
+			local radius = tonumber(fields.radius)
+			if radius and radius > 0 then
+				stepdata.radius = radius
+			end
+		end
+
+		if fields.togglevisible then
+			if stepdata.visible == 1 then
+				stepdata.visible = 0
+			else
+				stepdata.visible = 1
+			end
+
+			show_editor()
+		end
+
+		if fields.description then
+			stepdata.description = fields.description
+		end
+
 		if fields.read then
 			local inv = get_inv(player)
 			local stack = inv:get_stack("main", 1)
@@ -93,20 +132,22 @@ missions.register_step({
 	end,
 
 	on_step_enter = function(step, stepdata, player, success, failed)
-		hud[player:get_player_name()] = player:hud_add({
-			hud_elem_type = "waypoint",
-			name = "Mission-waypoint: " .. stepdata.name,
-			text = "m",
-			number = 0xFF0000,
-			world_pos = stepdata.pos
-		})
+		if stepdata.visible == 1 then
+			hud[player:get_player_name()] = player:hud_add({
+				hud_elem_type = "waypoint",
+				name = "Mission-waypoint: " .. stepdata.name,
+				text = "m",
+				number = 0xFF0000,
+				world_pos = stepdata.pos
+			})
+		end
 	end,
 
 	on_step_interval = function(step, stepdata, player, success, failed)
 		local pos = player:get_pos()
 
 		local distance = vector.distance(player:get_pos(), stepdata.pos)
-		if distance < 3 then
+		if distance < stepdata.radius then
 			success()
 		end
 	end,
