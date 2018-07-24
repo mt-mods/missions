@@ -66,7 +66,12 @@ missions.register_step({
 	end,
 
 	validate = function(pos, node, player, step, stepdata)
-		-- TODO
+		local meta = minetest.get_meta(stepdata.pos)
+		local inv = meta:get_inventory()
+
+		local removeStack = ItemStack(stepdata.stack)
+
+		return inv:room_for_item("main", removestack)
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
