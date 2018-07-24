@@ -34,6 +34,20 @@ missions.register_step({
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
+
+		local name = ""
+
+		if stepdata.pos then
+			local distance = vector.distance(pos, stepdata.pos)
+			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
+				"Distance: " .. math.floor(distance) .. " m"
+		end
+
+		if stepdata.name then
+			name = name .. " with name '" .. stepdata.name .. "'"
+		end
+
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Walk to (Step #" .. stepnumber .. ")]" ..
 
@@ -41,7 +55,7 @@ missions.register_step({
 			"button_exit[1,1;4,1;read;Read position]" ..
 
 			--TODO: escape
-			"label[0,2;" .. stepdata.name .. "]" ..
+			"label[0,2;" .. name .. "]" ..
 
 			"list[current_player;main;0,3;8,1;]" ..
 			"button_exit[0,7;8,1;save;Save]"
