@@ -5,15 +5,35 @@ missions.check_owner = function(pos, player)
 	return player and player:is_player() and player:get_player_name() == meta:get_string("owner")
 end
 
+local SECONDS_IN_DAY = 3600*24
+local SECONDS_IN_HOUR = 3600
+local SECONDS_IN_MINUTE = 60
+
 missions.format_time = function(seconds)
-	local minutes = math.floor(seconds / 60)
-	local secs = seconds - (minutes * 60)
-	if secs < 10 then
-		return minutes .. ":0" .. secs
-	else
-		return minutes .. ":" ..secs
+	local str = ""
+
+
+	if seconds >= SECONDS_IN_DAY then
+		local days = math.floor(seconds / SECONDS_IN_DAY)
+		str = str .. days .. " d "
+		seconds = seconds - (days * SECONDS_IN_DAY)
 	end
-	--TODO: hours/days
+
+	if seconds >= SECONDS_IN_HOUR then
+		local hours = math.floor(seconds / SECONDS_IN_HOUR)
+		str = str .. hours .. " h "
+		seconds = seconds - (hours * SECONDS_IN_HOUR)
+	end
+
+	if seconds >= SECONDS_IN_MINUTE then
+		local minutes = math.floor(seconds / SECONDS_IN_MINUTE)
+		str = str .. minutes .. " min "
+		seconds = seconds - (minutes * SECONDS_IN_MINUTE)
+	end
+
+	str = str .. seconds .. " s"
+
+	return str
 end
 
 -- mission steps setter/getter

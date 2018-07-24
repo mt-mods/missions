@@ -5,7 +5,7 @@ missions.form.missionblock_user = function(pos, node, player)
 
 	local meta = minetest.get_meta(pos)
 	local name = meta:get_string("name")
-	local time = meta:get_string("time")
+	local time = meta:get_int("time")
 	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
 
