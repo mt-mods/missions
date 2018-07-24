@@ -11,7 +11,7 @@ missions.form.newstep = function(pos, node, player)
 			"button_exit[0," .. i-1+offset .. ";4,1;" .. spec.type .. ";" .. spec.name .. "]"
 	end
 
-	local formspec = "size[8,8;]" ..
+	local formspec = "size[8,10;]" ..
 		"label[0,0;New step]" ..
 		step_buttons
 
