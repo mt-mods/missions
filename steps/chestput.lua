@@ -65,13 +65,23 @@ missions.register_step({
 		return status
 	end,
 
-	validate = function(pos, node, player, step, stepdata)
+	validate = function(pos, step, stepdata)
 		local meta = minetest.get_meta(stepdata.pos)
 		local inv = meta:get_inventory()
 
 		local removeStack = ItemStack(stepdata.stack)
 
-		return inv:room_for_item("main", removestack)
+		if inv:room_for_item("main", removeStack) then
+			return {success=true}
+		else
+			return {
+				success=false,
+				failed=true,
+				msg="Chest has not space for items: " .. stepdata.stack ..
+					" chest-location: " .. stepdata.pos.x .. "/" .. stepdata.pos.y .. "/" .. stepdata.pos.z
+			}
+		end
+
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)

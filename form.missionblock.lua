@@ -43,7 +43,7 @@ missions.form.missionblock = function(pos, node, player)
 		"field[8,1;8,1;name;Name;" .. name ..  "]" ..
 		"field[8,2;8,1;time;Time (seconds);" .. time ..  "]" ..
 		"textarea[8,3;8,5;description;Description;" .. description .. "]" ..
-		"button_exit[0,7;16,1;save;Save]"
+		"button_exit[0,7;16,1;save;Save and validate]"
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),
@@ -153,6 +153,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if parts[1] == "CHG" then
 			local selected_step = tonumber(parts[2])
 			meta:set_int("selected_step", selected_step)
+		end
+	end
+
+	if fields.save then
+		local result = missions.validate_mission(pos, player)
+		if result.success then
+			minetest.chat_send_player(player:get_player_name(), "Mission valid")
+		else
+			minetest.chat_send_player(player:get_player_name(), "Mission invalid: " .. result.msg)
 		end
 	end
 

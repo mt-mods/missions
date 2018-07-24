@@ -38,7 +38,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 
 	if fields.start then
-		missions.start(pos, player)
+		local result = missions.validate_mission(pos, player)
+
+		if not result.success then
+			minetest.chat_send_player(player:get_player_name(), "Mission invalid: " .. result.msg)
+		else
+			missions.start(pos, player)
+		end
 	end
 
 

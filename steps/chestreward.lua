@@ -54,13 +54,22 @@ missions.register_step({
 		return {stack="", pos=nil}
 	end,
 
-	validate = function(pos, node, player, step, stepdata)
+	validate = function(pos, step, stepdata)
 		local meta = minetest.get_meta(stepdata.pos)
 		local inv = meta:get_inventory()
 
 		local removeStack = ItemStack(stepdata.stack)
 
-		return inv:contains_item("main", removestack)
+		if inv:contains_item("main", removeStack) then
+			return {success=true}
+		else
+			return {
+				success=false,
+				failed=true,
+				msg="Chest does not contain the items: " .. stepdata.stack ..
+					" chest-location: " .. stepdata.pos.x .. "/" .. stepdata.pos.y .. "/" .. stepdata.pos.z
+			}
+		end
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)

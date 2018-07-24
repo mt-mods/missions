@@ -14,6 +14,7 @@ dofile(MP.."/form.wand.lua")
 
 
 dofile(MP.."/functions.lua")
+dofile(MP.."/validate.lua")
 dofile(MP.."/register.lua")
 dofile(MP.."/hud.lua")
 dofile(MP.."/block.lua")
