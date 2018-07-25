@@ -8,7 +8,7 @@ Adds a mission block to create missions and a mission-wand to mark positions and
 * Forum Topic: [https://forum.minetest.net/viewtopic.php?f=9&t=20125](https://forum.minetest.net/viewtopic.php?f=9&t=20125)
 
 Obligatory screenshot
-![](screenshots/screenshot_20180724_205804.png?raw=true)
+![](screenshots/intro.png?raw=true)
 
 Features:
 * In-game mission builder
