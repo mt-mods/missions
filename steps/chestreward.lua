@@ -60,6 +60,22 @@ missions.register_step({
 
 		local removeStack = ItemStack(stepdata.stack)
 
+		local chest_owner = missions.get_owner_from_pos(stepdata.pos)
+
+		if chest_owner and chest_owner ~= "" then
+			-- check if the chest is owned by the same player as the mission
+			local mission_owner = missions.get_owner_from_pos(pos)
+
+			if mission_owner ~= chest_owner then
+				return {
+					success=false,
+					failed=true,
+					msg="Chest does not belong to the owner of the mission: " .. chest_owner ..
+						" chest-location: " .. stepdata.pos.x .. "/" .. stepdata.pos.y .. "/" .. stepdata.pos.z
+				}
+			end
+		end
+
 		if stepdata.pos == nil then
 			return {
 				success=false,

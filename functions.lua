@@ -9,6 +9,11 @@ local SECONDS_IN_DAY = 3600*24
 local SECONDS_IN_HOUR = 3600
 local SECONDS_IN_MINUTE = 60
 
+missions.get_owner_from_pos = function(pos)
+	local meta = minetest.get_meta(pos)
+	return meta:get_string("owner")
+end
+
 missions.format_time = function(seconds)
 	local str = ""
 
