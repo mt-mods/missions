@@ -6,6 +6,16 @@ missions.validate_mission = function(pos, player)
 
 		local spec = missions.get_step_spec_by_type(step.type)
 
+		if not spec then
+			return {
+				msg="Validation failed in step " .. i ..
+					" on mission: " .. pos.x .. "/" .. pos.y .. "/" .. pos.z ..
+					" the step has no spec (specification): " .. step.type,
+				success=false,
+				failed=true
+			}
+		end
+
 		if spec.validate then
 			local result = spec.validate(pos, step, step.data)
 
