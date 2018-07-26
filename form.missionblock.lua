@@ -76,7 +76,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.add then
-		missions.form.newstep(pos, node, player)
+		minetest.after(0.1, function()
+			missions.form.newstep(pos, node, player)
+		end)
 		return true
 	end
 
@@ -86,7 +88,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		table.remove(steps, selected_step)
 		missions.set_steps(pos, steps)
 
-		missions.form.missionblock(pos, node, player)
+		minetest.after(0.1, function()
+			missions.form.missionblock(pos, node, player)
+		end)
 		return true
 	end
 
@@ -98,7 +102,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		if step then
 			local stepdata = step.data
-			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			minetest.after(0.1, function()
+				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			end)
 			return true
 		end
 	end
@@ -126,7 +132,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step - 1)
 		end
 
-		missions.form.missionblock(pos, node, player)
+		minetest.after(0.1, function()
+			missions.form.missionblock(pos, node, player)
+		end)
 		return true
 	end
 
@@ -141,12 +149,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step + 1)
 		end
 
-		missions.form.missionblock(pos, node, player)
+		minetest.after(0.1, function()
+			missions.form.missionblock(pos, node, player)
+		end)
 		return true
 	end
 
 	if fields.user then
-		missions.form.missionblock_user(pos, node, player)
+		minetest.after(0.1, function()
+			missions.form.missionblock_user(pos, node, player)
+		end)
 		return true
 	end
 
