@@ -88,11 +88,6 @@ missions.get_image = function(name)
 		return ""
 	end
 
-	local node = minetest.registered_nodes[name]
-	if node ~= nil and node.tiles ~= nil and table.getn(node.tiles) == 1 then
-		return minetest.inventorycube(node.tiles[1],node.tiles[1],node.tiles[1])
-	end
-
 	local item = minetest.registered_items[name]
 	if item ~= nil and item.inventory_image ~= nil then
 		return item.inventory_image
@@ -101,6 +96,11 @@ missions.get_image = function(name)
 	local tool = minetest.registered_tools[name]
 	if tool ~= nil and tool.inventory_image ~= nil then
 		return tool.inventory_image
+	end
+
+	local node = minetest.registered_nodes[name]
+	if node ~= nil and node.tiles ~= nil and table.getn(node.tiles) == 1 then
+		return minetest.inventorycube(node.tiles[1],node.tiles[1],node.tiles[1])
 	end
 
 	-- none found
