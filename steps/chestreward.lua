@@ -1,49 +1,6 @@
 
-local get_inv_name = function(player)
-	return "mission_chestreward_" .. player:get_player_name()
-end
-
-local get_inv = function(player)
-	return minetest.get_inventory({type="detached",name=get_inv_name(player)})
-end
 
 local hud = {} -- playerName -> {}
-local remainingItems = {} -- playerName -> ItemStack
-
--- setup detached inv
-minetest.register_on_joinplayer(function(player)
-	local playername = player:get_player_name()
-	local inv = minetest.create_detached_inventory(get_inv_name(player), {
-		allow_put = function(inv, listname, index, stack, player)
-			if not inv:is_empty(listname) then
-				return 0
-			end
-
-			if listname == "target" and stack:get_name() == "missions:wand_chest" then
-				return stack:get_count()
-			end
-
-			if listname == "main" then
-				return stack:get_count()
-			end
-
-			return 0
-		end,
-		allow_take = function(inv, listname, index, stack, player)
-			-- remove from det inv
-			inv:remove_item(listname, stack)
-			-- give player nothing
-			return 0
-		end,
-		on_put = function(inv, listname, index, stack, player)
-			-- copy stack
-			local playerInv = player:get_inventory()
-			playerInv:add_item("main", stack)
-		end,
-	})
-	inv:set_size("main", 1)
-	inv:set_size("target", 1)
-end)
 
 missions.register_step({
 
@@ -96,8 +53,22 @@ missions.register_step({
 		end
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
-		local inv = get_inv(player)
+	allow_inv_stack_put = function(listname, index, stack)
+		-- allow position wand on pos 1 of main inv
+		if listname == "main" then
+			if index == 2 and stack:get_name() == "missions:wand_chest" then
+				return true
+			end
+
+			if index == 1 then
+				return true
+			end
+		end
+
+		return false
+	end,
+
+	edit_formspec = function(pos, node, player, stepnumber, step, stepdata, inv)
 		inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
 		local name = ""
@@ -113,10 +84,10 @@ missions.register_step({
 			"label[0,0;Give items from chest]" ..
 
 			"label[0,1;Items]" ..
-			"list[detached:" .. get_inv_name(player) .. ";main;2,1;1,1;]" ..
+			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;2,1;1,1;0]" ..
 
 			"label[3,1;Target]" ..
-			"list[detached:" .. get_inv_name(player) .. ";target;4,1;1,1;]" ..
+			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;4,1;1,1;1]" ..
 
 			"label[0,2;" .. name .. "]" ..
 
@@ -126,17 +97,16 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission)
+	update = function(fields, player, step, stepdata, show_editor, show_mission, inv)
 
 		if fields.save then
-			local inv = get_inv(player)
 			local stack = inv:get_stack("main", 1)
 
 			if not stack:is_empty() then
 				stepdata.stack = stack:to_string()
 			end
 
-			stack = inv:get_stack("target", 1)
+			stack = inv:get_stack("main", 2)
 
 			if not stack:is_empty() then
 				local meta = stack:get_meta()
