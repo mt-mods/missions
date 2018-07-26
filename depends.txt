@@ -1,3 +1,7 @@
 default
 xp_redo?
 more_chests?
+mob_redo?
+mobs_animal?
+mobs_monster?
+mobs_horse?

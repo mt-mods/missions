@@ -46,7 +46,7 @@ missions.get_steps = function(pos)
 	local meta = minetest.get_meta(pos)
 	local steps = minetest.deserialize(meta:get_string("steps"))
 
-	return steps	
+	return steps
 end
 
 missions.set_steps = function(pos, steps)

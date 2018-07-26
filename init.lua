@@ -1,4 +1,5 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
+local has_mobs_mod = minetest.get_modpath("mobs")
 
 local MP = minetest.get_modpath("missions")
 
@@ -42,5 +43,9 @@ if has_xp_redo_mod then
 	dofile(MP.."/steps/givexp.lua")
 end
 
+if has_mobs_mod then
+	dofile(MP.."/steps/spawnmob.lua")
+end
 
 print("[OK] Missions")
+
