@@ -53,15 +53,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	for i,spec in ipairs(missions.steps) do
 		if spec.type == spectype then
 			local show_editor = function()
-				minetest.after(0.1, function()
-					missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
-				end)
+				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
 			end
 
 			local show_mission = function()
-				minetest.after(0.1, function()
-					missions.form.missionblock(pos, node, player)
-				end)
+				missions.form.missionblock(pos, node, player)
 			end
 
 			spec.update(fields, player, step, stepdata, show_editor, show_mission)

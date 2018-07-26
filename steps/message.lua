@@ -32,6 +32,7 @@ missions.register_step({
 			stepdata.message = fields.message
 		end
 
+		show_mission()
 	end,
 
 	on_step_enter = function(step, stepdata, player, success, failed)

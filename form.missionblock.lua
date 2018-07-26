@@ -22,8 +22,10 @@ missions.form.missionblock = function(pos, node, player)
 	-- steps list
 	local steps_list = "textlist[0,1;5,6;steps;"
 	for i,step in ipairs(steps) do
-		--TODO: escape
-		steps_list = steps_list .. i .. ": " .. step.name .. ","
+		steps_list = steps_list .. i .. ": " .. minetest.formspec_escape(step.name)
+		if i < #steps then
+			steps_list = steps_list .. ","
+		end
 	end
 	steps_list = steps_list .. ";" .. selected_step .. "]";
 
@@ -70,9 +72,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.add then
-		minetest.after(0.1, function()
-			missions.form.newstep(pos, node, player)
-		end)
+		missions.form.newstep(pos, node, player)
+		return true
 	end
 
 	if fields.remove then
@@ -81,9 +82,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		table.remove(steps, selected_step)
 		missions.set_steps(pos, steps)
 
-		minetest.after(0.1, function()
-			missions.form.missionblock(pos, node, player)
-		end)
+		missions.form.missionblock(pos, node, player)
+		return true
 	end
 
 	if fields.edit then
@@ -94,9 +94,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		if step then
 			local stepdata = step.data
-			minetest.after(0.1, function()
-				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
-			end)
+			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			return true
 		end
 	end
 
@@ -123,9 +122,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step - 1)
 		end
 
-		minetest.after(0.1, function()
-			missions.form.missionblock(pos, node, player)
-		end)
+		missions.form.missionblock(pos, node, player)
+		return true
 	end
 
 	if fields.down then
@@ -139,15 +137,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step + 1)
 		end
 
-		minetest.after(0.1, function()
-			missions.form.missionblock(pos, node, player)
-		end)
+		missions.form.missionblock(pos, node, player)
+		return true
 	end
 
 	if fields.user then
-		minetest.after(0.1, function()
-			missions.form.missionblock_user(pos, node, player)
-		end)
+		missions.form.missionblock_user(pos, node, player)
+		return true
 	end
 
 	if fields.steps then
