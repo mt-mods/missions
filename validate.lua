@@ -17,7 +17,10 @@ missions.validate_mission = function(pos, player)
 		end
 
 		if spec.validate then
-			local result = spec.validate(pos, step, step.data)
+			local result = spec.validate({
+				pos=pos,
+				step=step
+			})
 
 			if result and result.failed then
 				return {

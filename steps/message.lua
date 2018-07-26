@@ -12,7 +12,9 @@ missions.register_step({
 		return {title="", message=""}
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
+	edit_formspec = function(ctx)
+		local stepdata = ctx.step.data
+
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Show a message]" ..
 	
@@ -23,7 +25,10 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission)
+	update = function(ctx)
+		local fields = ctx.fields
+		local stepdata = ctx.step.data
+
 		if fields.title then
 			stepdata.title = fields.title
 		end
@@ -32,10 +37,13 @@ missions.register_step({
 			stepdata.message = fields.message
 		end
 
-		show_mission()
+		ctx.show_mission()
 	end,
 
-	on_step_enter = function(step, stepdata, player, success, failed)
+	on_step_enter = function(ctx)
+		local player = ctx.player
+		local stepdata = ctx.data.data
+
 		markers[player:get_player_name()] = false
 
 		local formspec = "size[8,8;]" ..
@@ -46,13 +54,16 @@ missions.register_step({
 		minetest.show_formspec(player:get_player_name(), FORMNAME, formspec)
 	end,
 
-	on_step_interval = function(step, stepdata, player, success, failed)
+	on_step_interval = function(ctx)
+		local player = ctx.player
+
 		if markers[player:get_player_name()] then
-			success()
+			ctx.on_success()
 		end
 	end,
 
-	on_step_exit = function(step, stepdata, player)
+	on_step_exit = function(ctx)
+		local player = ctx.player
 		markers[player:get_player_name()] = false
 	end
 

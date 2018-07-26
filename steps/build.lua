@@ -11,14 +11,19 @@ missions.register_step({
 	end,
 
 
-	get_status = function(step, stepdata, player)
+	get_status = function(ctx)
+		local player = ctx.player
+		local stepdata = ctx.step.data
+
 		local name = player:get_player_name()
 		local current_count = counter[name] or 0
 		local rest = stepdata.count - (current_count - stepdata.start)
 		return "Place " .. rest .. " nodes"
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
+	edit_formspec = function(ctx)
+		local stepdata = ctx.step.data
+
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Place any nodes]" ..
 	
@@ -28,7 +33,10 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission)
+	update = function(ctx)
+		local fields = ctx.fields
+		local stepdata = ctx.step.data
+
 		if fields.count then
 			local count = tonumber(fields.count)
 			if count and count > 0 then
@@ -37,24 +45,30 @@ missions.register_step({
 		end
 
 		if fields.save then
-			show_mission()
+			ctx.show_mission()
 		end
 	end,
 
-	on_step_enter = function(step, stepdata, player, success, failed)
+	on_step_enter = function(ctx)
+		local player = ctx.player
+		local stepdata = ctx.data.data
+
 		local name = player:get_player_name()
 		stepdata.start = counter[name] or 0
 	end,
 
-	on_step_interval = function(step, stepdata, player, success, failed)
+	on_step_interval = function(ctx)
+		local player = ctx.player
+		local stepdata = ctx.step.data
+
 		local name = player:get_player_name()
 		local current_count = counter[name] or 0
 		if current_count - stepdata.start >= stepdata.count then
-			success()
+			ctx.on_success()
 		end
 	end,
 
-	on_step_exit = function(step, stepdata, player)
+	on_step_exit = function(ctx)
 	end
 
 

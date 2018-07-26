@@ -11,7 +11,10 @@ missions.register_step({
 		return {stack="", pos=nil}
 	end,
 
-	validate = function(pos, step, stepdata)
+	validate = function(ctx)
+		local pos = ctx.pos
+		local stepdata = ctx.step.data
+
 		local meta = minetest.get_meta(stepdata.pos)
 		local inv = meta:get_inventory()
 
@@ -68,7 +71,10 @@ missions.register_step({
 		return false
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata, inv)
+	edit_formspec = function(ctx)
+		local pos = ctx.pos
+		local stepdata = ctx.data.step
+
 		inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
 		local name = ""
@@ -97,7 +103,10 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission, inv)
+	update = function(ctx)
+		local fields = ctx.fields
+		local inv = ctx.inv
+		local stepdata = ctx.step.data
 
 		if fields.save then
 			local stack = inv:get_stack("main", 1)
@@ -115,11 +124,14 @@ missions.register_step({
 				stepdata.pos = pos
 			end
 
-			show_mission()
+			ctx.show_mission()
 		end
 	end,
 
-	on_step_enter = function(step, stepdata, player, success, failed)
+	on_step_enter = function(ctx)
+		local stepdata = ctx.step.data
+		local palyer = ctx.player
+
 		local meta = minetest.get_meta(stepdata.pos)
 		local inv = meta:get_inventory()
 
@@ -129,9 +141,9 @@ missions.register_step({
 			removeStack = inv:remove_item("main", removeStack)
 			local player_inv = player:get_inventory()
 			player_inv:add_item("main", removeStack)
-			success()
+			ctx.on_success()
 		else
-			failed("Items not available in chest: " .. stepdata.stack)
+			ctx.on_failed("Items not available in chest: " .. stepdata.stack)
 		end
 
 	end

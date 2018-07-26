@@ -10,7 +10,10 @@ missions.register_step({
 		return {xp=100}
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
+	edit_formspec = function(ctx)
+		local stepnumber = ctx.stepnumber
+		local stepdata = ctx.step.data
+
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Give XP (Step #" .. stepnumber .. ")]" ..
 	
@@ -20,7 +23,10 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission)
+	update = function(ctx)
+		local fields = ctx.fields
+		local stepdata = ctx.step.data
+
 		if fields.xp then
 			local xp = tonumber(fields.xp)
 			if xp and xp > 0 then
@@ -29,13 +35,16 @@ missions.register_step({
 		end
 
 		if fields.save then
-			show_mission()
+			ctx.show_mission()
 		end
 	end,
 
-	on_step_enter = function(step, stepdata, player, success, failed)
+	on_step_enter = function(ctx)
+		local player = ctx.player
+		local stepdata = ctx.step.data
+
 		xp_redo.add_xp(player:get_player_name(), stepdata.xp)
-		success()
+		ctx.on_success()
 	end
 
 })

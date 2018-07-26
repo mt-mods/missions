@@ -106,7 +106,10 @@ local update_mission = function(mission, player)
 		set_current_mission(player, nil)
 		missions.hud_update_status(player, "")
 		if spec.on_step_exit then
-			spec.on_step_exit(step, step.data, player)
+			spec.on_step_exit({
+				step=step,
+				player=player
+			})
 		end
 	end
 
@@ -118,7 +121,12 @@ local update_mission = function(mission, player)
 
 	if not step.initialized then
 		if spec.on_step_enter then
-			spec.on_step_enter(step, step.data, player, on_success, on_failed)
+			spec.on_step_enter({
+				player=player,
+				step=step,
+				on_success=on_success,
+				on_failed=on_failed
+			})
 		end
 		step.initialized = true
 	end
@@ -129,7 +137,12 @@ local update_mission = function(mission, player)
 
 	if not success then
 		if spec.on_step_interval then
-			spec.on_step_interval(step, step.data, player, on_success, on_failed)
+			spec.on_step_interval({
+				player=player,
+				step=step,
+				on_success=on_success,
+				on_failed=on_failed
+			})
 		end
 	end
 
@@ -139,7 +152,10 @@ local update_mission = function(mission, player)
 
 
 	if spec.get_status then
-		local status = spec.get_status(step, step.data, player)
+		local status = spec.get_status({
+			player=player,
+			step=step
+		})
 		missions.hud_update_status(player, status)
 	else
 		missions.hud_update_status(player, "")
@@ -149,7 +165,10 @@ local update_mission = function(mission, player)
 	if success then
 		mission.currentstep = mission.currentstep + 1
 		if spec.on_step_exit then
-			spec.on_step_exit(step, step.data, player)
+			spec.on_step_exit({
+				step=step,
+				player=player
+			})
 		end
 		return
 	end

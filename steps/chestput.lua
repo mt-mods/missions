@@ -17,7 +17,9 @@ missions.register_step({
 		return {stack="", pos=nil, name="", visible=1}
 	end,
 
-	get_status = function(step, stepdata, player)
+	get_status = function(ctx)
+		local player = ctx.player
+
 		local str = remainingItems[player:get_player_name()]
 		if str then
 			local stack = ItemStack(str)
@@ -27,8 +29,10 @@ missions.register_step({
 		end
 	end,
 
-	validate = function(pos, step, stepdata)
-		local meta = minetest.get_meta(stepdata.pos)
+	validate = function(ctx)
+		local meta = minetest.get_meta(ctx.pos)
+		local stepdata = ctx.step.data
+
 		local inv = meta:get_inventory()
 
 		local removeStack = ItemStack(stepdata.stack)
@@ -69,13 +73,16 @@ missions.register_step({
 		return false
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata, inv)
-		inv:set_stack("main", 1, ItemStack(stepdata.stack))
+	edit_formspec = function(ctx)
+		local stepdata = ctx.step.data
+		local pos = ctx.pos
+
+		ctx.inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
 		local name = ""
 
 		if stepdata.pos then
-			local distance = vector.distance(pos, stepdata.pos)
+			local distance = vector.distance(ctx.pos, stepdata.pos)
 			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
 				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
 				"Distance: " .. math.floor(distance) .. " m"
@@ -112,7 +119,11 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission, inv)
+	update = function(ctx)
+
+		local fields = ctx.fields
+		local inv = ctx.inv
+		local stepdata = ctx.step.data
 
 		if fields.togglevisible then
 			if stepdata.visible == 1 then
@@ -121,7 +132,7 @@ missions.register_step({
 				stepdata.visible = 1
 			end
 
-			show_editor()
+			ctx.show_editor()
 		end
 
 		if fields.save then
@@ -142,11 +153,15 @@ missions.register_step({
 				stepdata.name = name
 			end
 
-			show_mission()
+			ctx.show_mission()
 		end
 	end,
 
-	on_step_enter = function(step, stepdata, player, success, failed)
+	on_step_enter = function(ctx)
+
+		local stepdata = ctx.step.data
+		local player = player
+
 		-- set stack
 		remainingItems[player:get_player_name()] = stepdata.stack
 		local stack =ItemStack(stepdata.stack)
@@ -185,7 +200,9 @@ missions.register_step({
 		end
 	end,
 
-	on_step_interval = function(step, stepdata, player, success, failed)
+	on_step_interval = function(ctx)
+		local player = ctx.player
+
 		local str = remainingItems[player:get_player_name()]
 		if str then
 			local stack = ItemStack(str);
@@ -197,16 +214,23 @@ missions.register_step({
 			local hud_data = hud[player:get_player_name()];
 			player:hud_change(hud_data.counter, "text", stack:get_count() .. "x")
 		else
-			success()
+			ctx.on_success()
 		end
 	end,
 
-	on_step_exit = function(step, stepdata, player)
+	on_step_exit = function(ctx)
+		local player = ctx.player;		
+
 		remainingItems[player:get_player_name()] = ""
 		local hud_data = hud[player:get_player_name()];
 
-		player:hud_remove(hud_data.image)
-		player:hud_remove(hud_data.counter)
+		if hud_data and hud_data.image then
+			player:hud_remove(hud_data.image)
+		end
+
+		if hud_data and hud_data.counter then
+			player:hud_remove(hud_data.counter)
+		end
 
 		if hud_data and hud_data.target then
 			player:hud_remove(hud_data.target)

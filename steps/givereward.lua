@@ -11,9 +11,12 @@ missions.register_step({
 		return {stack=""}
 	end,
 
-	edit_formspec = function(pos, node, player, stepnumber, step, stepdata, inv)
-		inv:set_stack("main", 1, ItemStack(stepdata.stack))
+	edit_formspec = function(ctx)
+		local inv = ctx.inv
+		local pos = ctx.pos
+		local stepdata = ctx.step.data
 
+		inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Reward items (give)]" ..
@@ -27,7 +30,10 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission, inv)
+	update = function(ctx)
+		local fields = ctx.fields
+		local inv = ctx.inv
+		local stepdata = ctx.step.data
 
 		if fields.save then
 			local stack = inv:get_stack("main", 1)
@@ -36,14 +42,16 @@ missions.register_step({
 				stepdata.stack = stack:to_string()
 			end
 
-			show_mission()
+			ctx.show_mission()
 		end
 	end,
 
-	on_step_enter = function(step, stepdata, player, success, failed)
+	on_step_enter = function(ctx)
+		local player = ctx.player
+
 		local player_inv = player:get_inventory()
 		player_inv:add_item("main", ItemStack(stepdata.stack))
-		success()
+		ctx.on_success()
 	end
 
 })

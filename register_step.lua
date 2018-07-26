@@ -27,7 +27,15 @@ missions.show_step_editor = function(pos, node, player, stepnumber, step, stepda
 
 	for i,spec in ipairs(missions.steps) do
 		if spec.type == step.type then
-			local formspec = spec.edit_formspec(pos, node, player, stepnumber, step, stepdata, inv)
+			local formspec = spec.edit_formspec({
+				pos=pos,
+				node=node,
+				player=player,
+				stepnumber=stepnumber,
+				step=step,
+				stepdata=stepdata,
+				inv=inv
+			})
 
 			minetest.show_formspec(player:get_player_name(),
 				FORMNAME .. ";" .. minetest.pos_to_string(pos) .. ";" .. stepnumber .. ";" .. spec.type,
@@ -70,7 +78,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				missions.form.missionblock(pos, node, player)
 			end
 
-			spec.update(fields, player, step, stepdata, show_editor, show_mission, inv)
+			spec.update({
+				fields=fields,
+				player=player,
+				step=step,
+				show_editor=show_editor,
+				show_mission=show_mission,
+				inv=inv
+			})
 
 			-- write back data
 			missions.set_steps(pos, steps)
