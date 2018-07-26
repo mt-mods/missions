@@ -4,6 +4,10 @@ local FORMNAME = "mission_block_main"
 missions.form.missionblock = function(pos, node, player)
 
 	local meta = minetest.get_meta(pos)
+
+	-- check for migration
+	missions.migrate_mission_block(pos, meta)
+
 	local selected_step = meta:get_int("selected_step")
 	local name = meta:get_string("name")
 	local time = meta:get_string("time")

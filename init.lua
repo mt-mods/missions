@@ -12,6 +12,7 @@ dofile(MP.."/form.missionblock_user.lua")
 dofile(MP.."/form.newstep.lua")
 dofile(MP.."/form.wand.lua")
 
+dofile(MP.."/migrate.lua")
 dofile(MP.."/functions.lua")
 dofile(MP.."/validate.lua")
 dofile(MP.."/register.lua")

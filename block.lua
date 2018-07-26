@@ -20,6 +20,9 @@ minetest.register_node("missions:mission", {
 		meta:set_int("time", 300)
 		meta:set_string("name", "")
 		meta:set_string("description", "")
+
+		local inv = meta:get_inventory()
+		inv:set_size("main", 8)
 	end,
 
 	can_dig = missions.only_owner_can_dig,
