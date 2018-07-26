@@ -1,4 +1,9 @@
 
+
+local HUD_POSITION = {x = 0.5, y = 0.5}
+local HUD_ALIGNMENT = {x = 1, y = 1}
+
+
 local hud = {} -- playerName -> {}
 local remainingItems = {} -- playerName -> ItemStack
 
@@ -144,10 +149,33 @@ missions.register_step({
 	on_step_enter = function(step, stepdata, player, success, failed)
 		-- set stack
 		remainingItems[player:get_player_name()] = stepdata.stack
+		local stack =ItemStack(stepdata.stack)
 
-		-- set hud, if enabled
+		local hud_data = {}
+		hud[player:get_player_name()] = hud_data;
+
+		hud_data.counter = player:hud_add({
+			hud_elem_type = "text",
+			position = HUD_POSITION,
+			offset = {x = 0,   y = 0},
+			text = "",
+			alignment = HUD_ALIGNMENT,
+			scale = {x = 100, y = 100},
+			number = 0x00FF00
+		})
+
+		hud_data.image = player:hud_add({
+			hud_elem_type = "image",
+			position = HUD_POSITION,
+			offset = {x = 10,   y = 0},
+			text = missions.get_image(stack:get_name()),
+			alignment = HUD_ALIGNMENT,
+			scale = {x = 1, y = 1},
+		})
+
+		-- set waypoint, if enabled
 		if stepdata.visible == 1 then
-			hud[player:get_player_name()] = player:hud_add({
+			hud_data.target = player:hud_add({
 				hud_elem_type = "waypoint",
 				name = "Chest: " .. stepdata.name,
 				text = "m",
@@ -160,9 +188,14 @@ missions.register_step({
 	on_step_interval = function(step, stepdata, player, success, failed)
 		local str = remainingItems[player:get_player_name()]
 		if str then
-			if ItemStack(str):get_count() == 0 then
+			local stack = ItemStack(str);
+
+			if stack:get_count() == 0 then
 				success()
 			end
+
+			local hud_data = hud[player:get_player_name()];
+			player:hud_change(hud_data.counter, "text", stack:get_count() .. "x")
 		else
 			success()
 		end
@@ -170,11 +203,16 @@ missions.register_step({
 
 	on_step_exit = function(step, stepdata, player)
 		remainingItems[player:get_player_name()] = ""
-		local idx = hud[player:get_player_name()]
-		if idx then
-			player:hud_remove(idx)
-			hud[player:get_player_name()] = nil
+		local hud_data = hud[player:get_player_name()];
+
+		player:hud_remove(hud_data.image)
+		player:hud_remove(hud_data.counter)
+
+		if hud_data and hud_data.target then
+			player:hud_remove(hud_data.target)
 		end
+
+		hud[player:get_player_name()] = nil
 	end
 
 
@@ -236,6 +274,6 @@ intercept_chest("default:chest_open")
 if has_more_chests_mod then
 	intercept_chest("more_chests:dropbox")
 end
--- TODO: protected, technic-chests
+-- TODO: technic-chests
 
 
