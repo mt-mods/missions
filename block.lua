@@ -25,6 +25,45 @@ minetest.register_node("missions:mission", {
 		inv:set_size("main", 8)
 	end,
 
+	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+		if inv:get_stack(listname, index):get_count() == 0 then
+			-- target inv empty
+
+			local step = missions.get_selected_step(pos)
+			local spec = missions.get_step_spec_by_type(step.type)
+
+			if spec.allow_inv_stack_put then
+				-- delegate to spec check
+				if spec.allow_inv_stack_put(listname, index, stack) then
+					return stack:get_count()
+				else
+					return 0
+				end
+			end
+
+			return stack:get_count()
+		else
+			-- target inv not empty, disallow swapping
+			return 0
+		end
+	end,
+
+	on_metadata_inventory_put = function(pos, listname, index, stack, player)
+		--copy items from player to local inv
+		local inv = player:get_inventory()
+		inv:add_item("main", stack)
+	end,
+
+	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
+		--remove items if taken from inv
+		local meta = minetest.get_meta(pos)
+		local inv = meta:get_inventory()
+		inv:set_stack(listname, index, ItemStack(""))
+		return 0
+	end,
+
 	can_dig = missions.only_owner_can_dig,
 
 	on_construct = function(pos)

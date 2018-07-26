@@ -1,39 +1,4 @@
 
-local get_inv_name = function(player)
-	return "mission_waypoint_" .. player:get_player_name()
-end
-
-local get_inv = function(player)
-	return minetest.get_inventory({type="detached",name=get_inv_name(player)})
-end
-
-local hud = {} -- playerName -> {}
-
--- setup detached inv for wand placement
-minetest.register_on_joinplayer(function(player)
-	local playername = player:get_player_name()
-	local inv = minetest.create_detached_inventory(get_inv_name(player), {
-		allow_put = function(inv, listname, index, stack, player)
-			if stack:get_name() == "missions:wand_position" and inv:is_empty("main") then
-				return 1
-			end
-
-			return 0
-		end,
-		on_put = function(inv, listname, index, stack, player)
-			-- copy stack
-			local playerInv = player:get_inventory()
-			playerInv:add_item("main", stack)
-		end,
-		allow_take = function(inv, listname, index, stack, player)
-			-- remove from det inv
-			inv:remove_item("main", stack)
-			-- give player nothing
-			return 0
-		end
-	})
-	inv:set_size("main", 1)
-end)
 
 missions.register_step({
 
@@ -58,6 +23,15 @@ missions.register_step({
 		else
 			return {success=true}
 		end
+	end,
+
+	allow_inv_stack_put = function(listname, index, stack)
+		-- allow position wand on pos 1 of main inv
+		if listname == "main" and index == 1 and stack:get_name() == "missions:wand_position" then
+			return true
+		end
+
+		return false
 	end,
 
 	edit_formspec = function(pos, node, player, stepnumber, step, stepdata)
@@ -86,9 +60,8 @@ missions.register_step({
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Walk to (Step #" .. stepnumber .. ")]" ..
 
-			"list[detached:" .. get_inv_name(player) .. ";main;0,1;1,1;]" ..
+			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;0,1;1,1;0]" ..
 
-			--TODO: escape
 			"label[0,2;" .. name .. "]" ..
 
 			"field[0,3;8,1;description;Description;" .. stepdata.description .. "]" ..
@@ -102,7 +75,7 @@ missions.register_step({
 		return formspec;
 	end,
 
-	update = function(fields, player, step, stepdata, show_editor, show_mission)
+	update = function(fields, player, step, stepdata, show_editor, show_mission, inv)
 
 		if fields.radius then
 			local radius = tonumber(fields.radius)
@@ -126,7 +99,6 @@ missions.register_step({
 		end
 
 		if fields.save then
-			local inv = get_inv(player)
 			local stack = inv:get_stack("main", 1)
 
 			if not stack:is_empty() then
