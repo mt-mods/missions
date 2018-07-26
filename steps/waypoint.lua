@@ -1,4 +1,5 @@
 
+local hud = {} -- playername -> id
 
 missions.register_step({
 
@@ -62,7 +63,7 @@ missions.register_step({
 		end
 
 		local formspec = "size[8,8;]" ..
-			"label[0,0;Walk to (Step #" .. stepnumber .. ")]" ..
+			"label[0,0;Walk to (Step #" .. ctx.stepnumber .. ")]" ..
 
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;0,1;1,1;0]" ..
 
@@ -123,7 +124,7 @@ missions.register_step({
 
 	on_step_enter = function(ctx)
 		local player = ctx.player
-		local stepdata = ctx.data.data
+		local stepdata = ctx.step.data
 
 		if stepdata.visible == 1 then
 			hud[player:get_player_name()] = player:hud_add({

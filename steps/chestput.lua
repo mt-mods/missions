@@ -160,7 +160,7 @@ missions.register_step({
 	on_step_enter = function(ctx)
 
 		local stepdata = ctx.step.data
-		local player = player
+		local player = ctx.player
 
 		-- set stack
 		remainingItems[player:get_player_name()] = stepdata.stack
@@ -208,7 +208,7 @@ missions.register_step({
 			local stack = ItemStack(str);
 
 			if stack:get_count() == 0 then
-				success()
+				ctx.on_success()
 			end
 
 			local hud_data = hud[player:get_player_name()];

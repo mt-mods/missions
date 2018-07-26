@@ -39,7 +39,7 @@ missions.register_step({
 
 	on_step_enter = function(ctx)
 		local player = ctx.player
-		local stepdata = ctx.data.data
+		local stepdata = ctx.step.data
 
 		if xp_redo.get_xp(player:get_player_name()) > stepdata.xp then
 			ctx.on_success()

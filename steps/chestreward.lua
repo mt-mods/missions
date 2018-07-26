@@ -73,7 +73,8 @@ missions.register_step({
 
 	edit_formspec = function(ctx)
 		local pos = ctx.pos
-		local stepdata = ctx.data.step
+		local inv = ctx.inv
+		local stepdata = ctx.step.data
 
 		inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
@@ -130,7 +131,7 @@ missions.register_step({
 
 	on_step_enter = function(ctx)
 		local stepdata = ctx.step.data
-		local palyer = ctx.player
+		local player = ctx.player
 
 		local meta = minetest.get_meta(stepdata.pos)
 		local inv = meta:get_inventory()

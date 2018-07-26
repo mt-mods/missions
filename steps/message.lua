@@ -42,7 +42,7 @@ missions.register_step({
 
 	on_step_enter = function(ctx)
 		local player = ctx.player
-		local stepdata = ctx.data.data
+		local stepdata = ctx.step.data
 
 		markers[player:get_player_name()] = false
 

@@ -48,6 +48,7 @@ missions.register_step({
 
 	on_step_enter = function(ctx)
 		local player = ctx.player
+		local stepdata = ctx.step.data
 
 		local player_inv = player:get_inventory()
 		player_inv:add_item("main", ItemStack(stepdata.stack))

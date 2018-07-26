@@ -12,6 +12,7 @@ missions.register_step({
 
 	get_status = function(ctx)
 		local player = ctx.player
+		local stepdata = ctx.step.data
 
 		local name = player:get_player_name()
 		local current_count = counter[name] or 0

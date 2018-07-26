@@ -51,7 +51,7 @@ missions.register_step({
 
 	on_step_enter = function(ctx)
 		local player = ctx.player
-		local stepdata = ctx.data.data
+		local stepdata = ctx.step.data
 
 		local name = player:get_player_name()
 		stepdata.start = counter[name] or 0
