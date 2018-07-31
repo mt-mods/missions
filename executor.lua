@@ -3,6 +3,7 @@ local MISSION_ATTRIBUTE_NAME = "currentmission"
 local CURRENT_MISSION_SPEC_VERSION = 1
 
 local playermissions = {}
+local playerabort = {}
 
 --persistence stuff
 
@@ -40,7 +41,12 @@ end
 
 
 local set_current_mission = function(player, mission)
+	playerabort[player:get_player_name()] = false
 	playermissions[player:get_player_name()] = mission
+end
+
+missions.abort = function(playername)
+	playerabort[playername] = true
 end
 
 -- start a mission
@@ -81,6 +87,7 @@ local update_mission = function(mission, player)
 	local remainingTime = mission.time - (now - mission.start)
 	local playername = player:get_player_name()
 	local step = mission.steps[mission.currentstep]
+	local abort = playerabort[playername]
 
 	if not step then
 		-- no more steps
@@ -111,6 +118,12 @@ local update_mission = function(mission, player)
 				player=player
 			})
 		end
+	end
+
+	if abort then
+		-- invoke failed
+		on_failed("aborted")
+		return
 	end
 
 	if remainingTime <= 0 then

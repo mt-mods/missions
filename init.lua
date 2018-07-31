@@ -1,5 +1,6 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 local has_mobs_mod = minetest.get_modpath("mobs")
+local has_unified_inv = minetest.get_modpath("unified_inventory")
 
 local MP = minetest.get_modpath("missions")
 
@@ -23,6 +24,9 @@ dofile(MP.."/hud.lua")
 dofile(MP.."/block.lua")
 dofile(MP.."/wand.lua")
 
+if has_unified_inv then
+	dofile(MP.."/ui.lua")
+end
 
 -- executor
 dofile(MP.."/executor.lua")
