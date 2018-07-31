@@ -78,7 +78,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		missions.set_steps(pos, steps)
 		local stepnumber = #steps
 
-		missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+		minetest.after(0.1, function()
+			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+		end)
 	end
 
 end)
