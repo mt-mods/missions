@@ -13,7 +13,7 @@ missions.register_step({
 	type = "spawnmob",
 	name = "Spawn mob",
 
-	privs = {give=true},
+	privs = {missions_mobs=true},
 
 	create = function()
 		return {mobname="", pos=nil}
