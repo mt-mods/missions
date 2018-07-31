@@ -1,6 +1,5 @@
 
-
-local HUD_POSITION = {x = 0.5, y = 0.2}
+local HUD_POSITION = {x = missions.hud.posx, y = missions.hud.posy }
 local HUD_ALIGNMENT = {x = 1, y = 0}
 
 
@@ -172,7 +171,7 @@ missions.register_step({
 		hud_data.counter = player:hud_add({
 			hud_elem_type = "text",
 			position = HUD_POSITION,
-			offset = {x = 0,   y = 140},
+			offset = {x = 0,   y = 120},
 			text = "",
 			alignment = HUD_ALIGNMENT,
 			scale = {x = 100, y = 100},
@@ -182,7 +181,7 @@ missions.register_step({
 		hud_data.image = player:hud_add({
 			hud_elem_type = "image",
 			position = HUD_POSITION,
-			offset = {x = 32,   y = 140},
+			offset = {x = 32,   y = 120},
 			text = missions.get_image(stack:get_name()),
 			alignment = HUD_ALIGNMENT,
 			scale = {x = 1, y = 1},

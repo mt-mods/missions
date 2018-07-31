@@ -1,5 +1,5 @@
 
-local HUD_POSITION = {x = 0.5, y = 0.2}
+local HUD_POSITION = {x = missions.hud.posx, y = missions.hud.posy}
 local HUD_ALIGNMENT = {x = 1, y = 0}
 
 local hud = {} -- playerName -> {}
@@ -22,7 +22,7 @@ minetest.register_on_joinplayer(function(player)
 	data.mission = player:hud_add({
 		hud_elem_type = "text",
 		position = HUD_POSITION,
-		offset = {x = 0,   y = 35},
+		offset = {x = 0,   y = 30},
 		text = "",
 		alignment = HUD_ALIGNMENT,
 		scale = {x = 100, y = 100},
@@ -32,7 +32,7 @@ minetest.register_on_joinplayer(function(player)
 	data.time = player:hud_add({
 		hud_elem_type = "text",
 		position = HUD_POSITION,
-		offset = {x = 0,   y = 70},
+		offset = {x = 0,   y = 60},
 		text = "",
 		alignment = HUD_ALIGNMENT,
 		scale = {x = 100, y = 100},
@@ -42,7 +42,7 @@ minetest.register_on_joinplayer(function(player)
 	data.status = player:hud_add({
 		hud_elem_type = "text",
 		position = HUD_POSITION,
-		offset = {x = 0,   y = 105},
+		offset = {x = 0,   y = 90},
 		text = "",
 		alignment = HUD_ALIGNMENT,
 		scale = {x = 100, y = 100},
@@ -61,7 +61,7 @@ missions.hud_update_status = function(player, status)
 		return
 	end
 
-	player:hud_change(data.title, "text", status)
+	player:hud_change(data.status, "text", status)
 end
 
 missions.hud_update = function(player, mission, remainingTime)

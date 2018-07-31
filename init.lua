@@ -5,7 +5,11 @@ local has_unified_inv = minetest.get_modpath("unified_inventory")
 local MP = minetest.get_modpath("missions")
 
 missions = {
-	form = {}
+	form = {},
+	hud = {
+		posx = tonumber(minetest.settings:get("missions.hud.offsetx") or 0.7),
+		posy = tonumber(minetest.settings:get("missions.hud.offsety") or 0.2)
+	}
 }
 
 -- forms
