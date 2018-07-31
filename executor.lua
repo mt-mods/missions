@@ -93,6 +93,7 @@ local update_mission = function(mission, player)
 		-- no more steps
 		minetest.chat_send_player(playername, "Mission completed: '" .. mission.name .. "'")
 		set_current_mission(player, nil)
+		missions.show_banner(player, "Mission completed", mission.name)
 		return
 	end
 

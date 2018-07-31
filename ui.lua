@@ -1,9 +1,6 @@
 
 
 
-unified_inventory.set_inventory_formspec(player, "craft")
-
-
 unified_inventory.register_page("missions", {
 	get_formspec = function(player)
 		print(player:get_player_name())
@@ -20,7 +17,7 @@ unified_inventory.register_page("missions", {
 
 unified_inventory.register_button("missions", {
         type = "image",
-        image = "mission_block_preview.png",
+        image = "missions_block_preview.png",
         tooltip = "Missions"
 })
 

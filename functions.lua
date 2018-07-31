@@ -108,3 +108,60 @@ missions.get_image = function(name)
 end
 
 
+
+missions.show_banner = function(player, title, msg)
+	minetest.sound_play({name="missions_generic", gain=0.25}, {to_player=player:get_player_name()})
+
+
+	local one = player:hud_add({
+		hud_elem_type = "image",
+		name = "award_bg",
+		scale = {x = 2, y = 1},
+		text = "missions_bg_default.png",
+		position = {x = 0.5, y = 0},
+		offset = {x = 0, y = 138},
+		alignment = {x = 0, y = -1}
+	})
+
+	local two = player:hud_add({
+		hud_elem_type = "text",
+		name = "award_au",
+		number = 0xFFFFFF,
+		scale = {x = 100, y = 20},
+		text = title,
+		position = {x = 0.5, y = 0},
+		offset = {x = 0, y = 40},
+		alignment = {x = 0, y = -1}
+	})
+
+	local three = player:hud_add({
+		hud_elem_type = "text",
+		name = "rank_title",
+		number = 0xFFFFFF,
+		scale = {x = 100, y = 20},
+		text = msg,
+		position = {x = 0.5, y = 0},
+		offset = {x = 30, y = 100},
+		alignment = {x = 0, y = -1}
+	})
+
+	local rank_offset = {x = -1.5, y = 126}
+
+	local four = player:hud_add({
+		hud_elem_type = "image",
+		name = "award_icon",
+		scale = {x = 2, y = 2},
+		text = "missions_block_preview.png",
+		position = {x = 0.4, y = 0},
+		offset = rank_offset,
+		alignment = {x = 0, y = -1}
+	})
+
+	minetest.after(4, function()
+		player:hud_remove(one)
+		player:hud_remove(two)
+		player:hud_remove(three)
+		player:hud_remove(four)
+	end)
+end
+
