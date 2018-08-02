@@ -79,32 +79,38 @@ end
 
 -- returns the image (item, node, tool) or ""
 missions.get_image = function(name)
-	-- minetest.registered_items[name].inventory_image
-	-- minetest.registered_tools[name].inventory_image
-	-- minetest.registered_nodes["default:stone"].tiles[1]
-	-- TODO: look at drawer code
-
-	if name == nil then
-		return ""
+	-- stolen from drawers code
+	local texture = "blank.png"
+	local def = core.registered_items[name]
+	if not def then
+		return texture
 	end
 
-	local item = minetest.registered_items[name]
-	if item ~= nil and item.inventory_image ~= nil then
-		return item.inventory_image
+	if def.inventory_image and #def.inventory_image > 0 then
+		texture = def.inventory_image
+	else
+		if not def.tiles then return texture end
+		local tiles = table.copy(def.tiles)
+
+		for k,v in pairs(tiles) do
+		        if type(v) == "table" then
+		                tiles[k] = v.name
+		        end
+		end
+
+		-- tiles: up, down, right, left, back, front
+		-- inventorycube: up, front, right
+		if #tiles <= 2 then
+		        texture = core.inventorycube(tiles[1], tiles[1], tiles[1])
+		elseif #tiles <= 5 then
+		        texture = core.inventorycube(tiles[1], tiles[3], tiles[3])
+		else -- full tileset
+		        texture = core.inventorycube(tiles[1], tiles[6], tiles[3])
+		end
 	end
 
-	local tool = minetest.registered_tools[name]
-	if tool ~= nil and tool.inventory_image ~= nil then
-		return tool.inventory_image
-	end
+	return texture
 
-	local node = minetest.registered_nodes[name]
-	if node ~= nil and node.tiles ~= nil and table.getn(node.tiles) == 1 then
-		return minetest.inventorycube(node.tiles[1],node.tiles[1],node.tiles[1])
-	end
-
-	-- none found
-	return ""
 end
 
 

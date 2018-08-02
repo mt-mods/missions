@@ -171,7 +171,7 @@ missions.register_step({
 		hud_data.counter = player:hud_add({
 			hud_elem_type = "text",
 			position = HUD_POSITION,
-			offset = {x = 0,   y = 120},
+			offset = {x = 0,   y = 140},
 			text = "",
 			alignment = HUD_ALIGNMENT,
 			scale = {x = 100, y = 100},
@@ -181,7 +181,7 @@ missions.register_step({
 		hud_data.image = player:hud_add({
 			hud_elem_type = "image",
 			position = HUD_POSITION,
-			offset = {x = 32,   y = 120},
+			offset = {x = 32,   y = 140},
 			text = missions.get_image(stack:get_name()),
 			alignment = HUD_ALIGNMENT,
 			scale = {x = 1, y = 1},
