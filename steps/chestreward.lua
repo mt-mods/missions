@@ -15,6 +15,15 @@ missions.register_step({
 		local pos = ctx.pos
 		local stepdata = ctx.step.data
 
+		if stepdata.pos == nil then
+			return {
+				success=false,
+				failed=true,
+				msg="No position defined"
+			}
+		end
+
+
 		local meta = minetest.get_meta(stepdata.pos)
 		local inv = meta:get_inventory()
 
@@ -34,14 +43,6 @@ missions.register_step({
 						" chest-location: " .. stepdata.pos.x .. "/" .. stepdata.pos.y .. "/" .. stepdata.pos.z
 				}
 			end
-		end
-
-		if stepdata.pos == nil then
-			return {
-				success=false,
-				failed=true,
-				msg="No position defined"
-			}
 		end
 
 		if inv:contains_item("main", removeStack) then
