@@ -1,57 +1,9 @@
 
-local MISSION_ATTRIBUTE_NAME = "currentmission"
-local CURRENT_MISSION_SPEC_VERSION = 1
 
-local playermissions = {}
-local playerabort = {}
-
---persistence stuff
-
-minetest.register_on_joinplayer(function(player)
-	local missionStr = player:get_attribute(MISSION_ATTRIBUTE_NAME)
-
-	local mission = nil
-	if missionStr then
-		mission = minetest.deserialize(missionStr)
-	end
-
-	if mission and mission.version == CURRENT_MISSION_SPEC_VERSION then
-		-- only load if compatible with current spec
-		local step = mission.steps[mission.currentstep]
-		
-		-- reset init flag
-		step.initialized = false
-
-		-- store in variable
-		playermissions[player:get_player_name()] = mission
-	end
-end)
-
-minetest.register_on_leaveplayer(function(player)
-	playermissions[player:get_player_name()] = nil
-end)
-
-local get_current_mission = function(player)
-	return playermissions[player:get_player_name()]
-end
-
-local persist_mission = function(player, mission)
-	player:set_attribute(MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
-end
-
-
-local set_current_mission = function(player, mission)
-	playerabort[player:get_player_name()] = false
-	playermissions[player:get_player_name()] = mission
-end
-
-missions.abort = function(playername)
-	playerabort[playername] = true
-end
 
 -- start a mission
 missions.start = function(pos, player)
-	local mission = get_current_mission(player)
+	local mission = missions.get_current_mission(player)
 	local playername = player:get_player_name()
 
 	if mission then
@@ -68,7 +20,7 @@ missions.start = function(pos, player)
 	local meta = minetest.get_meta(pos)
 
 	mission = {
-		version = CURRENT_MISSION_SPEC_VERSION,
+		version = missions.CURRENT_MISSION_SPEC_VERSION,
 		steps = steps,
 		currentstep = 1,
 		start = os.time(os.date("!*t")),
@@ -77,7 +29,7 @@ missions.start = function(pos, player)
 		description = meta:get_string("description") or ""
 	}
 
-	set_current_mission(player, mission)
+	missions.set_current_mission(player, mission)
 end
 
 -- update the mission
@@ -87,12 +39,12 @@ local update_mission = function(mission, player)
 	local remainingTime = mission.time - (now - mission.start)
 	local playername = player:get_player_name()
 	local step = mission.steps[mission.currentstep]
-	local abort = playerabort[playername]
+	local abort = missions.has_aborted(playername)
 
 	if not step then
 		-- no more steps
 		minetest.chat_send_player(playername, "Mission completed: '" .. mission.name .. "'")
-		set_current_mission(player, nil)
+		missions.set_current_mission(player, nil)
 		missions.show_banner(player, "Mission completed", mission.name)
 		return
 	end
@@ -111,7 +63,7 @@ local update_mission = function(mission, player)
 	local on_failed = function(msg)
 		failed = true
 		minetest.chat_send_player(playername, "Mission failed: " .. msg)
-		set_current_mission(player, nil)
+		missions.set_current_mission(player, nil)
 		missions.hud_update_status(player, "")
 		if spec.on_step_exit then
 			spec.on_step_exit({
@@ -195,8 +147,8 @@ minetest.register_globalstep(function(dtime)
 	if persistTimer >= 5 then
 		local players = minetest.get_connected_players()
 		for i,player in ipairs(players) do
-			local mission = get_current_mission(player)
-			persist_mission(player, mission)
+			local mission = missions.get_current_mission(player)
+			missions.persist_mission(player, mission)
 		end
 
 		persistTimer = 0
@@ -211,7 +163,7 @@ minetest.register_globalstep(function(dtime)
 		local players = minetest.get_connected_players()
 		for i,player in ipairs(players) do
 			local playername = player:get_player_name()
-			local mission = get_current_mission(player)
+			local mission = missions.get_current_mission(player)
 
 			if mission then
 				update_mission(mission, player)

@@ -9,10 +9,71 @@ local SECONDS_IN_DAY = 3600*24
 local SECONDS_IN_HOUR = 3600
 local SECONDS_IN_MINUTE = 60
 
+
+
 missions.get_owner_from_pos = function(pos)
 	local meta = minetest.get_meta(pos)
 	return meta:get_string("owner")
 end
+
+
+
+missions.MISSION_ATTRIBUTE_NAME = "currentmission"
+missions.CURRENT_MISSION_SPEC_VERSION = 1
+
+local playermissions = {}
+local playerabort = {}
+
+--persistence stuff
+
+minetest.register_on_joinplayer(function(player)
+	local missionStr = player:get_attribute(missions.MISSION_ATTRIBUTE_NAME)
+
+	local mission = nil
+	if missionStr then
+		mission = minetest.deserialize(missionStr)
+	end
+
+	if mission and mission.version == missions.CURRENT_MISSION_SPEC_VERSION then
+		-- only load if compatible with current spec
+		local step = mission.steps[mission.currentstep]
+		
+		-- reset init flag
+		step.initialized = false
+
+		-- store in variable
+		playermissions[player:get_player_name()] = mission
+	end
+end)
+
+minetest.register_on_leaveplayer(function(player)
+	playermissions[player:get_player_name()] = nil
+end)
+
+missions.persist_mission = function(player, mission)
+	player:set_attribute(missions.MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
+end
+
+
+missions.set_current_mission = function(player, mission)
+	playerabort[player:get_player_name()] = false
+	playermissions[player:get_player_name()] = mission
+end
+
+
+
+missions.get_current_mission = function(player)
+	return playermissions[player:get_player_name()]
+end
+
+missions.abort = function(playername)
+	playerabort[playername] = true
+end
+
+missions.has_aborted = function(playername)
+	return playerabort[playername]
+end
+
 
 missions.format_time = function(seconds)
 	local str = ""

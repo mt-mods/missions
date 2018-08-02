@@ -3,11 +3,16 @@
 
 unified_inventory.register_page("missions", {
 	get_formspec = function(player)
-		print(player:get_player_name())
-		local formspec = "background[0,4.5;8,4;ui_main_inventory.png]" ..
-			"label[1,0;Missions]" ..
-			"button[1,1;4,1;abort_mission;Abort mission]";
+		local mission = missions.get_current_mission(player)
 
+		local formspec = "background[0,4.5;8,4;ui_main_inventory.png]" ..
+			"label[1,0;Missions]";
+
+		if mission then
+			formspec = formspec .. "button[1,1;4,1;abort_mission;Abort mission]";
+		else
+			formspec = formspec .. "label[1,1;No running mission]";
+		end
 
 		return {formspec=formspec}
 	end
