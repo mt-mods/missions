@@ -1,12 +1,9 @@
 
-local FORMNAME = "mission_block_main"
+local FORMNAME = "mission_block_stepeditor"
 
-missions.form.missionblock = function(pos, node, player)
+missions.form.missionblock_stepeditor = function(pos, node, player)
 
 	local meta = minetest.get_meta(pos)
-
-	-- check for migration
-	missions.migrate_mission_block(pos, meta)
 
 	local selected_step = meta:get_int("selected_step")
 	local name = meta:get_string("name")
@@ -14,12 +11,6 @@ missions.form.missionblock = function(pos, node, player)
 	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
 	local has_override = minetest.check_player_privs(player, "protection_bypass")
-
-	-- check if plain user rightclicks
-	if player:get_player_name() ~= owner and not has_override then
-		missions.form.missionblock_user(pos, node, player)
-		return
-	end
 
 	local steps = missions.get_steps(pos)
 
@@ -42,7 +33,6 @@ missions.form.missionblock = function(pos, node, player)
 		"button_exit[5.5,3;2,1;up;Up]" ..
 		"button_exit[5.5,4;2,1;down;Down]" ..
 		"button_exit[5.5,5;2,1;remove;Remove]" ..
-		"button_exit[5.5,6;2,1;user;User]" ..
 		steps_list .. 
 
 		--right
@@ -89,7 +79,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		missions.set_steps(pos, steps)
 
 		minetest.after(0.1, function()
-			missions.form.missionblock(pos, node, player)
+			missions.form.missionblock_stepeditor(pos, node, player)
 		end)
 		return true
 	end
@@ -133,7 +123,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 
 		minetest.after(0.1, function()
-			missions.form.missionblock(pos, node, player)
+			missions.form.missionblock_stepeditor(pos, node, player)
 		end)
 		return true
 	end
@@ -150,14 +140,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 
 		minetest.after(0.1, function()
-			missions.form.missionblock(pos, node, player)
-		end)
-		return true
-	end
-
-	if fields.user then
-		minetest.after(0.1, function()
-			missions.form.missionblock_user(pos, node, player)
+			missions.form.missionblock_stepeditor(pos, node, player)
 		end)
 		return true
 	end

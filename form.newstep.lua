@@ -10,10 +10,20 @@ missions.form.newstep = function(pos, node, player)
 	local list = ""
 	for i,spec in ipairs(missions.steps) do
 
-		list = list .. minetest.formspec_escape(spec.name)
-		if i < #missions.steps then
-			-- not end of list
-			list = list .. ","
+		local allowed = true
+
+		-- check privs
+		if spec.privs and not minetest.check_player_privs(player:get_player_name(), spec.privs) then
+			allowed = false
+			-- continue?
+		end
+
+		if allowed then
+			list = list .. minetest.formspec_escape(spec.name)
+			if i < #missions.steps then
+				-- not end of list
+				list = list .. ","
+			end
 		end
 	end
 

@@ -78,7 +78,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 			local show_mission = function()
 				minetest.after(0.1, function()
-					missions.form.missionblock(pos, node, player)
+					missions.form.missionblock_stepeditor(pos, node, player)
 				end)
 			end
 

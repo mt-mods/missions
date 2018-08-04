@@ -70,7 +70,7 @@ minetest.register_node("missions:mission", {
 		missions.set_steps(pos, {})
 	end,
 
-	on_rightclick = missions.form.missionblock
+	on_rightclick = missions.form.missionblock_main
 })
 
 
