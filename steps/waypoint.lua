@@ -62,19 +62,20 @@ missions.register_step({
 			visibleText = "Waypoint: Hidden"
 		end
 
-		local formspec = "size[8,8;]" ..
+		local formspec = "size[8,10;]" ..
 			"label[0,0;Walk to (Step #" .. ctx.stepnumber .. ")]" ..
 
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;0,1;1,1;0]" ..
 
 			"label[0,2;" .. name .. "]" ..
 
-			"field[0,3;8,1;description;Description;" .. stepdata.description .. "]" ..
+			"field[0.2,3;8,1;description;Description;" .. stepdata.description .. "]" ..
+			"field[0.2,4;4,1;radius;Radius;" .. stepdata.radius .. "]" ..
 
-			"field[0,4;4,1;radius;Radius;" .. stepdata.radius .. "]" ..
 			"button_exit[0,5;8,1;togglevisible;" .. visibleText .. "]" ..
 
-			"list[current_player;main;0,6;8,1;]" ..
+			"list[current_player;main;0,6;8,4;]" ..
+
 			"button_exit[0,7;8,1;save;Save]"
 
 		return formspec;
