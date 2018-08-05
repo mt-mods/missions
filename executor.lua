@@ -18,9 +18,11 @@ missions.start = function(pos, player)
 	end
 
 	local meta = minetest.get_meta(pos)
+	local pos_str = minetest.pos_to_string(pos)
 
 	mission = {
 		version = missions.CURRENT_MISSION_SPEC_VERSION,
+		pos = pos_str,
 		steps = steps,
 		currentstep = 1,
 		start = os.time(os.date("!*t")),
@@ -40,12 +42,17 @@ local update_mission = function(mission, player)
 	local playername = player:get_player_name()
 	local step = mission.steps[mission.currentstep]
 	local abort = missions.has_aborted(playername)
+	local block_pos = minetest.string_to_pos(mission.pos)
+	local block_meta = minetest.get_meta(block_pos)
 
 	if not step then
 		-- no more steps
 		minetest.chat_send_player(playername, "Mission completed: '" .. mission.name .. "'")
 		missions.set_current_mission(player, nil)
 		missions.show_banner(player, "Mission completed", mission.name)
+
+		-- increment counter
+		block_meta:set_int("successcount", block_meta:get_int("successcount") + 1)
 		return
 	end
 
@@ -71,6 +78,9 @@ local update_mission = function(mission, player)
 				player=player
 			})
 		end
+
+		-- increment counter
+		block_meta:set_int("failcount", block_meta:get_int("failcount") + 1)
 	end
 
 	if abort then

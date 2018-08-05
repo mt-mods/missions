@@ -9,13 +9,16 @@ missions = {
 	hud = {
 		posx = tonumber(minetest.settings:get("missions.hud.offsetx") or 0.7),
 		posy = tonumber(minetest.settings:get("missions.hud.offsety") or 0.2)
-	}
+	},
+	MISSION_ATTRIBUTE_NAME = "currentmission",
+	CURRENT_MISSION_SPEC_VERSION = 2 -- see executor.lua:missions.start()
 }
 
 -- forms
 dofile(MP.."/form.missionblock_main.lua")
 dofile(MP.."/form.missionblock_stepeditor.lua")
 dofile(MP.."/form.missionblock_user.lua")
+dofile(MP.."/form.missionblock_stats.lua")
 dofile(MP.."/form.missionblock_help.lua")
 dofile(MP.."/form.newstep.lua")
 dofile(MP.."/form.wand.lua")

@@ -17,10 +17,6 @@ missions.get_owner_from_pos = function(pos)
 end
 
 
-
-missions.MISSION_ATTRIBUTE_NAME = "currentmission"
-missions.CURRENT_MISSION_SPEC_VERSION = 1
-
 local playermissions = {}
 local playerabort = {}
 
