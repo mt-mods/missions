@@ -6,12 +6,6 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 	local meta = minetest.get_meta(pos)
 
 	local selected_step = meta:get_int("selected_step")
-	local name = meta:get_string("name")
-	local time = meta:get_string("time")
-	local owner = meta:get_string("owner")
-	local description = meta:get_string("description")
-	local has_override = minetest.check_player_privs(player, "protection_bypass")
-
 	local steps = missions.get_steps(pos)
 
 	-- steps list
@@ -25,7 +19,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 	steps_list = steps_list .. ";" .. selected_step .. "]";
 
 
-	local formspec = "size[16,8;]" ..
+	local formspec = "size[8,8;]" ..
 		--left
 		"label[0,0;Mission editor]" ..
 		"button_exit[5.5,1;2,1;add;Add]" ..
@@ -34,12 +28,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 		"button_exit[5.5,4;2,1;down;Down]" ..
 		"button_exit[5.5,5;2,1;remove;Remove]" ..
 		steps_list .. 
-
-		--right
-		"field[8,1;8,1;name;Name;" .. name ..  "]" ..
-		"field[8,2;8,1;time;Time (seconds);" .. time ..  "]" ..
-		"textarea[8,3;8,5;description;Description;" .. description .. "]" ..
-		"button_exit[0,7;16,1;save;Save and validate]"
+		"button_exit[0,7;8,1;save;Save and validate]"
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),
@@ -97,18 +86,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end)
 			return true
 		end
-	end
-
-	if fields.name then
-		meta:set_string("name", fields.name)
-	end
-
-	if fields.time then
-		meta:set_string("time", fields.time)
-	end
-
-	if fields.description then
-		meta:set_string("description", fields.description)
 	end
 
 	if fields.up then
