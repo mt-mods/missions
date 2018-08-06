@@ -19,11 +19,14 @@ missions.form.missionblock_main = function(pos, node, player)
 	local formspec = "size[8,8;]" ..
 		--left
 		"label[0,0;Mission block]" ..
+		"image[7,0;missions_block_preview.png]" ..
+
 		"button_exit[0,1;8,1;configure;Configure]" ..
 		"button_exit[0,2;8,1;stepeditor;Step editor]" ..
 		"button_exit[0,3;8,1;user;User view]" ..
 		"button_exit[0,4;8,1;stats;Statistics]" ..
 		"button_exit[0,5;8,1;help;Help]" ..
+
 		"button_exit[0,7;8,1;exit;Exit]"
 
 	minetest.show_formspec(player:get_player_name(),
