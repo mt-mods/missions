@@ -4,6 +4,7 @@ local FORMNAME = "mission_block_main"
 missions.form.missionblock_main = function(pos, node, player)
 
 	local meta = minetest.get_meta(pos)
+	local owner = meta:get_string("owner")
 
 	-- check for migration
 	missions.migrate_mission_block(pos, meta)
