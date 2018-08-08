@@ -7,8 +7,8 @@ local hud = {} -- playername -> {}
 
 missions.register_step({
 
-	type = "buildspecific",
-	name = "Place specific nodes",
+	type = "digspecific",
+	name = "Dig specific nodes",
 
 	create = function()
 		return {stack="default:stone 99"}
@@ -24,6 +24,7 @@ missions.register_step({
 		return false
 	end,
 
+
 	get_status = function(ctx)
 		local player = ctx.player
 		local stepdata = ctx.step.data
@@ -31,10 +32,7 @@ missions.register_step({
 
 		local stack = ItemStack(stacks[name] or "")
 
-		local hud_data = hud[name];
-		player:hud_change(hud_data.counter, "text", stack:get_count() .. "x")
-
-		return "Place " .. stack:get_count() .. " " .. stack:get_name()
+		return "Dig " .. stack:get_count() .. " " .. stack:get_name()
 	end,
 
 	edit_formspec = function(ctx)
@@ -45,7 +43,7 @@ missions.register_step({
 		ctx.inv:set_stack("main", 1, stack)
 
 		local formspec = "size[8,8;]" ..
-			"label[0,0;Place specific nodes]" ..
+			"label[0,0;Dig specific nodes]" ..
 
 			"label[0,1;Node:]" ..
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;3,1;1,1;0]" ..
@@ -110,6 +108,9 @@ missions.register_step({
 
 		local stack = ItemStack(stacks[name] or "")
 
+		local hud_data = hud[name];
+		player:hud_change(hud_data.counter, "text", stack:get_count() .. "x")
+
 		if stack:get_count() == 0 then
 			ctx.on_success()
 		end
@@ -142,7 +143,7 @@ minetest.register_on_placenode(function(pos, newnode, player, oldnode, itemstack
 
 		if newnode.name == stack:get_name() then
 			-- node name matches
-			stack:take_item(1)
+			stack:set_count(stack:get_count() + 1)
 		end
 
 		stacks[name] = stack:to_string()
@@ -158,11 +159,13 @@ minetest.register_on_dignode(function(pos, oldnode, digger)
 
 		if oldnode.name == stack:get_name() then
 			-- node name matches
-			stack:set_count(stack:get_count() + 1)
+			stack:take_item(1)
 		end
 
 		stacks[name] = stack:to_string()
 	end
 end)
+
+
 
 

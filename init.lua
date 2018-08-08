@@ -48,6 +48,7 @@ dofile(MP.."/register_step.lua")
 -- step specs
 dofile(MP.."/steps/waypoint.lua")
 dofile(MP.."/steps/dig.lua")
+dofile(MP.."/steps/digspecific.lua")
 dofile(MP.."/steps/build.lua")
 dofile(MP.."/steps/buildspecific.lua")
 dofile(MP.."/steps/chestput.lua")
