@@ -11,6 +11,12 @@ minetest.register_craftitem("missions:wand_chest", {
 	stack_max = 1
 })
 
+minetest.register_craftitem("missions:wand_mission", {
+	description = "Mission wand with mission-reference",
+	inventory_image = "missions_wand_mission.png",
+	stack_max = 1
+})
+
 
 minetest.register_craftitem("missions:wand", {
 	description = "Mission wand",

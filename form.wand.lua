@@ -18,16 +18,23 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 
 	local inv = player:get_inventory()
+	local type = "Position"
 	local stack = ItemStack("missions:wand_position")
 
 	if node.name == "default:chest" or node.name == "default:chest_locked" or node.name == "more_chests:dropbox" then
 		stack = ItemStack("missions:wand_chest")
+		type = "Chest"
+	end
+
+	if node.name == "missions:mission" then
+		stack = ItemStack("missions:wand_mission")
+		type = "Mission"
 	end
 
 	local meta = stack:get_meta()
 	meta:set_string("pos", posStr)
 	meta:set_string("name", fields.name)
-	meta:set_string("description", "Mission wand to position: " .. posStr .. 
+	meta:set_string("description", "Mission wand (" .. type .. "): " .. posStr .. 
 		" with name: '" .. fields.name .. 
 		"' and node '" .. node.name .. "'")
 
