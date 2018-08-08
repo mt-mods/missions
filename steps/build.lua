@@ -7,7 +7,7 @@ missions.register_step({
 	name = "Place nodes",
 
 	create = function()
-		return {count=100}
+		return {count=99}
 	end,
 
 
@@ -77,13 +77,20 @@ missions.register_step({
 minetest.register_on_placenode(function(pos, newnode, player, oldnode, itemstack)
 	if player ~= nil and player:is_player() then
 		local name = player:get_player_name()
-		local count = counter[name]
-		if not count then
-			count = 0
-		end
+		local count = counter[name] or 0
 
 		count = count + 1
 		counter[name] = count
+	end
+end)
+
+minetest.register_on_dignode(function(pos, oldnode, digger)
+	if digger ~= nil and digger:is_player() then
+		local name = digger:get_player_name()
+		local count = counter[name] or 0
+
+		count = count - 1
+		counter[name] = math.max(count, 0)
 	end
 end)
 

@@ -76,10 +76,7 @@ missions.register_step({
 minetest.register_on_dignode(function(pos, oldnode, digger)
 	if digger ~= nil and digger:is_player() then
 		local name = digger:get_player_name()
-		local count = counter[name]
-		if not count then
-			count = 0
-		end
+		local count = counter[name] or 0
 
 		count = count + 1
 		counter[name] = count
