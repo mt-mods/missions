@@ -9,9 +9,11 @@ unified_inventory.register_page("missions", {
 			"label[1,0;Missions]";
 
 		if mission then
-			formspec = formspec .. "button[1,1;4,1;abort_mission;Abort mission]";
+			formspec = formspec .. 
+				"label[1,1;" .. mission.name .. "]" ..
+				"button[1,2;4,1;abort_mission;Abort mission]";
 		else
-			formspec = formspec .. "label[1,1;No running mission]";
+			formspec = formspec .. "label[1,2;No running mission]";
 		end
 
 		return {formspec=formspec}
