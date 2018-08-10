@@ -1,6 +1,13 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
 missions.check_owner = function(pos, player)
+	-- check override priv
+	local has_override = minetest.check_player_privs(player, "protection_bypass")
+	if has_override then
+		return true
+	end
+
+	-- check owner
 	local meta = minetest.get_meta(pos)
 	return player and player:is_player() and player:get_player_name() == meta:get_string("owner")
 end
