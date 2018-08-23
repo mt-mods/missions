@@ -5,3 +5,7 @@ if has_mobs_mod then
 		description = "Allows the creation of mission steps with mobs"
 	});
 end
+
+minetest.register_privilege("missions_teleport", {
+	description = "Allows the creation of mission steps with teleportation"
+});
