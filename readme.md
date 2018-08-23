@@ -23,7 +23,6 @@ Supported mission-steps:
 * Dig nodes (any)
 * Dig specific nodes (e.g: Meseblock)
 * Put items in Chest at position (e.g: 99xStone)
-* Spawn a mob at position (requires the **missions_mobs** priv)
 * Waypoint (hidden and visible in hud)
 * Teleport player to position (requires the **missions_teleport** priv)
 * Reward player with items from a chest
@@ -31,6 +30,7 @@ Supported mission-steps:
 * Message (show a message with a title)
 
 Extended mission-steps (dependent on other mods):
+* Spawn a mob at position (requires the **missions_mobs** priv)
 * Check xp (if xp mod enabled)
 * Give xp (if xp mod enabled and privs available)
 
