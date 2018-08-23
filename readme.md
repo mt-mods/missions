@@ -13,15 +13,19 @@ Obligatory screenshot
 Features:
 * In-game mission builder
 * Craftable mission-block and wand
-* Create epic quests
-* Missions can span multiple days
+* Create epic quests or mazes
+* Missions can span multiple days even weeks
 * Running missions persist across login/logout and server-restart
 
 Supported mission-steps:
 * Build (place any nodes)
+* Build specific nodes (e.g: Stone)
 * Dig nodes (any)
-* Put items in Chest
+* Dig specific nodes (e.g: Meseblock)
+* Put items in Chest at position (e.g: 99xStone)
+* Spawn a mob at position (requires the **missions_mobs** priv)
 * Waypoint (hidden and visible in hud)
+* Teleport player to position (requires the **missions_teleport** priv)
 * Reward player with items from a chest
 * Reward player with items (mission-build must have the **give** priv)
 * Message (show a message with a title)
@@ -138,6 +142,11 @@ See the existing steps in the **steps** folder for some guidelines.
 * default
 * [xp_redo](https://github.com/thomasrudin-mt/xp_redo)?
 * [more_chests](https://github.com/minetest-mods/more_chests)?
+* [mobs_redo](https://notabug.org/TenPlus1/mobs_redo)?
+* [mobs_monster](https://notabug.org/TenPlus1/mobs_monster)?
+* [mobs_horse](https://notabug.org/TenPlus1/mob_horse)?
+* [mobs_animal](https://notabug.org/TenPlus1/mobs_animal)?
+* [mobs_npc](https://notabug.org/TenPlus1/mobs_npc)?
 
 # Pull requests / bugs
 
