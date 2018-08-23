@@ -46,12 +46,13 @@ missions.register_step({
 				"Distance: " .. math.floor(distance) .. " m"
 		end
 
-		local formspec = "size[8,10;]" ..
+		local formspec = "size[8,8;]" ..
 			"label[0,0;Teleport (Step #" .. ctx.stepnumber .. ")]" ..
 
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;0,1;1,1;0]" ..
+			"label[0,2;" .. name .. "]" ..
 
-			"list[current_player;main;0,6;8,4;]" ..
+			"list[current_player;main;0,3;8,4;]" ..
 
 			"button_exit[0,7;8,1;save;Save]"
 
