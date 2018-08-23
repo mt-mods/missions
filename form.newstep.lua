@@ -30,7 +30,7 @@ missions.form.newstep = function(pos, node, player)
 	local formspec = "size[8,10;]" ..
 		"label[0,0;New step]" ..
 		"textlist[0,1;8,7;steptype;" .. list .. "]" ..
-		"button_exit[0,9;8,1;add;Add]"
+		"button[0,9;8,1;add;Add]"
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),
@@ -88,9 +88,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		missions.set_steps(pos, steps)
 		local stepnumber = #steps
 
-		minetest.after(0.1, function()
-			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
-		end)
+		missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
 	end
 
 end)

@@ -91,7 +91,7 @@ missions.register_step({
 
 			"list[current_player;main;0,7;8,1;]" ..
 
-			"button_exit[0,8;8,1;save;Save]"
+			"button[0,8;8,1;save;Save]"
 
 		return formspec;
 	end,

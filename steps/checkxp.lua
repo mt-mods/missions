@@ -16,7 +16,7 @@ missions.register_step({
 			"label[0,0;XP Check (Step #" .. stepnumber .. ")]" ..
 	
 			"field[0,2;8,1;xp;XP Threshold;" .. stepdata.xp ..  "]" ..
-			"button_exit[0,7;8,1;save;Save]"
+			"button[0,7;8,1;save;Save]"
 
 		return formspec;
 	end,

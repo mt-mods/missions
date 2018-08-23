@@ -22,11 +22,11 @@ missions.form.missionblock_main = function(pos, node, player)
 		"label[0,0;Mission block]" ..
 		"image[7,0;missions_block_preview.png]" ..
 
-		"button_exit[0,1;8,1;configure;Configure]" ..
-		"button_exit[0,2;8,1;stepeditor;Step editor]" ..
-		"button_exit[0,3;8,1;user;User view]" ..
-		"button_exit[0,4;8,1;stats;Statistics]" ..
-		"button_exit[0,5;8,1;help;Help]" ..
+		"button[0,1;8,1;configure;Configure]" ..
+		"button[0,2;8,1;stepeditor;Step editor]" ..
+		"button[0,3;8,1;user;User view]" ..
+		"button[0,4;8,1;stats;Statistics]" ..
+		"button[0,5;8,1;help;Help]" ..
 
 		"button_exit[0,7;8,1;exit;Exit]"
 
@@ -55,37 +55,27 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.stepeditor then
-		minetest.after(0.1, function()
-			missions.form.missionblock_stepeditor(pos, node, player)
-		end)
+		missions.form.missionblock_stepeditor(pos, node, player)
 		return true
 	end
 
 	if fields.user then
-		minetest.after(0.1, function()
-			missions.form.missionblock_user(pos, node, player)
-		end)
+		missions.form.missionblock_user(pos, node, player)
 		return true
 	end
 
 	if fields.stats then
-		minetest.after(0.1, function()
-			missions.form.missionblock_stats(pos, node, player)
-		end)
+		missions.form.missionblock_stats(pos, node, player)
 		return true
 	end
 
 	if fields.configure then
-		minetest.after(0.1, function()
-			missions.form.missionblock_config(pos, node, player)
-		end)
+		missions.form.missionblock_config(pos, node, player)
 		return true
 	end
 
 	if fields.help then
-		minetest.after(0.1, function()
-			missions.form.missionblock_help(pos, node, player)
-		end)
+		missions.form.missionblock_help(pos, node, player)
 		return true
 	end
 

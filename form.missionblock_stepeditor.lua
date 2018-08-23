@@ -22,11 +22,11 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 	local formspec = "size[8,8;]" ..
 		--left
 		"label[0,0;Mission editor]" ..
-		"button_exit[5.5,1;2,1;add;Add]" ..
-		"button_exit[5.5,2;2,1;edit;Edit]" ..
-		"button_exit[5.5,3;2,1;up;Up]" ..
-		"button_exit[5.5,4;2,1;down;Down]" ..
-		"button_exit[5.5,5;2,1;remove;Remove]" ..
+		"button[5.5,1;2,1;add;Add]" ..
+		"button[5.5,2;2,1;edit;Edit]" ..
+		"button[5.5,3;2,1;up;Up]" ..
+		"button[5.5,4;2,1;down;Down]" ..
+		"button[5.5,5;2,1;remove;Remove]" ..
 		steps_list .. 
 		"button_exit[0,7;8,1;save;Save and validate]"
 
@@ -55,9 +55,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.add then
-		minetest.after(0.1, function()
-			missions.form.newstep(pos, node, player)
-		end)
+		missions.form.newstep(pos, node, player)
 		return true
 	end
 
@@ -67,9 +65,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		table.remove(steps, selected_step)
 		missions.set_steps(pos, steps)
 
-		minetest.after(0.1, function()
-			missions.form.missionblock_stepeditor(pos, node, player)
-		end)
+		missions.form.missionblock_stepeditor(pos, node, player)
 		return true
 	end
 
@@ -81,10 +77,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		if step then
 			local stepdata = step.data
-			minetest.after(0.1, function()
-				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
-			end)
-			return true
+			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
 		end
 	end
 
@@ -99,10 +92,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step - 1)
 		end
 
-		minetest.after(0.1, function()
-			missions.form.missionblock_stepeditor(pos, node, player)
-		end)
-		return true
+		missions.form.missionblock_stepeditor(pos, node, player)
 	end
 
 	if fields.down then
@@ -116,10 +106,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("selected_step", selected_step + 1)
 		end
 
-		minetest.after(0.1, function()
-			missions.form.missionblock_stepeditor(pos, node, player)
-		end)
-		return true
+		missions.form.missionblock_stepeditor(pos, node, player)
 	end
 
 	if fields.steps then

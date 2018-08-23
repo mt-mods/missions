@@ -18,7 +18,7 @@ missions.register_step({
 			"label[0,0;Give XP (Step #" .. stepnumber .. ")]" ..
 	
 			"field[0,2;8,1;xp;XP;" .. stepdata.xp ..  "]" ..
-			"button_exit[0,7;8,1;save;Save]"
+			"button[0,7;8,1;save;Save]"
 
 		return formspec;
 	end,

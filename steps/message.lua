@@ -20,7 +20,7 @@ missions.register_step({
 	
 			"field[0,1;8,1;title;Title;" .. stepdata.title ..  "]" ..
 			"textarea[0,2;8,4;message;Message;" .. stepdata.message ..  "]" ..
-			"button_exit[0,7;8,1;save;Save]"
+			"button[0,7;8,1;save;Save]"
 
 		return formspec;
 	end,
