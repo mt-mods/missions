@@ -18,6 +18,9 @@ minetest.register_node("missions:mission", {
 		meta:set_string("owner", playername)
 		meta:set_int("selected_step", 1)
 		meta:set_int("time", 300)
+		meta:set_int("hidden", 0)
+		meta:set_int("valid", 1)
+		meta:set_string("validationresult", "")
 		meta:set_string("name", "")
 		meta:set_string("description", "")
 

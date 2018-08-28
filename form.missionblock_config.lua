@@ -9,13 +9,23 @@ missions.form.missionblock_config = function(pos, node, player)
 	local time = meta:get_string("time")
 	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
+	local hidden = meta:get_int("hidden")
+
+	local hidden_str = "Hidden "
+	if hidden == 0 then
+		hidden_str = hidden_str .. "<True>"
+	else
+		hidden_str = hidden_str .. "<False>"
+	end
 
 	local formspec = "size[8,8;]" ..
 		--left
 		"label[0,0;Mission editor]" ..
+		"button[4,0;4,1;togglehidden;" .. hidden_str .. "]" ..
+
 		"field[0,1;8,1;name;Name;" .. name ..  "]" ..
 		"field[0,2;8,1;time;Time (seconds);" .. time ..  "]" ..
-		"textarea[0,3;8,5;description;Description;" .. description .. "]" ..
+		"textarea[0,3;8,4;description;Description;" .. description .. "]" ..
 		"button_exit[0,7;8,1;save;Save]"
 
 	minetest.show_formspec(player:get_player_name(),
@@ -48,6 +58,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.time then
 		meta:set_string("time", fields.time)
+	end
+
+	if fields.togglehidden then
+		local hidden = meta:get_int("hidden")
+		if hidden == 0 then
+			meta:set_int("hidden", 1)
+		else
+			meta:set_int("hidden", 0)
+		end
+		missions.form.missionblock_config(pos, node, player)
 	end
 
 	if fields.description then
