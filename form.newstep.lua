@@ -1,13 +1,8 @@
 
 local FORMNAME = "mission_block_newstep"
 
-missions.form.newstep = function(pos, node, player)
-
-	local step_buttons = ""
-	local offset = 1
-
-
-	local list = ""
+local function get_mission_steps_for_player(player)
+	local list = {}
 	for i,spec in ipairs(missions.steps) do
 
 		local allowed = true
@@ -15,15 +10,28 @@ missions.form.newstep = function(pos, node, player)
 		-- check privs
 		if spec.privs and not minetest.check_player_privs(player:get_player_name(), spec.privs) then
 			allowed = false
-			-- continue?
 		end
 
 		if allowed then
-			list = list .. minetest.formspec_escape(spec.name)
-			if i < #missions.steps then
-				-- not end of list
-				list = list .. ","
-			end
+			table.insert(list, spec)
+		end
+	end
+
+	return list
+end
+
+missions.form.newstep = function(pos, node, player)
+
+	local step_buttons = ""
+	local offset = 1
+
+	local steps = get_mission_steps_for_player(player)
+	local list = ""
+	for i,spec in ipairs(steps) do
+		list = list .. minetest.formspec_escape(spec.name)
+		if i < #steps then
+			-- not end of list
+			list = list .. ","
 		end
 	end
 
@@ -56,6 +64,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
+	print(dump(fields))--XXX
+
 	if fields.steptype then
 		parts = fields.steptype:split(":")
 		if parts[1] == "CHG" then
@@ -65,8 +75,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.add then
+		local steps = get_mission_steps_for_player(player)
 		local index = selected_newstep_index[player:get_player_name()]
-		local spec = missions.steps[index]
+		local spec = steps[index]
 
 		-- check privs
 		if spec.privs and not minetest.check_player_privs(player:get_player_name(), spec.privs) then
