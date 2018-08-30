@@ -64,8 +64,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
-	print(dump(fields))--XXX
-
 	if fields.steptype then
 		parts = fields.steptype:split(":")
 		if parts[1] == "CHG" then
