@@ -72,11 +72,11 @@ missions.register_step({
 			"field[0.2,3;8,1;description;Description;" .. stepdata.description .. "]" ..
 			"field[0.2,4;4,1;radius;Radius;" .. stepdata.radius .. "]" ..
 
-			"button[0,5;8,1;togglevisible;" .. visibleText .. "]" ..
+			"button[4,5;4,1;togglevisible;" .. visibleText .. "]" ..
 
 			"list[current_player;main;0,6;8,4;]" ..
 
-			"button[0,7;8,1;save;Save]"
+			"button[0,5;4,1;save;Save]"
 
 		return formspec;
 	end,
