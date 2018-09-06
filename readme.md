@@ -14,7 +14,7 @@ Features:
 * In-game mission builder
 * Craftable mission-block and wand
 * Create epic quests or mazes
-* Missions can span multiple days even weeks
+* Missions can span multiple days, even weeks
 * Running missions persist across login/logout and server-restart
 
 Supported mission-steps:
@@ -28,6 +28,7 @@ Supported mission-steps:
 * Reward player with items from a chest
 * Reward player with items (mission-build must have the **give** priv)
 * Message (show a message with a title)
+* Grant priviliege (requires the **priv** privilege)
 
 Extended mission-steps (dependent on other mods):
 * Spawn a mob at position (requires the **missions_mobs** priv)
