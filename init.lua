@@ -57,6 +57,7 @@ dofile(MP.."/steps/givereward.lua")
 dofile(MP.."/steps/message.lua")
 dofile(MP.."/steps/teleport.lua")
 dofile(MP.."/steps/grant.lua")
+dofile(MP.."/steps/givebook.lua")
 -- dofile(MP.."/steps/followup.lua")
 
 if has_xp_redo_mod then
