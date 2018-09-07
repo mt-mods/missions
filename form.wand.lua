@@ -50,7 +50,7 @@ missions.form.wand = function(pos, player)
 	local formspec = "size[8,1;]" ..
 		"field[0,0.5;6,1;name;Name;]" ..
 		"button_exit[6,0.1;2,1;save;Save]" ..
-		missions.FORMBG
+		missions.SMALLFORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),
