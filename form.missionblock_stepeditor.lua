@@ -63,10 +63,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if fields.remove then
 		local steps = missions.get_steps(pos)
 		local selected_step = meta:get_int("selected_step")
+		local last_step = selected_step == #steps
 		table.remove(steps, selected_step)
 		missions.set_steps(pos, steps)
 
 		missions.form.missionblock_stepeditor(pos, node, player)
+		if last_step then
+			meta:set_int("selected_step", selected_step - 1)
+		end
 		return true
 	end
 
