@@ -69,7 +69,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 		missions.form.missionblock_stepeditor(pos, node, player)
 		if last_step then
-			meta:set_int("selected_step", selected_step - 1)
+			meta:set_int("selected_step", math.max(selected_step - 1, 1))
 		end
 		return true
 	end

@@ -57,6 +57,10 @@ missions.persist_mission = function(player, mission)
 	player:set_attribute(missions.MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
 end
 
+minetest.register_on_respawnplayer(function(player)
+	missions.abort(player:get_player_name())
+end)
+
 
 missions.set_current_mission = function(player, mission)
 	playerabort[player:get_player_name()] = false
