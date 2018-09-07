@@ -20,7 +20,6 @@ missions.form.missionblock_main = function(pos, node, player)
 	local formspec = "size[8,8;]" ..
 		--left
 		"label[0,0;Mission block]" ..
-		"image[7,0;missions_block_preview.png]" ..
 
 		"button[0,1;8,1;configure;Configure]" ..
 		"button[0,2;8,1;stepeditor;Step editor]" ..

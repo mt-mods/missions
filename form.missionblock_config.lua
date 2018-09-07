@@ -21,12 +21,13 @@ missions.form.missionblock_config = function(pos, node, player)
 	local formspec = "size[8,8;]" ..
 		--left
 		"label[0,0;Mission editor]" ..
-		"button[4,0;4,1;togglehidden;" .. hidden_str .. "]" ..
 
 		"field[0,1;8,1;name;Name;" .. name ..  "]" ..
 		"field[0,2;8,1;time;Time (seconds);" .. time ..  "]" ..
 		"textarea[0,3;8,4;description;Description;" .. description .. "]" ..
-		"button_exit[0,7;8,1;save;Save]" ..
+
+		"button_exit[4,7;4,1;save;Save]" ..
+		"button[0,7;4,1;togglehidden;" .. hidden_str .. "]" ..
 		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),

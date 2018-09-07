@@ -13,6 +13,7 @@ missions = {
 	MISSION_ATTRIBUTE_NAME = "currentmission",
 	CURRENT_MISSION_SPEC_VERSION = 2, -- see executor.lua:missions.start()
 	FORMBG = "bgcolor[#f4d142BB]" .. 
+		"image[7,0;missions_block_preview.png]" ..
 		"listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]"
 }
 
