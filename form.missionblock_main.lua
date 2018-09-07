@@ -28,7 +28,8 @@ missions.form.missionblock_main = function(pos, node, player)
 		"button[0,4;8,1;stats;Statistics]" ..
 		"button[0,5;8,1;help;Help]" ..
 
-		"button_exit[0,7;8,1;exit;Exit]"
+		"button_exit[0,7;8,1;exit;Exit]" ..
+		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),

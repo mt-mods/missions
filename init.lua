@@ -11,7 +11,9 @@ missions = {
 		posy = tonumber(minetest.settings:get("missions.hud.offsety") or 0.2)
 	},
 	MISSION_ATTRIBUTE_NAME = "currentmission",
-	CURRENT_MISSION_SPEC_VERSION = 2 -- see executor.lua:missions.start()
+	CURRENT_MISSION_SPEC_VERSION = 2, -- see executor.lua:missions.start()
+	FORMBG = "bgcolor[#f4d142BB]" .. 
+		"listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]"
 }
 
 -- forms

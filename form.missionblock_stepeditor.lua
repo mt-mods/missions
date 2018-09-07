@@ -28,7 +28,8 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 		"button[5.5,4;2,1;down;Down]" ..
 		"button[5.5,5;2,1;remove;Remove]" ..
 		steps_list .. 
-		"button_exit[0,7;8,1;save;Save and validate]"
+		"button_exit[0,7;8,1;save;Save and validate]" ..
+		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),

@@ -14,7 +14,8 @@ missions.form.missionblock_user = function(pos, node, player)
 		"label[4,0;Time: " .. missions.format_time(time) .. "]" ..
 		"label[0,1;" .. name .. "]" ..
 		"label[0,2;" .. description .. "]" ..
-		"button_exit[5.5,1;2,1;start;Start]"
+		"button_exit[5.5,1;2,1;start;Start]" ..
+		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),

@@ -26,7 +26,8 @@ missions.form.missionblock_config = function(pos, node, player)
 		"field[0,1;8,1;name;Name;" .. name ..  "]" ..
 		"field[0,2;8,1;time;Time (seconds);" .. time ..  "]" ..
 		"textarea[0,3;8,4;description;Description;" .. description .. "]" ..
-		"button_exit[0,7;8,1;save;Save]"
+		"button_exit[0,7;8,1;save;Save]" ..
+		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),

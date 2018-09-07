@@ -12,7 +12,8 @@ missions.form.missionblock_stats = function(pos, node, player)
 		"label[0,0;Mission block]" ..
 		"label[0,2;Success-count: " .. successcount .. "]" ..
 		"label[0,3;Fail-count: " .. failcount .. "]" ..
-		"button_exit[0,7;8,1;exit;Exit]"
+		"button_exit[0,7;8,1;exit;Exit]" ..
+		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),

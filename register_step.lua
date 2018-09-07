@@ -39,7 +39,7 @@ missions.show_step_editor = function(pos, node, player, stepnumber, step, stepda
 
 			minetest.show_formspec(player:get_player_name(),
 				FORMNAME .. ";" .. minetest.pos_to_string(pos) .. ";" .. stepnumber .. ";" .. spec.type,
-				formspec
+				formspec .. missions.FORMBG
 			)
 		end
 	end

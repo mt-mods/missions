@@ -38,7 +38,8 @@ missions.form.newstep = function(pos, node, player)
 	local formspec = "size[8,10;]" ..
 		"label[0,0;New step]" ..
 		"textlist[0,1;8,7;steptype;" .. list .. "]" ..
-		"button[0,9;8,1;add;Add]"
+		"button[0,9;8,1;add;Add]" ..
+		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
 		FORMNAME .. ";" .. minetest.pos_to_string(pos),

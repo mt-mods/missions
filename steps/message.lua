@@ -49,7 +49,8 @@ missions.register_step({
 		local formspec = "size[8,8;]" ..
 			"label[0,0;" .. stepdata.title .. "]" ..
 			"label[0,2;" .. stepdata.message .. "]" ..
-			"button_exit[5.5,1;2,1;ok;OK]"
+			"button_exit[5.5,1;2,1;ok;OK]" ..
+			missions.FORMBG
 
 		minetest.show_formspec(player:get_player_name(), FORMNAME, formspec)
 	end,
