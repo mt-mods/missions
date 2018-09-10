@@ -102,7 +102,7 @@ missions.register_step({
 		local inv = ctx.inv
 
 		if fields.mobname then
-			parts = fields.mobname:split(":")
+			local parts = fields.mobname:split(":")
 			if parts[1] == "CHG" then
 				local selected_mob = tonumber(parts[2])
 				stepdata.mobname = mob_names[selected_mob]
