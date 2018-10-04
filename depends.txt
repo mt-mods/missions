@@ -5,3 +5,4 @@ mobs_redo?
 mobs_animal?
 mobs_monster?
 mobs_horse?
+mobs_xenomorph?
