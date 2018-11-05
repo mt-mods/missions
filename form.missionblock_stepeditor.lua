@@ -3,6 +3,9 @@ local FORMNAME = "mission_block_stepeditor"
 
 missions.form.missionblock_stepeditor = function(pos, node, player, chain)
 
+	-- update current chain for editing
+	missions.set_selected_chain(player, chain)
+
 	local meta = minetest.get_meta(pos)
 
 	local selected_step = missions.get_selected_list_item(player)

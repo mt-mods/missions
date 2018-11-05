@@ -33,7 +33,9 @@ minetest.register_node("missions:mission", {
 		if inv:get_stack(listname, index):get_count() == 0 then
 			-- target inv empty
 
-			local steps = missions.get_steps(pos, "steps")
+			local chain = missions.get_selected_chain(player)
+
+			local steps = missions.get_steps(pos, chain)
 			local meta = minetest.get_meta(pos)
 
 			local selected_step = missions.get_selected_list_item(player)

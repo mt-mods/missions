@@ -133,6 +133,19 @@ missions.get_name_for_step_key = function(key)
 	return "Unknown"
 end
 
+-- user selected chain
+
+local SELECTED_CHAIN_ATTR_NAME = "missions_selected_chain"
+
+missions.get_selected_chain = function(player)
+	return player:get_attribute(SELECTED_CHAIN_ATTR_NAME) or "steps"
+end
+
+missions.set_selected_chain = function(player, chain)
+	player:set_attribute(SELECTED_CHAIN_ATTR_NAME, chain)
+end
+
+
 -- user selected step
 
 local SELECTED_LIST_ITEM_ATTR_NAME = "missions_selected_list_item"
