@@ -1,12 +1,12 @@
 
 local FORMNAME = "mission_block_stepeditor"
 
-missions.form.missionblock_stepeditor = function(pos, node, player)
+missions.form.missionblock_stepeditor = function(pos, node, player, chain)
 
 	local meta = minetest.get_meta(pos)
 
 	local selected_step = missions.get_selected_list_item(player)
-	local steps = missions.get_steps(pos, "steps")
+	local steps = missions.get_steps(pos, chain)
 
 	-- steps list
 	local steps_list = "textlist[0,1;5,6;steps;"
@@ -21,7 +21,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 
 	local formspec = "size[8,8;]" ..
 		--left
-		"label[0,0;Mission editor]" ..
+		"label[0,0;Mission editor, Chain: " .. missions.get_name_for_step_key(chain) .. "]" ..
 		"button[5.5,1;2,1;add;Add]" ..
 		"button[5.5,2;2,1;edit;Edit]" ..
 		"button[5.5,3;2,1;up;Up]" ..
@@ -32,7 +32,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
-		FORMNAME .. ";" .. minetest.pos_to_string(pos),
+		FORMNAME .. ";" .. minetest.pos_to_string(pos) .. ";" .. chain,
 		formspec
 	)
 
@@ -48,6 +48,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	local pos = minetest.string_to_pos(parts[2])
+	local chain = parts[3]
 	local meta = minetest.get_meta(pos)
 	local node = minetest.get_node(pos)
 
@@ -56,16 +57,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.add then
-		missions.form.newstep(pos, node, player)
+		missions.form.newstep(pos, node, player, chain)
 		return true
 	end
 
 	if fields.remove then
-		local steps = missions.get_steps(pos, "steps")
+		local steps = missions.get_steps(pos, chain)
 		local selected_step = missions.get_selected_list_item(player)
 		local last_step = selected_step == #steps
 		table.remove(steps, selected_step)
-		missions.set_steps(pos, steps, "steps")
+		missions.set_steps(pos, steps, chain)
 
 		missions.form.missionblock_stepeditor(pos, node, player)
 		if last_step then
@@ -76,24 +77,24 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.edit then
 		local stepnumber = missions.get_selected_list_item(player)
-		local steps = missions.get_steps(pos, "steps")
+		local steps = missions.get_steps(pos, chain)
 
 		local step = steps[stepnumber]
 
 		if step then
 			local stepdata = step.data
-			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+			missions.show_step_editor(pos, node, player, stepnumber, step, stepdata, chain)
 		end
 	end
 
 	if fields.up then
-		local steps = missions.get_steps(pos, "steps")
+		local steps = missions.get_steps(pos, chain)
 		local selected_step = missions.get_selected_list_item(player)
 		if selected_step > 1 then
 			local tmp = steps[selected_step-1]
 			steps[selected_step-1] = steps[selected_step]
 			steps[selected_step] = tmp
-			missions.set_steps(pos, steps, "steps")
+			missions.set_steps(pos, steps, chain)
 			missions.set_selected_list_item(player, selected_step - 1)
 		end
 
@@ -101,13 +102,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.down then
-		local steps = missions.get_steps(pos, "steps")
+		local steps = missions.get_steps(pos, chain)
 		local selected_step = missions.get_selected_list_item(player)
 		if selected_step < #steps then
 			local tmp = steps[selected_step+1]
 			steps[selected_step+1] = steps[selected_step]
 			steps[selected_step] = tmp
-			missions.set_steps(pos, steps, "steps")
+			missions.set_steps(pos, steps, chain)
 			missions.set_selected_list_item(player, selected_step + 1)
 		end
 

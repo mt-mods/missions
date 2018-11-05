@@ -20,7 +20,7 @@ local function get_mission_steps_for_player(player)
 	return list
 end
 
-missions.form.newstep = function(pos, node, player)
+missions.form.newstep = function(pos, node, player, chain)
 
 	local step_buttons = ""
 	local offset = 1
@@ -42,7 +42,7 @@ missions.form.newstep = function(pos, node, player)
 		missions.FORMBG
 
 	minetest.show_formspec(player:get_player_name(),
-		FORMNAME .. ";" .. minetest.pos_to_string(pos),
+		FORMNAME .. ";" .. minetest.pos_to_string(pos) .. ";" .. chain,
 		formspec
 	)
 
@@ -59,6 +59,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	local pos = minetest.string_to_pos(parts[2])
+	local chain = parts[3]
 	local node = minetest.get_node(pos)
 
 	if not missions.check_owner(pos, player) then
@@ -92,13 +93,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			data = stepdata
 		}
 
-		local steps = missions.get_steps(pos, "steps")
+		local steps = missions.get_steps(pos, chain)
 		table.insert(steps, step)
 
-		missions.set_steps(pos, steps, "steps")
+		missions.set_steps(pos, steps, chain)
 		local stepnumber = #steps
 
-		missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+		missions.show_step_editor(pos, node, player, stepnumber, step, stepdata, chain)
 	end
 
 end)

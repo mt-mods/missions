@@ -16,7 +16,7 @@ end
 
 local FORMNAME = "mission_block_editstep"
 
-missions.show_step_editor = function(pos, node, player, stepnumber, step, stepdata)
+missions.show_step_editor = function(pos, node, player, stepnumber, step, stepdata, chain)
 
 	-- clear inv before showing step editor
 	local meta = minetest.get_meta(pos)
@@ -38,7 +38,7 @@ missions.show_step_editor = function(pos, node, player, stepnumber, step, stepda
 			})
 
 			minetest.show_formspec(player:get_player_name(),
-				FORMNAME .. ";" .. minetest.pos_to_string(pos) .. ";" .. stepnumber .. ";" .. spec.type,
+				FORMNAME .. ";" .. minetest.pos_to_string(pos) .. ";" .. stepnumber .. ";" .. spec.type .. ";" .. chain,
 				formspec .. missions.FORMBG
 			)
 		end
@@ -58,12 +58,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local node = minetest.get_node(pos)
 	local stepnumber = tonumber(parts[3])
 	local spectype = parts[4]
+	local chain = parts[5]
 
 	if not missions.check_owner(pos, player) then
 		return
 	end
 
-	local steps = missions.get_steps(pos, "steps")
+	local steps = missions.get_steps(pos, chain)
 
 	local step = steps[stepnumber]
 	local stepdata = step.data
@@ -71,11 +72,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	for i,spec in ipairs(missions.steps) do
 		if spec.type == spectype then
 			local show_editor = function()
-				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)
+				missions.show_step_editor(pos, node, player, stepnumber, step, stepdata, chain)
 			end
 
 			local show_mission = function()
-				missions.form.missionblock_stepeditor(pos, node, player)
+				missions.form.missionblock_stepeditor(pos, node, player, chain)
 			end
 
 			spec.update({
@@ -88,7 +89,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			})
 
 			-- write back data
-			missions.set_steps(pos, steps, "steps")
+			missions.set_steps(pos, steps, chain)
 		end
 	end
 	

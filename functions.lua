@@ -123,6 +123,16 @@ missions.set_steps = function(pos, steps, chain)
 	meta:set_string(chain, minetest.serialize(steps))
 end
 
+
+missions.get_name_for_step_key = function(key)
+	if key == "steps" then return "Main" end
+	if key == "beforesteps" then return "Before" end
+	if key == "failsteps" then return "Fail" end
+	if key == "successsteps" then return "Success" end
+	if key == "aftersteps" then return "After" end
+	return "Unknown"
+end
+
 -- user selected step
 
 local SELECTED_LIST_ITEM_ATTR_NAME = "missions_selected_list_item"
