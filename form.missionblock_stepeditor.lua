@@ -5,7 +5,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 
 	local meta = minetest.get_meta(pos)
 
-	local selected_step = meta:get_int("selected_step")
+	local selected_step = missions.get_selected_list_item(player)
 	local steps = missions.get_steps(pos)
 
 	-- steps list
@@ -62,20 +62,20 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.remove then
 		local steps = missions.get_steps(pos)
-		local selected_step = meta:get_int("selected_step")
+		local selected_step = missions.get_selected_list_item(player)
 		local last_step = selected_step == #steps
 		table.remove(steps, selected_step)
 		missions.set_steps(pos, steps)
 
 		missions.form.missionblock_stepeditor(pos, node, player)
 		if last_step then
-			meta:set_int("selected_step", math.max(selected_step - 1, 1))
+			missions.set_selected_list_item(player, math.max(selected_step - 1, 1))
 		end
 		return true
 	end
 
 	if fields.edit then
-		local stepnumber = meta:get_int("selected_step")
+		local stepnumber = missions.get_selected_list_item(player)
 		local steps = missions.get_steps(pos)
 
 		local step = steps[stepnumber]
@@ -88,13 +88,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.up then
 		local steps = missions.get_steps(pos)
-		local selected_step = meta:get_int("selected_step")
+		local selected_step = missions.get_selected_list_item(player)
 		if selected_step > 1 then
 			local tmp = steps[selected_step-1]
 			steps[selected_step-1] = steps[selected_step]
 			steps[selected_step] = tmp
 			missions.set_steps(pos, steps)
-			meta:set_int("selected_step", selected_step - 1)
+			missions.set_selected_list_item(player, selected_step - 1)
 		end
 
 		missions.form.missionblock_stepeditor(pos, node, player)
@@ -102,13 +102,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.down then
 		local steps = missions.get_steps(pos)
-		local selected_step = meta:get_int("selected_step")
+		local selected_step = missions.get_selected_list_item(player)
 		if selected_step < #steps then
 			local tmp = steps[selected_step+1]
 			steps[selected_step+1] = steps[selected_step]
 			steps[selected_step] = tmp
 			missions.set_steps(pos, steps)
-			meta:set_int("selected_step", selected_step + 1)
+			missions.set_selected_list_item(player, selected_step + 1)
 		end
 
 		missions.form.missionblock_stepeditor(pos, node, player)
@@ -118,7 +118,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		parts = fields.steps:split(":")
 		if parts[1] == "CHG" then
 			local selected_step = tonumber(parts[2])
-			meta:set_int("selected_step", selected_step)
+			missions.set_selected_list_item(player, selected_step)
 		end
 	end
 

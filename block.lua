@@ -16,7 +16,6 @@ minetest.register_node("missions:mission", {
 		local meta = minetest.get_meta(pos)
 		local playername = placer:get_player_name() or ""
 		meta:set_string("owner", playername)
-		meta:set_int("selected_step", 1)
 		meta:set_int("time", 300)
 		meta:set_int("hidden", 0)
 		meta:set_int("valid", 1)
@@ -34,7 +33,12 @@ minetest.register_node("missions:mission", {
 		if inv:get_stack(listname, index):get_count() == 0 then
 			-- target inv empty
 
-			local step = missions.get_selected_step(pos)
+			local steps = missions.get_steps(pos)
+			local meta = minetest.get_meta(pos)
+
+			local selected_step = missions.get_selected_list_item(player)
+
+			local step = steps[selected_step]
 			local spec = missions.get_step_spec_by_type(step.type)
 
 			if spec.allow_inv_stack_put then

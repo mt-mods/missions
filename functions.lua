@@ -122,13 +122,18 @@ missions.set_steps = function(pos, steps)
 	meta:set_string("steps", minetest.serialize(steps))
 end
 
-missions.get_selected_step = function(pos)
-	local step = missions.get_steps(pos)
-	local meta = minetest.get_meta(pos)
+-- user selected step
 
-	local selected_step = meta:get_int("selected_step")
-	return step[selected_step]		
+local SELECTED_LIST_ITEM_ATTR_NAME = "missions_selected_list_item"
+
+missions.get_selected_list_item = function(player)
+	return tonumber( player:get_attribute(SELECTED_LIST_ITEM_ATTR_NAME) or "1" )
 end
+
+missions.set_selected_list_item = function(player, num)
+	player:set_attribute(SELECTED_LIST_ITEM_ATTR_NAME, num)
+end
+
 
 
 -- node register helper
