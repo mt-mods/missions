@@ -39,6 +39,7 @@ missions = {
 -- forms
 dofile(MP.."/form.missionblock_main.lua")
 dofile(MP.."/form.missionblock_stepeditor.lua")
+dofile(MP.."/form.missionblock_chains.lua")
 dofile(MP.."/form.missionblock_config.lua")
 dofile(MP.."/form.missionblock_user.lua")
 dofile(MP.."/form.missionblock_stats.lua")

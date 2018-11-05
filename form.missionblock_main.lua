@@ -22,7 +22,7 @@ missions.form.missionblock_main = function(pos, node, player)
 		"label[0,0;Mission block]" ..
 
 		"button[0,1;8,1;configure;Configure]" ..
-		"button[0,2;8,1;stepeditor;Step editor]" ..
+		"button[0,2;8,1;chaineditor;Step-Chain editor]" ..
 		"button[0,3;8,1;user;User view]" ..
 		"button[0,4;8,1;stats;Statistics]" ..
 		"button[0,5;8,1;help;Help]" ..
@@ -54,8 +54,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
-	if fields.stepeditor then
-		missions.form.missionblock_stepeditor(pos, node, player)
+	if fields.chaineditor then
+		missions.form.missionblock_chains(pos, node, player)
 		return true
 	end
 
