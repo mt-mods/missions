@@ -92,10 +92,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			data = stepdata
 		}
 
-		local steps = missions.get_steps(pos)
+		local steps = missions.get_steps(pos, "steps")
 		table.insert(steps, step)
 
-		missions.set_steps(pos, steps)
+		missions.set_steps(pos, steps, "steps")
 		local stepnumber = #steps
 
 		missions.show_step_editor(pos, node, player, stepnumber, step, stepdata)

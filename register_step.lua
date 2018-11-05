@@ -63,7 +63,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
-	local steps = missions.get_steps(pos)
+	local steps = missions.get_steps(pos, "steps")
 
 	local step = steps[stepnumber]
 	local stepdata = step.data
@@ -88,7 +88,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			})
 
 			-- write back data
-			missions.set_steps(pos, steps)
+			missions.set_steps(pos, steps, "steps")
 		end
 	end
 	

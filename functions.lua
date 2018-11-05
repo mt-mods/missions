@@ -110,16 +110,17 @@ missions.format_time = function(seconds)
 end
 
 -- mission steps setter/getter
-missions.get_steps = function(pos)
+-- chain: { "steps" }
+missions.get_steps = function(pos, chain)
 	local meta = minetest.get_meta(pos)
-	local steps = minetest.deserialize(meta:get_string("steps"))
+	local steps = minetest.deserialize(meta:get_string(chain))
 
 	return steps
 end
 
-missions.set_steps = function(pos, steps)
+missions.set_steps = function(pos, steps, chain)
 	local meta = minetest.get_meta(pos)
-	meta:set_string("steps", minetest.serialize(steps))
+	meta:set_string(chain, minetest.serialize(steps))
 end
 
 -- user selected step

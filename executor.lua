@@ -11,7 +11,7 @@ missions.start = function(pos, player)
 		return
 	end
 
-	local steps = missions.get_steps(pos)
+	local steps = missions.get_steps(pos, "steps")
 	if #steps == 0 then
 		minetest.chat_send_player(playername, "Mission has no steps!")
 		return

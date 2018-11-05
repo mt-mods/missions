@@ -10,7 +10,7 @@ local function clear_validation_result(meta)
 end
 
 missions.validate_mission = function(pos, player)
-	local steps = missions.get_steps(pos)
+	local steps = missions.get_steps(pos, "steps")
 	local meta = minetest.get_meta(pos)
 
 	for i,step in ipairs(steps) do

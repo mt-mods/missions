@@ -33,7 +33,7 @@ minetest.register_node("missions:mission", {
 		if inv:get_stack(listname, index):get_count() == 0 then
 			-- target inv empty
 
-			local steps = missions.get_steps(pos)
+			local steps = missions.get_steps(pos, "steps")
 			local meta = minetest.get_meta(pos)
 
 			local selected_step = missions.get_selected_list_item(player)
@@ -74,7 +74,7 @@ minetest.register_node("missions:mission", {
 	can_dig = missions.only_owner_can_dig,
 
 	on_construct = function(pos)
-		missions.set_steps(pos, {})
+		missions.set_steps(pos, {}, "steps")
 	end,
 
 	on_rightclick = missions.form.missionblock_main

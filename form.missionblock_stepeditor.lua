@@ -6,7 +6,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 	local meta = minetest.get_meta(pos)
 
 	local selected_step = missions.get_selected_list_item(player)
-	local steps = missions.get_steps(pos)
+	local steps = missions.get_steps(pos, "steps")
 
 	-- steps list
 	local steps_list = "textlist[0,1;5,6;steps;"
@@ -61,11 +61,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.remove then
-		local steps = missions.get_steps(pos)
+		local steps = missions.get_steps(pos, "steps")
 		local selected_step = missions.get_selected_list_item(player)
 		local last_step = selected_step == #steps
 		table.remove(steps, selected_step)
-		missions.set_steps(pos, steps)
+		missions.set_steps(pos, steps, "steps")
 
 		missions.form.missionblock_stepeditor(pos, node, player)
 		if last_step then
@@ -76,7 +76,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
 	if fields.edit then
 		local stepnumber = missions.get_selected_list_item(player)
-		local steps = missions.get_steps(pos)
+		local steps = missions.get_steps(pos, "steps")
 
 		local step = steps[stepnumber]
 
@@ -87,13 +87,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.up then
-		local steps = missions.get_steps(pos)
+		local steps = missions.get_steps(pos, "steps")
 		local selected_step = missions.get_selected_list_item(player)
 		if selected_step > 1 then
 			local tmp = steps[selected_step-1]
 			steps[selected_step-1] = steps[selected_step]
 			steps[selected_step] = tmp
-			missions.set_steps(pos, steps)
+			missions.set_steps(pos, steps, "steps")
 			missions.set_selected_list_item(player, selected_step - 1)
 		end
 
@@ -101,13 +101,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 	if fields.down then
-		local steps = missions.get_steps(pos)
+		local steps = missions.get_steps(pos, "steps")
 		local selected_step = missions.get_selected_list_item(player)
 		if selected_step < #steps then
 			local tmp = steps[selected_step+1]
 			steps[selected_step+1] = steps[selected_step]
 			steps[selected_step] = tmp
-			missions.set_steps(pos, steps)
+			missions.set_steps(pos, steps, "steps")
 			missions.set_selected_list_item(player, selected_step + 1)
 		end
 
