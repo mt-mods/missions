@@ -64,6 +64,9 @@ end
 dofile(MP.."/executor.lua")
 dofile(MP.."/executor.hud.lua")
 
+-- running mission persistence
+dofile(MP.."/persist.lua")
+
 -- step register
 dofile(MP.."/register_step.lua")
 
