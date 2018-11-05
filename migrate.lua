@@ -27,4 +27,12 @@ missions.migrate_mission_block = function(pos, meta)
 		meta:set_int("failcount", 0)
 	end
 
+	-- add missing chains
+	for _,chain in pairs({"beforesteps", "failsteps", "successsteps", "aftersteps"}) do
+		if not missions.get_steps(pos, chain) then
+			minetest.log("action", "[missions] [migrate] initialize chain " .. chain .. " on pos " .. minetest.pos_to_string(pos))
+			missions.set_steps(pos, {}, chain)
+		end
+	end
+
 end

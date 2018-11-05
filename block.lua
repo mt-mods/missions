@@ -74,7 +74,9 @@ minetest.register_node("missions:mission", {
 	can_dig = missions.only_owner_can_dig,
 
 	on_construct = function(pos)
-		missions.set_steps(pos, {}, "steps")
+		for _,chain in pairs({"steps", "beforesteps", "failsteps", "successsteps", "aftersteps"}) do
+			missions.set_steps(pos, {}, chain)
+		end
 	end,
 
 	on_rightclick = missions.form.missionblock_main

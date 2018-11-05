@@ -21,6 +21,21 @@ missions = {
 		"listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]"
 }
 
+--[[
+	invocation:
+
+	<beforesteps>
+	\/
+	<steps>
+	\/
+	<failsteps> <successsteps>
+	\/
+	<aftersteps>
+
+--]]
+
+
+
 -- forms
 dofile(MP.."/form.missionblock_main.lua")
 dofile(MP.."/form.missionblock_stepeditor.lua")
