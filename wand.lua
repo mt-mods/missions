@@ -11,6 +11,12 @@ minetest.register_craftitem("missions:wand_chest", {
 	stack_max = 1
 })
 
+minetest.register_craftitem("missions:wand_mesecon_button", {
+	description = "Mission wand with mesecon-button reference",
+	inventory_image = "missions_wand_mesecon_button.png",
+	stack_max = 1
+})
+
 minetest.register_craftitem("missions:wand_mission", {
 	description = "Mission wand with mission-reference",
 	inventory_image = "missions_wand_mission.png",
@@ -43,6 +49,18 @@ minetest.register_craft({
 	type = "shapeless",
 	output = "missions:wand",
 	recipe = {"missions:wand_position"}
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "missions:wand",
+	recipe = {"missions:wand_mesecon_button"}
+})
+
+minetest.register_craft({
+	type = "shapeless",
+	output = "missions:wand",
+	recipe = {"missions:wand_mission"}
 })
 
 minetest.register_craft({

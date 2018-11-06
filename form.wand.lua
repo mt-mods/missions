@@ -26,6 +26,18 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		type = "Chest"
 	end
 
+	-- nodebox button
+	if node.name == "mesecons_button:button_off" or node.name == "mesecons_button:button_on" then
+		stack = ItemStack("missions:wand_mesecon_button")
+		type = "Mesecon-Button"
+	end
+
+	-- full block switch
+	if node.name == "mesecons_switch:mesecon_switch" or node.name == "mesecons_switch:mesecon_switch_off" then
+		stack = ItemStack("missions:wand_mesecon_button")
+		type = "Mesecon-Button"
+	end
+
 	if node.name == "missions:mission" then
 		stack = ItemStack("missions:wand_mission")
 		type = "Mission"

@@ -6,3 +6,5 @@ mobs_animal?
 mobs_monster?
 mobs_horse?
 mobs_xenomorph?
+mesecons_button?
+mesecons_switch?
