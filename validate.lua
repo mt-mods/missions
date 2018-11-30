@@ -13,6 +13,14 @@ missions.validate_mission = function(pos, player)
 	local steps = missions.get_steps(pos, "steps")
 	local meta = minetest.get_meta(pos)
 
+	if not steps then
+		return {
+			success=false,
+			failed=true,
+			msg="No steps found!"
+		}
+	end
+
 	for i,step in ipairs(steps) do
 
 		local spec = missions.get_step_spec_by_type(step.type)
