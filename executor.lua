@@ -11,10 +11,10 @@ missions.start = function(pos, player)
 		return
 	end
 
-	local steps = missions.get_steps(pos, "steps")
-	if #steps == 0 then
-		minetest.chat_send_player(playername, "Mission has no steps!")
-		return
+	local chains = {}
+	for _,chain in pairs({"steps", "beforesteps", "failsteps", "successsteps", "aftersteps"}) do
+		local steps = missions.get_steps(pos, chain)
+		chains[chain] = steps
 	end
 
 	local meta = minetest.get_meta(pos)
@@ -23,8 +23,9 @@ missions.start = function(pos, player)
 	mission = {
 		version = missions.CURRENT_MISSION_SPEC_VERSION,
 		pos = pos_str,
-		steps = steps,
+		chains = chains,
 		currentstep = 1,
+		currentchain = "beforesteps",
 		start = os.time(os.date("!*t")),
 		time = meta:get_int("time") or 300,
 		name = meta:get_string("name") or "<no name>",
@@ -34,16 +35,103 @@ missions.start = function(pos, player)
 	missions.set_current_mission(player, mission)
 end
 
+-- executes a single step for the player
+local execute_step = function(step, player, hooks)
+	local spec = missions.get_step_spec_by_type(step.type)
+
+	if not step.initialized then
+		if spec.on_step_enter then
+			spec.on_step_enter({
+				player=player,
+				step=step,
+				on_success=hooks.on_success,
+				on_failed=hooks.on_failed
+			})
+		end
+		step.initialized = true
+	end
+
+	if spec.on_step_interval then
+		spec.on_step_interval({
+			player=player,
+			step=step,
+			on_success=on_success,
+			on_failed=on_failed
+		})
+	end
+end
+
+-- step end/cleanup
+local exit_step(step, player)
+	local spec = missions.get_step_spec_by_type(step.type)
+
+	if spec.on_step_exit then
+		spec.on_step_exit({
+			step=step,
+			player=player
+		})
+	end
+end
+
+-- user abort or timeout
+local abort_step = function(step, player, msg)
+	--TODO
+end
+
 -- update the mission
 local update_mission = function(mission, player)
 
 	local now = os.time(os.date("!*t"))
 	local remainingTime = mission.time - (now - mission.start)
 	local playername = player:get_player_name()
-	local step = mission.steps[mission.currentstep]
+	local currentchain = mission.currentchain
+	local steps = mission.chains[currentchain]
+	local step = steps[mission.currentstep]
 	local abort = missions.has_aborted(playername)
 	local block_pos = minetest.string_to_pos(mission.pos)
 	local block_meta = minetest.get_meta(block_pos)
+
+	--[[
+	conditional chains:
+		"steps", "beforesteps", "successsteps"
+	unconditional chains:
+		"failsteps","aftersteps"
+	--]]
+
+	-- only abort on errors if in conditional chains
+	local on_error_abort = currentchain == "steps" or currentchain == "beforesteps" or currentchain == "successsteps"
+
+	local success = false
+	local failed = false
+
+	execute_step(step, player, {
+		on_success = function()
+			success = true
+		end,
+		on_failure = function()
+			failed = true
+		end
+	})
+
+	if failed or success then
+		exit_step(step, player)
+
+		if on_error_abort and failed then
+			-- abort chain
+		end
+
+
+		if success then
+			mission.currentstep = mission.currentstep + 1
+			-- TODO next step
+		end
+	end
+
+end
+
+
+--[[
+XXX old crap
 
 	if not step then
 		-- no more steps
@@ -149,7 +237,7 @@ local update_mission = function(mission, player)
 		return
 	end
 end
-
+--]]
 
 -- mission update step
 local timer = 0

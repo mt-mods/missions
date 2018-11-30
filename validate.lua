@@ -9,16 +9,10 @@ local function clear_validation_result(meta)
 	meta:set_string("validationresult", "")
 end
 
-missions.validate_mission = function(pos, player)
-	local steps = missions.get_steps(pos, "steps")
-	local meta = minetest.get_meta(pos)
+local validate_mission_steps = function(pos, meta, player, steps)
 
 	if not steps then
-		return {
-			success=false,
-			failed=true,
-			msg="No steps found!"
-		}
+		return { success=true }
 	end
 
 	for i,step in ipairs(steps) do
@@ -65,3 +59,25 @@ missions.validate_mission = function(pos, player)
 
 	return { success=true }
 end
+
+missions.validate_mission = function(pos, player)
+	local meta = minetest.get_meta(pos)
+
+	for _,chain in pairs({"steps", "beforesteps", "failsteps", "successsteps", "aftersteps"}) do
+		local steps = missions.get_steps(pos, chain)
+		local result =  validate_mission_steps(pos, meta, player, steps)
+		if not result.success or result.failed then
+			return {
+				success=false,
+				failed=true,
+				msg="Chain: " .. chain .. " " .. (result.msg or "")
+			}
+		end
+	end
+
+	return { success=true }
+end
+
+
+
+

@@ -71,7 +71,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		table.remove(steps, selected_step)
 		missions.set_steps(pos, steps, chain)
 
-		missions.form.missionblock_stepeditor(pos, node, player)
+		missions.form.missionblock_stepeditor(pos, node, player, chain)
 		if last_step then
 			missions.set_selected_list_item(player, math.max(selected_step - 1, 1))
 		end
