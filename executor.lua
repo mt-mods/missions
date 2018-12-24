@@ -62,7 +62,7 @@ local execute_step = function(step, player, hooks)
 end
 
 -- step end/cleanup
-local exit_step(step, player)
+local exit_step = function(step, player)
 	local spec = missions.get_step_spec_by_type(step.type)
 
 	if spec.on_step_exit then
