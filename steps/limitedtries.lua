@@ -41,9 +41,18 @@ missions.register_step({
 		local player = ctx.player
 		local playername = player:get_player_name()
 		local stepdata = ctx.step.data
-		local tries = stepdata.counts[playername] or 0
 
-		stepdata.counts[playername] = tries + 1
+		local count_map_str = ctx.block_meta:get_string("limitedtries")
+		local count_map = {}
+
+		if count_map_str ~= nil and count_map_str ~= "" then
+			count_map = minetest.deserialize(count_map_str)
+		end
+
+		local tries = count_map[playername] or 0
+
+		count_map[playername] = tries + 1
+		ctx.block_meta:set_string("limitedtries", minetest.serialize(count_map))
 
 		if tries < stepdata.maxcount then
 			ctx.on_success()

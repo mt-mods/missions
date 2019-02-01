@@ -26,7 +26,7 @@ missions.register_step({
 		local stepdata = ctx.step.data
 
 		if fields.priv then
-			stepdata.xp = xp
+			stepdata.priv = fields.priv
 		end
 
 		if fields.save then
