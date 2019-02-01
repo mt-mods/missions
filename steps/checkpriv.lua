@@ -14,8 +14,8 @@ missions.register_step({
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Priv check (Step #" .. stepnumber .. ")]" ..
-	
-			"field[0,2;8,1;xp;Privilege;" .. stepdata.priv ..  "]" ..
+
+			"field[0,2;8,1;priv;Privilege;" .. stepdata.priv ..  "]" ..
 			"button[0,7;8,1;save;Save]"
 
 		return formspec;
@@ -49,5 +49,3 @@ missions.register_step({
 	end
 
 })
-
-
