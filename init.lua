@@ -16,7 +16,7 @@ missions = {
 	SMALLFORMBG = "bgcolor[#f4d142BB]" ..
 		"listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]",
 
-	FORMBG = "bgcolor[#f4d142BB]" .. 
+	FORMBG = "bgcolor[#f4d142BB]" ..
 		"image[7,0;missions_block_preview.png]" ..
 		"listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]"
 }
@@ -64,6 +64,8 @@ dofile(MP.."/steps/message.lua")
 dofile(MP.."/steps/teleport.lua")
 dofile(MP.."/steps/grant.lua")
 dofile(MP.."/steps/givebook.lua")
+dofile(MP.."/steps/checkpriv.lua")
+dofile(MP.."/steps/limitedtries.lua")
 -- dofile(MP.."/steps/followup.lua")
 
 if has_xp_redo_mod then
@@ -76,4 +78,3 @@ if has_mobs_mod then
 end
 
 print("[OK] Missions")
-

@@ -101,7 +101,8 @@ local update_mission = function(mission, player)
 				player=player,
 				step=step,
 				on_success=on_success,
-				on_failed=on_failed
+				on_failed=on_failed,
+				block_meta=block_meta
 			})
 		end
 		step.initialized = true
