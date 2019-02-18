@@ -39,6 +39,9 @@ minetest.register_node("missions:mission", {
 			local selected_step = missions.get_selected_list_item(player)
 
 			local step = steps[selected_step]
+			if step == nil then
+				return 0
+			end
 			local spec = missions.get_step_spec_by_type(step.type)
 
 			if spec.allow_inv_stack_put then
