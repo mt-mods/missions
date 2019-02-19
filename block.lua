@@ -41,6 +41,17 @@ minetest.register_node("missions:mission", {
 			local selected_step = missions.get_selected_list_item(player)
 
 			local step = steps[selected_step]
+			if step == nil then
+				-- no such step, get the first one
+				missions.set_selected_list_item(player, 1)
+				step = steps[1]
+
+				if step == nil then
+					-- something is wrong: inv put without a step...
+					return 0
+				end
+			end
+
 			local spec = missions.get_step_spec_by_type(step.type)
 
 			if spec.allow_inv_stack_put then

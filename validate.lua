@@ -15,6 +15,10 @@ local validate_mission_steps = function(pos, meta, player, steps)
 		return { success=true }
 	end
 
+	if not steps then
+		return { success=false, failed=true, msg="No steps" }
+	end
+
 	for i,step in ipairs(steps) do
 
 		local spec = missions.get_step_spec_by_type(step.type)
