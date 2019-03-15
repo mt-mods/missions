@@ -41,6 +41,10 @@ minetest.register_on_joinplayer(function(player)
 		-- only load if compatible with current spec
 		local step = mission.steps[mission.currentstep]
 		
+		if step == nil then
+			return
+		end
+
 		-- reset init flag
 		step.initialized = false
 
