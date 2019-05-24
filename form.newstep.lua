@@ -78,6 +78,10 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		local index = selected_newstep_index[player:get_player_name()]
 		local spec = steps[index]
 
+		if not spec then
+			return
+		end
+
 		-- check privs
 		if spec.privs and not minetest.check_player_privs(player:get_player_name(), spec.privs) then
 			minetest.chat_send_player(player:get_player_name(), "Missing privs: " .. dump(spec.privs))
