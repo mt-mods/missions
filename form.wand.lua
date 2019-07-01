@@ -1,6 +1,10 @@
 
 local FORMNAME = "mission_wand_name"
 
+missions.can_create_wand = function(player, pos)
+	return true
+end
+
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local parts = formname:split(";")
 	local name = parts[1]
@@ -16,6 +20,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
+	if not missions.can_create_wand(player, pos) then
+		return
+	end
 
 	local inv = player:get_inventory()
 	local type = "Position"
