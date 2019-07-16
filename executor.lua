@@ -31,8 +31,17 @@ missions.start = function(pos, player)
 		description = meta:get_string("description") or ""
 	}
 
+	local nointeract = meta:get_int("nointeract")
+
+	if nointeract then
+		minetest.set_player_privs(playername, {
+			interact = false,
+			missions_nointeract = true })
+	end
+
 	missions.set_current_mission(player, mission)
 end
+
 
 -- update the mission
 local update_mission = function(mission, player)
@@ -62,9 +71,20 @@ local update_mission = function(mission, player)
 
 	local success = false
 	local failed = false
-	
+
+	local finally = function()
+		local nointeract = minetest.get_player_privs(playername, {
+			missions_nointeract = true })
+		if nointeract then
+			minetest.set_player_privs(playername, {
+				interact = true,
+				missions_nointeract = false })
+		end
+	end
+
 	local on_success = function()
 		success = true
+		finally()
 	end
 
 	local on_failed = function(msg)
@@ -81,6 +101,7 @@ local update_mission = function(mission, player)
 
 		-- increment counter
 		block_meta:set_int("failcount", block_meta:get_int("failcount") + 1)
+		finally()
 	end
 
 	if abort then

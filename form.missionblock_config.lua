@@ -10,12 +10,20 @@ missions.form.missionblock_config = function(pos, node, player)
 	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
 	local hidden = meta:get_int("hidden")
+	local nointeract = meta:get_int("nointeract")
 
 	local hidden_str = "Hidden "
 	if hidden == 0 then
 		hidden_str = hidden_str .. "<True>"
 	else
 		hidden_str = hidden_str .. "<False>"
+	end
+
+	local nointeract_str = "No interact priv during mission "
+	if nointeract == 1 then
+		nointeract_str = nointeract_str .. "<True>"
+	else
+		nointeract_str = nointeract_str .. "<False>"
 	end
 
 	local formspec = "size[8,8;]" ..
@@ -26,6 +34,7 @@ missions.form.missionblock_config = function(pos, node, player)
 		"field[0,2;8,1;time;Time (seconds);" .. time ..  "]" ..
 		"textarea[0,3;8,4;description;Description;" .. description .. "]" ..
 
+		"button[0,6;8,1;togglenointeract;" .. nointeract_str .. "]" ..
 		"button_exit[4,7;4,1;save;Save]" ..
 		"button[0,7;4,1;togglehidden;" .. hidden_str .. "]" ..
 		missions.FORMBG
@@ -68,6 +77,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			meta:set_int("hidden", 1)
 		else
 			meta:set_int("hidden", 0)
+		end
+		missions.form.missionblock_config(pos, node, player)
+	end
+
+	if fields.togglenointeract then
+		local nointeract = meta:get_int("nointeract")
+		if nointeract == 0 then
+			meta:set_int("nointeract", 1)
+		else
+			meta:set_int("nointeract", 0)
 		end
 		missions.form.missionblock_config(pos, node, player)
 	end
