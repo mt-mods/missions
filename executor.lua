@@ -35,7 +35,7 @@ missions.start = function(pos, player)
 
 	if nointeract then
 		local privs = minetest.get_player_privs(playername)
-		privs.interact = false
+		privs.interact = nil
 		privs.mission_nointeract = true
 		minetest.set_player_privs(playername, privs)
 	end
@@ -79,7 +79,7 @@ local update_mission = function(mission, player)
 		if nointeract then
 			local privs = minetest.get_player_privs(playername)
 			privs.interact = true
-			privs.mission_nointeract = false
+			privs.mission_nointeract = nil
 			minetest.set_player_privs(playername, privs)
 		end
 	end
