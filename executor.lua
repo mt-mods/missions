@@ -34,9 +34,10 @@ missions.start = function(pos, player)
 	local nointeract = meta:get_int("nointeract")
 
 	if nointeract then
-		minetest.set_player_privs(playername, {
-			interact = false,
-			missions_nointeract = true })
+		local privs = minetest.get_player_privs(playername)
+		privs.interact = false
+		privs.mission_nointeract = true
+		minetest.set_player_privs(playername, privs)
 	end
 
 	missions.set_current_mission(player, mission)
@@ -76,9 +77,10 @@ local update_mission = function(mission, player)
 		local nointeract = minetest.get_player_privs(playername, {
 			missions_nointeract = true })
 		if nointeract then
-			minetest.set_player_privs(playername, {
-				interact = true,
-				missions_nointeract = false })
+			local privs = minetest.get_player_privs(playername)
+			privs.interact = true
+			privs.mission_nointeract = false
+			minetest.set_player_privs(playername, privs)
 		end
 	end
 
