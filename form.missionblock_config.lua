@@ -14,9 +14,9 @@ missions.form.missionblock_config = function(pos, node, player)
 
 	local hidden_str = "Hidden "
 	if hidden == 0 then
-		hidden_str = hidden_str .. "<True>"
-	else
 		hidden_str = hidden_str .. "<False>"
+	else
+		hidden_str = hidden_str .. "<True>"
 	end
 
 	local nointeract_str = "No interact priv during mission "
