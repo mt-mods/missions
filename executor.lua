@@ -31,18 +31,16 @@ missions.start = function(pos, player)
 		description = meta:get_string("description") or ""
 	}
 
-	local nointeract = meta:get_int("nointeract")
-
-	if nointeract then
-		local privs = minetest.get_player_privs(playername)
-		privs.interact = nil
-		privs.mission_nointeract = true
-		minetest.set_player_privs(playername, privs)
-	end
-
 	missions.set_current_mission(player, mission)
 end
 
+local after_mission_hook = function(player)
+	-- restore interact, no matter what
+	local playername = player:get_player_name()
+	local privs = minetest.get_player_privs(playername)
+	privs.interact = true
+	minetest.set_player_privs(playername, privs)
+end
 
 -- update the mission
 local update_mission = function(mission, player)
@@ -63,6 +61,8 @@ local update_mission = function(mission, player)
 
 		-- increment counter
 		block_meta:set_int("successcount", block_meta:get_int("successcount") + 1)
+
+		after_mission_hook(player)
 		return
 	end
 
@@ -73,20 +73,8 @@ local update_mission = function(mission, player)
 	local success = false
 	local failed = false
 
-	local finally = function()
-		local nointeract = minetest.get_player_privs(playername, {
-			missions_nointeract = true })
-		if nointeract then
-			local privs = minetest.get_player_privs(playername)
-			privs.interact = true
-			privs.mission_nointeract = nil
-			minetest.set_player_privs(playername, privs)
-		end
-	end
-
 	local on_success = function()
 		success = true
-		finally()
 	end
 
 	local on_failed = function(msg)
@@ -103,7 +91,7 @@ local update_mission = function(mission, player)
 
 		-- increment counter
 		block_meta:set_int("failcount", block_meta:get_int("failcount") + 1)
-		finally()
+		after_mission_hook(player)
 	end
 
 	if abort then

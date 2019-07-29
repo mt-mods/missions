@@ -13,7 +13,3 @@ minetest.register_privilege("missions_teleport", {
 minetest.register_privilege("missions_book", {
 	description = "Allows the creation of mission steps with book-giving"
 });
-
-minetest.register_privilege("missions_nointeract", {
-	description = "Temporary privilege for missions with disallowed interaction"
-});

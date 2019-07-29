@@ -89,7 +89,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 
 
-		local stepdata = spec.create()
+		local stepdata = nil
+		if spec.create then
+			stepdata = spec.create()
+		end
+
 		local step = {
 			type = spec.type,
 			name = spec.name,

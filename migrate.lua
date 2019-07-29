@@ -11,10 +11,6 @@ missions.migrate_mission_block = function(pos, meta)
 		meta:set_int("hidden", 0)
 	end
 
-	if meta:get_int("nointeract") == nil then
-		meta:set_int("nointeract", 0)
-	end
-
 	if meta:get_int("valid") == nil then
 		meta:set_int("valid", 1)
 	end
