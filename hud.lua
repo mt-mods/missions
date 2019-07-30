@@ -5,36 +5,6 @@ local HUD_ALIGNMENT = {x = 1, y = 0}
 local hud = {} -- playerName -> {}
 
 
--- returns the image (item, node, tool) or ""
-local get_image = function(name)
-	-- minetest.registered_items[name].inventory_image
-	-- minetest.registered_tools[name].inventory_image
-	-- minetest.registered_nodes["default:stone"].tiles[1]
-	-- TODO: look at drawer code
-
-	if name == nil then
-		return ""
-	end
-
-	local node = minetest.registered_nodes[name]
-	if node ~= nil and node.tiles ~= nil and table.getn(node.tiles) == 1 then
-		return minetest.inventorycube(node.tiles[1],node.tiles[1],node.tiles[1])
-	end
-
-	local item = minetest.registered_items[name]
-	if item ~= nil and item.inventory_image ~= nil then
-		return item.inventory_image
-	end
-
-	local tool = minetest.registered_tools[name]
-	if tool ~= nil and tool.inventory_image ~= nil then
-		return tool.inventory_image
-	end
-
-	-- none found
-	return ""
-end
-
 minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 
@@ -161,16 +131,7 @@ missions.hud_update = function(player, playermissions)
 		player:hud_change(data.title, "text", "")
 		player:hud_change(data.mission, "text", "")
 		player:hud_change(data.time, "text", "")
-
-		local i = 1
-		while i <= hud_context_count do -- 1..n
-			player:hud_change(data.context[i], "text", "")
-			player:hud_change(data.contextcount[i], "text", "")
-
-			i = i + 1
-		end
 	end
-	
 end
 
 

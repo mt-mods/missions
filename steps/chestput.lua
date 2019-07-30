@@ -82,7 +82,7 @@ missions.register_step({
 
 		if stepdata.pos then
 			local distance = vector.distance(ctx.pos, stepdata.pos)
-			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+			name = name .. "Position(" .. stepdata.pos.x .. "/" ..
 				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
 				"Distance: " .. math.floor(distance) .. " m"
 		end
@@ -204,13 +204,13 @@ missions.register_step({
 
 		local str = remainingItems[player:get_player_name()]
 		if str then
-			local stack = ItemStack(str);
+			local stack = ItemStack(str)
 
 			if stack:get_count() == 0 then
 				ctx.on_success()
 			end
 
-			local hud_data = hud[player:get_player_name()];
+			local hud_data = hud[player:get_player_name()]
 			player:hud_change(hud_data.counter, "text", stack:get_count() .. "x")
 		else
 			ctx.on_success()
@@ -218,10 +218,10 @@ missions.register_step({
 	end,
 
 	on_step_exit = function(ctx)
-		local player = ctx.player;		
+		local player = ctx.player
 
 		remainingItems[player:get_player_name()] = ""
-		local hud_data = hud[player:get_player_name()];
+		local hud_data = hud[player:get_player_name()]
 
 		if hud_data and hud_data.image then
 			player:hud_remove(hud_data.image)
@@ -251,7 +251,7 @@ local intercept_chest = function(name)
 		def.on_metadata_inventory_put = function(pos, listname, index, stack, player)
 			if player and player:is_player() then
 				local remStack = ItemStack(remainingItems[player:get_player_name()])
-				
+
 				if remStack:get_name() == stack:get_name() then
 					local count = remStack:get_count() - stack:get_count()
 					if count < 0 then count = 0 end

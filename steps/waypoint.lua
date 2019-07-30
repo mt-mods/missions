@@ -45,7 +45,7 @@ missions.register_step({
 
 		if stepdata.pos then
 			local distance = vector.distance(pos, stepdata.pos)
-			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+			name = name .. "Position(" .. stepdata.pos.x .. "/" ..
 				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
 				"Distance: " .. math.floor(distance) .. " m"
 		end
@@ -141,10 +141,9 @@ missions.register_step({
 	on_step_interval = function(ctx)
 		local player = ctx.player
 		local stepdata = ctx.step.data
-
 		local pos = player:get_pos()
 
-		local distance = vector.distance(player:get_pos(), stepdata.pos)
+		local distance = vector.distance(pos, stepdata.pos)
 		if distance < stepdata.radius then
 			ctx.on_success()
 		end

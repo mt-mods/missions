@@ -1,4 +1,3 @@
-local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 
 missions.check_owner = function(pos, player)
 	-- check override priv
@@ -40,7 +39,6 @@ minetest.register_on_joinplayer(function(player)
 	if mission and mission.version == missions.CURRENT_MISSION_SPEC_VERSION then
 		-- only load if compatible with current spec
 		local step = mission.steps[mission.currentstep]
-		
 		if step == nil then
 			return
 		end
@@ -158,7 +156,7 @@ end
 missions.get_image = function(name)
 	-- stolen from drawers code
 	local texture = "blank.png"
-	local def = core.registered_items[name]
+	local def = minetest.registered_items[name]
 	if not def then
 		return texture
 	end
@@ -178,11 +176,11 @@ missions.get_image = function(name)
 		-- tiles: up, down, right, left, back, front
 		-- inventorycube: up, front, right
 		if #tiles <= 2 then
-		        texture = core.inventorycube(tiles[1], tiles[1], tiles[1])
+		        texture = minetest.inventorycube(tiles[1], tiles[1], tiles[1])
 		elseif #tiles <= 5 then
-		        texture = core.inventorycube(tiles[1], tiles[3], tiles[3])
+		        texture = minetest.inventorycube(tiles[1], tiles[3], tiles[3])
 		else -- full tileset
-		        texture = core.inventorycube(tiles[1], tiles[6], tiles[3])
+		        texture = minetest.inventorycube(tiles[1], tiles[6], tiles[3])
 		end
 	end
 

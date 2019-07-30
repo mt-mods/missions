@@ -3,8 +3,6 @@ local FORMNAME = "mission_block_stepeditor"
 
 missions.form.missionblock_stepeditor = function(pos, node, player)
 
-	local meta = minetest.get_meta(pos)
-
 	local selected_step = missions.get_selected_list_item(player)
 	local steps = missions.get_steps(pos)
 
@@ -27,7 +25,7 @@ missions.form.missionblock_stepeditor = function(pos, node, player)
 		"button[5.5,3;2,1;up;Up]" ..
 		"button[5.5,4;2,1;down;Down]" ..
 		"button[5.5,5;2,1;remove;Remove]" ..
-		steps_list .. 
+		steps_list ..
 		"button_exit[0,7;8,1;save;Save and validate]" ..
 		missions.FORMBG
 

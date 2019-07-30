@@ -15,7 +15,6 @@ missions.register_step({
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Grant privilege]" ..
-	
 			"field[0,2;8,1;priv;Privilege;" .. stepdata.priv ..  "]" ..
 			"button[0,7;8,1;save;Save]"
 
@@ -40,7 +39,7 @@ missions.register_step({
 		local name = player:get_player_name()
 		local stepdata = ctx.step.data
 		local priv = stepdata.priv
-	
+
 		if priv then
 			local privs = minetest.get_player_privs(name)
 			privs[priv] = true

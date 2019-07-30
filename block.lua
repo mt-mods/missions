@@ -34,8 +34,6 @@ minetest.register_node("missions:mission", {
 			-- target inv empty
 
 			local steps = missions.get_steps(pos)
-			local meta = minetest.get_meta(pos)
-
 			local selected_step = missions.get_selected_list_item(player)
 
 			local step = steps[selected_step]

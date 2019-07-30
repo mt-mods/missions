@@ -26,7 +26,6 @@ missions.register_step({
 
 	get_status = function(ctx)
 		local player = ctx.player
-		local stepdata = ctx.step.data
 		local name = player:get_player_name()
 
 		local stack = ItemStack(stacks[name] or "")
@@ -116,9 +115,9 @@ missions.register_step({
 	end,
 
 	on_step_exit = function(ctx)
-		local player = ctx.player;		
+		local player = ctx.player
 		local name = player:get_player_name()
-		local hud_data = hud[name];
+		local hud_data = hud[name]
 
 		if hud_data and hud_data.image then
 			player:hud_remove(hud_data.image)

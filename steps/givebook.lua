@@ -1,6 +1,5 @@
 
 
-local FORMNAME = "mission_block_step_message"
 
 missions.register_step({
 
@@ -18,7 +17,6 @@ missions.register_step({
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Give a book]" ..
-	
 			"field[0,1;8,1;title;Title;" .. stepdata.title ..  "]" ..
 			"textarea[0,2;8,4;message;Message;" .. stepdata.message ..  "]" ..
 			"button[0,7;8,1;save;Save]"
@@ -46,7 +44,6 @@ missions.register_step({
 		local stepdata = ctx.step.data
 
 		local new_stack = ItemStack("default:book_written")
-		local stackMeta = new_stack:get_meta()
 
 		local data = {}
 

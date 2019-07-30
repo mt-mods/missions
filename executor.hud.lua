@@ -64,7 +64,7 @@ missions.hud_update_status = function(player, status)
 	player:hud_change(data.status, "text", status)
 end
 
-missions.hud_update = function(player, mission, remainingTime)
+missions.hud_update = function(player, mission)
 
 	local playername = player:get_player_name()
 	local data = hud[playername]

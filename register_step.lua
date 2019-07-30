@@ -9,7 +9,7 @@ missions.get_step_spec_by_type = function(type)
 	for i,spec in ipairs(missions.steps) do
 		if type == spec.type then
 			-- step spec found
-			return spec			
+			return spec
 		end
 	end
 end
@@ -91,7 +91,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			missions.set_steps(pos, steps)
 		end
 	end
-	
 
 end)
 

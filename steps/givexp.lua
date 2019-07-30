@@ -16,7 +16,6 @@ missions.register_step({
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Give XP (Step #" .. stepnumber .. ")]" ..
-	
 			"field[0,2;8,1;xp;XP;" .. stepdata.xp ..  "]" ..
 			"button[0,7;8,1;save;Save]"
 

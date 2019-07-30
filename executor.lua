@@ -62,7 +62,7 @@ local update_mission = function(mission, player)
 
 	local success = false
 	local failed = false
-	
+
 	local on_success = function()
 		success = true
 	end
@@ -173,7 +173,6 @@ minetest.register_globalstep(function(dtime)
 	if timer >= 0.5 then
 		local players = minetest.get_connected_players()
 		for i,player in ipairs(players) do
-			local playername = player:get_player_name()
 			local mission = missions.get_current_mission(player)
 
 			if mission then

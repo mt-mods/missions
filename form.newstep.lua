@@ -22,9 +22,6 @@ end
 
 missions.form.newstep = function(pos, node, player)
 
-	local step_buttons = ""
-	local offset = 1
-
 	local steps = get_mission_steps_for_player(player)
 	local list = ""
 	for i,spec in ipairs(steps) do
@@ -96,7 +93,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			data = stepdata
 		}
 
-		local steps = missions.get_steps(pos)
+		steps = missions.get_steps(pos)
 		table.insert(steps, step)
 
 		missions.set_steps(pos, steps)

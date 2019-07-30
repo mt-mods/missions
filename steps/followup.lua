@@ -48,26 +48,22 @@ missions.register_step({
 
 	edit_formspec = function(ctx)
 		local pos = ctx.pos
-		local inv = ctx.inv
 		local stepdata = ctx.step.data
 
 		local name = ""
 
 		if stepdata.pos then
 			local distance = vector.distance(pos, stepdata.pos)
-			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+			name = name .. "Position(" .. stepdata.pos.x .. "/" ..
 				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
 				"Distance: " .. math.floor(distance) .. " m"
 		end
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Follow-up mission]" ..
-
 			"label[3,1;Target]" ..
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;4,1;1,1;0]" ..
-
 			"label[0,2;" .. name .. "]" ..
-
 			"list[current_player;main;0,6;8,1;]" ..
 			"button[0,7;8,1;save;Save]"
 
@@ -94,8 +90,8 @@ missions.register_step({
 	end,
 
 	on_step_enter = function(ctx)
-		local stepdata = ctx.step.data
-		local player = ctx.player
+		--local stepdata = ctx.step.data
+		--local player = ctx.player
 
 		--TODO
 		ctx.on_success()

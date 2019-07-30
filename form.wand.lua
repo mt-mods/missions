@@ -41,8 +41,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local meta = stack:get_meta()
 	meta:set_string("pos", posStr)
 	meta:set_string("name", fields.name)
-	meta:set_string("description", "Mission wand (" .. type .. "): " .. posStr .. 
-		" with name: '" .. fields.name .. 
+	meta:set_string("description", "Mission wand (" .. type .. "): " .. posStr ..
+		" with name: '" .. fields.name ..
 		"' and node '" .. node.name .. "'")
 
 	if inv:contains_item("main", "missions:wand") and inv:room_for_item("main", stack) then

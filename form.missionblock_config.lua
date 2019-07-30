@@ -7,7 +7,6 @@ missions.form.missionblock_config = function(pos, node, player)
 
 	local name = meta:get_string("name")
 	local time = meta:get_string("time")
-	local owner = meta:get_string("owner")
 	local description = meta:get_string("description")
 	local hidden = meta:get_int("hidden")
 

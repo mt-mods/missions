@@ -1,7 +1,5 @@
 
 
-local hud = {} -- playerName -> {}
-
 missions.register_step({
 
 	type = "chestreward",
@@ -83,7 +81,7 @@ missions.register_step({
 
 		if stepdata.pos then
 			local distance = vector.distance(pos, stepdata.pos)
-			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+			name = name .. "Position(" .. stepdata.pos.x .. "/" ..
 				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
 				"Distance: " .. math.floor(distance) .. " m"
 		end

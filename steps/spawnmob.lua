@@ -62,7 +62,7 @@ missions.register_step({
 
 		if stepdata.pos then
 			local distance = vector.distance(pos, stepdata.pos)
-			name = name .. "Position(" .. stepdata.pos.x .. "/" .. 
+			name = name .. "Position(" .. stepdata.pos.x .. "/" ..
 				stepdata.pos.y .. "/" .. stepdata.pos.z ..") " ..
 				"Distance: " .. math.floor(distance) .. " m"
 		end
@@ -70,12 +70,12 @@ missions.register_step({
 
 		local selected = 1
 		local list = ""
-		for i,name in ipairs(mob_names) do
-			if name == stepdata.mobname then
+		for i,mname in ipairs(mob_names) do
+			if mname == stepdata.mobname then
 				selected = i
 			end
 
-			list = list .. minetest.formspec_escape(name)
+			list = list .. minetest.formspec_escape(mname)
 			if i < #mob_names then
 				-- not end of list
 				list = list .. ","

@@ -26,7 +26,6 @@ missions.register_step({
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Place any nodes]" ..
-	
 			"field[0,2;8,1;count;Count;" .. stepdata.count ..  "]" ..
 			"button[0,7;8,1;save;Save]"
 
