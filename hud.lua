@@ -69,6 +69,7 @@ missions.hud_remove_mission = function(player, mission)
 	end
 end
 
+-- called by executor.lua or by executor.hud.lua
 missions.hud_update = function(player, playermissions)
 	local playername = player:get_player_name()
 

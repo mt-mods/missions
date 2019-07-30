@@ -43,6 +43,7 @@ local after_mission_hook = function(player)
 end
 
 -- update the mission
+-- called with below globalstep, usually ever 0.5 seconds
 local update_mission = function(mission, player)
 
 	local now = os.time(os.date("!*t"))

@@ -1,4 +1,6 @@
 
+-- migration call for reverse compatibility
+-- called on every missionblock rightclick
 missions.migrate_mission_block = function(pos, meta)
 	local inv = meta:get_inventory()
 
