@@ -148,6 +148,13 @@ See the existing steps in the **steps** folder for some guidelines.
 * [mobs_horse](https://notabug.org/TenPlus1/mob_horse)?
 * [mobs_animal](https://notabug.org/TenPlus1/mobs_animal)?
 * [mobs_npc](https://notabug.org/TenPlus1/mobs_npc)?
+* mobs_xenomorph?
+* mobs_fish?
+* mobs_crocs?
+* mobs_jellyfish?
+* mobs_sharks?
+* mobs_turtles?
+* mesecon?
 
 # Pull requests / bugs
 
