@@ -17,5 +17,6 @@ read_globals = {
 	"dump", "VoxelArea",
 
 	-- Deps
-	"unified_inventory", "default", "xp_redo"
+	"unified_inventory", "default", "xp_redo",
+	"mesecon"
 }

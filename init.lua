@@ -1,6 +1,7 @@
 local has_xp_redo_mod = minetest.get_modpath("xp_redo")
 local has_mobs_mod = minetest.get_modpath("mobs")
 local has_unified_inv = minetest.get_modpath("unified_inventory")
+local has_mesecons = minetest.get_modpath("mesecons")
 
 local MP = minetest.get_modpath("missions")
 
@@ -68,6 +69,10 @@ dofile(MP.."/steps/givebook.lua")
 dofile(MP.."/steps/checkpriv.lua")
 dofile(MP.."/steps/limitedtries.lua")
 -- dofile(MP.."/steps/followup.lua")
+
+if has_mesecons then
+	dofile(MP.."/steps/mesecons_receptor_on.lua")
+end
 
 if has_xp_redo_mod then
 	dofile(MP.."/steps/checkxp.lua")

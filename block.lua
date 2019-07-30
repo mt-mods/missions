@@ -9,7 +9,11 @@ minetest.register_node("missions:mission", {
 		"default_gold_block.png^default_paper.png^missions_m_overlay.png",
 		"default_gold_block.png^default_paper.png^missions_m_overlay.png"
 	},
-	groups = {cracky=3,oddly_breakable_by_hand=3},
+	groups = {
+		cracky = 3,
+		oddly_breakable_by_hand = 3,
+		mesecon_needs_receiver = 1
+	},
 	sounds = default.node_sound_glass_defaults(),
 
 	after_place_node = function(pos, placer)

@@ -109,11 +109,12 @@ local update_mission = function(mission, player)
 	if not step.initialized then
 		if spec.on_step_enter then
 			spec.on_step_enter({
-				player=player,
-				step=step,
-				on_success=on_success,
-				on_failed=on_failed,
-				block_meta=block_meta
+				player = player,
+				step = step,
+				on_success = on_success,
+				on_failed = on_failed,
+				block_meta = block_meta,
+				block_pos = block_pos
 			})
 		end
 		step.initialized = true
