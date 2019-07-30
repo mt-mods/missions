@@ -6,3 +6,8 @@ mobs_animal?
 mobs_monster?
 mobs_horse?
 mobs_xenomorph?
+mobs_fish?
+mobs_crocs?
+mobs_jellyfish?
+mobs_sharks?
+mobs_turtles?
