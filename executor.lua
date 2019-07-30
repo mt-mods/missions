@@ -34,6 +34,14 @@ missions.start = function(pos, player)
 	missions.set_current_mission(player, mission)
 end
 
+local after_mission_hook = function(player)
+	-- restore interact, no matter what
+	local playername = player:get_player_name()
+	local privs = minetest.get_player_privs(playername)
+	privs.interact = true
+	minetest.set_player_privs(playername, privs)
+end
+
 -- update the mission
 local update_mission = function(mission, player)
 
@@ -53,6 +61,8 @@ local update_mission = function(mission, player)
 
 		-- increment counter
 		block_meta:set_int("successcount", block_meta:get_int("successcount") + 1)
+
+		after_mission_hook(player)
 		return
 	end
 
@@ -81,6 +91,7 @@ local update_mission = function(mission, player)
 
 		-- increment counter
 		block_meta:set_int("failcount", block_meta:get_int("failcount") + 1)
+		after_mission_hook(player)
 	end
 
 	if abort then

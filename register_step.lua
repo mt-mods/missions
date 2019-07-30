@@ -27,6 +27,11 @@ missions.show_step_editor = function(pos, node, player, stepnumber, step, stepda
 
 	for i,spec in ipairs(missions.steps) do
 		if spec.type == step.type then
+			if not spec.edit_formspec then
+				missions.form.missionblock_stepeditor(pos, node, player)
+				return
+			end
+
 			local formspec = spec.edit_formspec({
 				pos=pos,
 				node=node,
