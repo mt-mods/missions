@@ -1,23 +1,5 @@
-
-minetest.register_craftitem("missions:wand_position", {
-	description = "Mission wand with position",
-	inventory_image = "missions_wand_position.png",
-	stack_max = 1
-})
-
-minetest.register_craftitem("missions:wand_chest", {
-	description = "Mission wand with chest-reference",
-	inventory_image = "missions_wand_chest.png",
-	stack_max = 1
-})
-
-minetest.register_craftitem("missions:wand_mission", {
-	description = "Mission wand with mission-reference",
-	inventory_image = "missions_wand_mission.png",
-	stack_max = 1
-})
-
-
+-- base wand
+-- register item
 minetest.register_craftitem("missions:wand", {
 	description = "Mission wand",
 	inventory_image = "missions_wand.png",
@@ -30,21 +12,7 @@ minetest.register_craftitem("missions:wand", {
 	end
 })
 
-
--- crafts
-
-minetest.register_craft({
-	type = "shapeless",
-	output = "missions:wand",
-	recipe = {"missions:wand_chest"}
-})
-
-minetest.register_craft({
-	type = "shapeless",
-	output = "missions:wand",
-	recipe = {"missions:wand_position"}
-})
-
+--register craft
 minetest.register_craft({
 	output = "missions:wand 3",
 	recipe = {
@@ -53,3 +21,27 @@ minetest.register_craft({
 		{"default:mese_crystal_fragment", "", "default:stick"}
 	}
 })
+
+-- converted wands
+-- helper table to track which wands are being added
+wands = {
+	["position"] = "position",
+	["chest"] = "chest-reference",
+	["mission"] = "mission-reference"
+}
+
+for key, value in pairs(wands) do
+	-- register item
+	minetest.register_craftitem("missions:wand_" .. key, {
+		description = "Mission wand with " .. value,
+		inventory_image = "missions_wand_" .. key .. ".png",
+		stack_max = 1
+	})
+
+	-- register deconversion
+	minetest.register_craft({
+		type = "shapeless",
+		output = "missions:wand",
+		recipe = {"missions:wand_" .. key}
+	})
+end
