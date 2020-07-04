@@ -1,6 +1,10 @@
 Minetest mission mod (missions)
 ======
 
+# Archived!
+**This mod is now in archive mode, for a full replacement with more features use the "epic" mod: https://github.com/damocles-minetest/epic**
+**(or ping me if you want to fork and maintain this)**
+
 Minetest mod for in-game mission creation (for players and admins)
 Adds a mission block to create missions and a mission-wand to mark positions and chests
 
