@@ -110,10 +110,10 @@ missions.register_step({
 
 			"label[0,2;" .. name .. "]" ..
 
-			"button_exit[0,5;8,1;togglevisible;" .. visibleText .. "]" ..
+			"button_exit[0,6.5;8,1;togglevisible;" .. visibleText .. "]" ..
 
-			"list[current_player;main;0,6;8,1;]" ..
-			"button[0,7;8,1;save;Save]"
+			"list[current_player;main;0,2.5;8,4;]listring[]" ..
+			"button[0,7.3;8,1;save;Save]"
 
 		return formspec;
 	end,

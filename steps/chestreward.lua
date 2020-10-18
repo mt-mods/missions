@@ -97,7 +97,8 @@ missions.register_step({
 
 			"label[0,2;" .. name .. "]" ..
 
-			"list[current_player;main;0,6;8,1;]" ..
+			"list[current_player;main;0,2.5;8,4;]listring[]" ..
+--			"list[current_player;main;0,6;8,1;]listring[]" ..
 			"button[0,7;8,1;save;Save]"
 
 		return formspec;
