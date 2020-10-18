@@ -89,7 +89,7 @@ missions.register_step({
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;0,6;1,1;0]" ..
 			"label[2,6;" .. name .. "]" ..
 
-			"list[current_player;main;0,7;8,1;]" ..
+			"list[current_player;main;0,7;8,1;]listring[]" ..
 
 			"button[0,8;8,1;save;Save]"
 

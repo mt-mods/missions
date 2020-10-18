@@ -49,10 +49,10 @@ missions.register_step({
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Teleport (Step #" .. ctx.stepnumber .. ")]" ..
 
-			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;0,1;1,1;0]" ..
+			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;3,1;1,1;0]" ..
 			"label[0,2;" .. name .. "]" ..
 
-			"list[current_player;main;0,3;8,4;]" ..
+			"list[current_player;main;0,2.7;8,4;]listring[]" ..
 
 			"button[0,7;8,1;save;Save]"
 

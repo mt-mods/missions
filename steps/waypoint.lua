@@ -74,7 +74,7 @@ missions.register_step({
 
 			"button[4,5;4,1;togglevisible;" .. visibleText .. "]" ..
 
-			"list[current_player;main;0,6;8,4;]" ..
+			"list[current_player;main;0,6;8,4;]listring[]" ..
 
 			"button[0,5;4,1;save;Save]"
 

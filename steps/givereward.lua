@@ -24,7 +24,7 @@ missions.register_step({
 			"label[0,1;Items]" ..
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;2,1;1,1;0]" ..
 
-			"list[current_player;main;0,6;8,1;]" ..
+			"list[current_player;main;0,6;8,1;]listring[]" ..
 			"button[0,7;8,1;save;Save]"
 
 		return formspec;
