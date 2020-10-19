@@ -54,7 +54,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if name ~= FORMNAME then
 		return
 	end
-
+	
 	local pos = minetest.string_to_pos(parts[2])
 	local node = minetest.get_node(pos)
 
@@ -62,17 +62,22 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
+	local player_name = player:get_player_name()
 	if fields.steptype then
 		parts = fields.steptype:split(":")
-		if parts[1] == "CHG" then
-			local selected_step = tonumber(parts[2])
-			selected_newstep_index[player:get_player_name()] = selected_step
+		local command = parts[1]
+		local selected_step = tonumber(parts[2])
+		if "CHG" == command		-- changed selection
+			or "DCL" == command	-- double clicked
+		then
+			selected_newstep_index[player_name] = selected_step
+			if "DCL" == command then fields.add = true end
 		end
 	end
 
 	if fields.add then
 		local steps = get_mission_steps_for_player(player)
-		local index = selected_newstep_index[player:get_player_name()]
+		local index = selected_newstep_index[player_name]
 		local spec = steps[index]
 
 		if not spec then
@@ -80,8 +85,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 
 		-- check privs
-		if spec.privs and not minetest.check_player_privs(player:get_player_name(), spec.privs) then
-			minetest.chat_send_player(player:get_player_name(), "Missing privs: " .. dump(spec.privs))
+		if spec.privs and not minetest.check_player_privs(player_name, spec.privs) then
+			minetest.chat_send_player(player_name, "Missing privs: " .. dump(spec.privs))
 			return
 		end
 
@@ -107,5 +112,4 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 end)
-
 
