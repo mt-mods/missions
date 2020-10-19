@@ -53,6 +53,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 
+	if fields.steps then
+		parts = fields.steps:split(":")
+		local command = parts[1]
+		local selected_step = tonumber(parts[2])
+		if "DCL" == command then -- double clicked
+			missions.set_selected_list_item(player, selected_step)
+			fields.edit = true
+		end
+	end
+
 	if fields.add then
 		missions.form.newstep(pos, node, player)
 		return true
