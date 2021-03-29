@@ -29,7 +29,7 @@ local playerabort = {}
 --persistence stuff
 
 minetest.register_on_joinplayer(function(player)
-	local missionStr = player:get_attribute(missions.MISSION_ATTRIBUTE_NAME)
+	local missionStr = player:get_meta():get_string(missions.MISSION_ATTRIBUTE_NAME)
 
 	local mission = nil
 	if missionStr then
@@ -56,7 +56,7 @@ minetest.register_on_leaveplayer(function(player)
 end)
 
 missions.persist_mission = function(player, mission)
-	player:set_attribute(missions.MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
+	player:get_meta():set_string(missions.MISSION_ATTRIBUTE_NAME, minetest.serialize(mission))
 end
 
 minetest.register_on_respawnplayer(function(player)
@@ -129,11 +129,13 @@ end
 local SELECTED_LIST_ITEM_ATTR_NAME = "missions_selected_list_item"
 
 missions.get_selected_list_item = function(player)
-	return tonumber( player:get_attribute(SELECTED_LIST_ITEM_ATTR_NAME) or "1" )
+	local s = player:get_meta():get_string(SELECTED_LIST_ITEM_ATTR_NAME)
+	if 0 == #s then return 1 end
+	return tonumber(s)
 end
 
 missions.set_selected_list_item = function(player, num)
-	player:set_attribute(SELECTED_LIST_ITEM_ATTR_NAME, num)
+	player:get_meta():set_string(SELECTED_LIST_ITEM_ATTR_NAME, tostring(num))
 end
 
 
@@ -245,4 +247,3 @@ missions.show_banner = function(player, title, msg)
 		player:hud_remove(four)
 	end)
 end
-
