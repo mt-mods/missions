@@ -54,7 +54,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if name ~= FORMNAME then
 		return
 	end
-	
+
 	local pos = minetest.string_to_pos(parts[2])
 	local node = minetest.get_node(pos)
 
