@@ -4,8 +4,29 @@ local HUD_ALIGNMENT = {x = 1, y = 0}
 
 
 local hud = {} -- playerName -> {}
-local remainingItems = {} -- playerName -> ItemStack
+local remainingItems = {} -- playerName -> ItemStack: the target item and count, eg, "default:stone 50"
+local remainingCount = {} -- playerName -> count: the player put items in chest
 
+local function cleanItemInChest(inv, stackItem, inv_name)
+	stackItem:set_count(1)
+	local maxRun = 99
+	while inv:contains_item(inv_name, stackItem) and maxRun > 0 do
+		stackItem:set_count(100*100)
+		inv:remove_item(inv_name, stackItem)
+		maxRun = maxRun - 1
+	end
+
+	--[[
+	if inv_name == nil then inv_name = "main" end
+	for i = 1, inv:get_size(inv_name) do
+		local vStack = inv:get_stack(inv_name, i)
+		if vStack:get_name() == stack:get_name() then
+			vStack:set_count(0)
+			-- inv:set_stack(inv_name, i)
+		end
+	end
+	--]]
+end
 
 missions.register_step({
 
@@ -13,16 +34,18 @@ missions.register_step({
 	name = "Put in chest",
 
 	create = function()
-		return {stack="", pos=nil, name="", visible=1}
+		return {stack="", pos=nil, name="", visible=1, resetChest=false, showCount=false}
 	end,
 
 	get_status = function(ctx)
 		local player = ctx.player
+		local stepdata = ctx.step.data
 
-		local str = remainingItems[player:get_player_name()]
-		if str then
-			local stack = ItemStack(str)
-			return "Put " .. stack:get_count() .. " x " .. stack:get_name() .. " into the chest"
+		local count = remainingCount[player:get_player_name()]
+		if type(count) == "number" then
+			local stack = ItemStack(stepdata.stack)
+			if not stepdata.showCount then count = "n" end
+			return "Put " .. count .. " x " .. stack:get_name() .. " into the chest"
 		else
 			return ""
 		end
@@ -75,6 +98,10 @@ missions.register_step({
 	edit_formspec = function(ctx)
 		local stepdata = ctx.step.data
 		local pos = ctx.pos
+		local resetChest = "false"
+		local showCount = "false"
+		if stepdata.resetChest then resetChest = "true" end
+		if stepdata.showCount then showCount = "true" end
 
 		ctx.inv:set_stack("main", 1, ItemStack(stepdata.stack))
 
@@ -101,6 +128,7 @@ missions.register_step({
 
 		local formspec = "size[8,8;]" ..
 			"label[0,0;Put items in chest]" ..
+			"checkbox[4,-0.2;showCount;Show Count;".. showCount .. "]" ..
 
 			"label[0,1;Items]" ..
 			"list[nodemeta:" .. pos.x .. "," .. pos.y .. "," .. pos.z .. ";main;2,1;1,1;0]" ..
@@ -113,7 +141,8 @@ missions.register_step({
 			"button_exit[0,6.5;8,1;togglevisible;" .. visibleText .. "]" ..
 
 			"list[current_player;main;0,2.5;8,4;]listring[]" ..
-			"button[0,7.3;8,1;save;Save]"
+			"button[0,7.3;4,1;save;Save]" ..
+			"checkbox[4.5,7.3;resetChest;Reset Chest;".. resetChest .. "]"
 
 		return formspec;
 	end,
@@ -123,6 +152,18 @@ missions.register_step({
 		local fields = ctx.fields
 		local inv = ctx.inv
 		local stepdata = ctx.step.data
+
+		if fields.resetChest == "true" then
+			stepdata.resetChest = true
+		elseif fields.resetChest == "false" then
+			stepdata.resetChest = false
+		end
+
+		if fields.showCount == "true" then
+			stepdata.showCount = true
+		elseif fields.showCount == "false" then
+			stepdata.showCount = false
+		end
 
 		if fields.togglevisible then
 			if stepdata.visible == 1 then
@@ -160,13 +201,21 @@ missions.register_step({
 
 		local stepdata = ctx.step.data
 		local player = ctx.player
+		local playerName = player:get_player_name()
 
 		-- set stack
-		remainingItems[player:get_player_name()] = stepdata.stack
+		remainingItems[playerName] = stepdata.stack
 		local stack =ItemStack(stepdata.stack)
+		remainingCount[playerName] = stack:get_count()
+		if stepdata.resetChest then
+			local meta = minetest.get_meta(stepdata.pos)
+			local inv = meta:get_inventory()
+			local removeStack = ItemStack(stepdata.stack)
+			cleanItemInChest(inv, removeStack, "main")
+		end
 
 		local hud_data = {}
-		hud[player:get_player_name()] = hud_data;
+		hud[playerName] = hud_data;
 
 		hud_data.counter = player:hud_add({
 			hud_elem_type = "text",
@@ -184,7 +233,7 @@ missions.register_step({
 			offset = {x = 32,   y = 140},
 			text = missions.get_image(stack:get_name()),
 			alignment = HUD_ALIGNMENT,
-			scale = {x = 1, y = 1},
+			scale = {x = 0.5, y = 0.5},
 		})
 
 		-- set waypoint, if enabled
@@ -201,17 +250,18 @@ missions.register_step({
 
 	on_step_interval = function(ctx)
 		local player = ctx.player
+		local playerName = player:get_player_name()
+		local stepdata = ctx.step.data
 
-		local str = remainingItems[player:get_player_name()]
-		if str then
-			local stack = ItemStack(str)
-
-			if stack:get_count() == 0 then
+		local count = remainingCount[playerName]
+		if type(count) == "number" then
+			if count == 0 then
 				ctx.on_success()
 			end
 
 			local hud_data = hud[player:get_player_name()]
-			player:hud_change(hud_data.counter, "text", stack:get_count() .. "x")
+			if not stepdata.showCount then count = "n " end
+			player:hud_change(hud_data.counter, "text", count .. "x")
 		else
 			ctx.on_success()
 		end
@@ -219,9 +269,11 @@ missions.register_step({
 
 	on_step_exit = function(ctx)
 		local player = ctx.player
+		local playerName = player:get_player_name()
 
-		remainingItems[player:get_player_name()] = ""
-		local hud_data = hud[player:get_player_name()]
+		remainingItems[playerName] = ""
+		remainingCount[playerName] = nil
+		local hud_data = hud[playerName]
 
 		if hud_data and hud_data.image then
 			player:hud_remove(hud_data.image)
@@ -235,7 +287,7 @@ missions.register_step({
 			player:hud_remove(hud_data.target)
 		end
 
-		hud[player:get_player_name()] = nil
+		hud[playerName] = nil
 	end
 
 
@@ -250,14 +302,13 @@ local intercept_chest = function(name)
 
 		def.on_metadata_inventory_put = function(pos, listname, index, stack, player)
 			if player and player:is_player() then
-				local remStack = ItemStack(remainingItems[player:get_player_name()])
+				local playerName = player:get_player_name()
+				local remStack = ItemStack(remainingItems[playerName])
 
 				if remStack:get_name() == stack:get_name() then
-					local count = remStack:get_count() - stack:get_count()
-					if count < 0 then count = 0 end
-
-					remStack:set_count(count)
-					remainingItems[player:get_player_name()] = remStack:to_string()
+					local count = remainingCount[playerName] or remStack:get_count()
+					count = count - stack:get_count()
+					remainingCount[playerName] = count
 				end
 
 				--print("Put Stack: " .. stack:get_name())
@@ -269,14 +320,13 @@ local intercept_chest = function(name)
 
 		def.on_metadata_inventory_take = function(pos, listname, index, stack, player)
 			if player and player:is_player() then
-				local remStack = ItemStack(remainingItems[player:get_player_name()])
+				local playerName = player:get_player_name()
+				local remStack = ItemStack(remainingItems[playerName])
 
 				if remStack:get_name() == stack:get_name() then
-					local count = remStack:get_count() + stack:get_count()
-					if count > remStack: get_stack_max() then count = remStack:get_stack_max() end
-
-					remStack:set_count(count)
-					remainingItems[player:get_player_name()] = remStack:to_string()
+					local count = remainingCount[playerName] or remStack:get_count()
+					count = count + stack:get_count()
+					remainingCount[playerName] = count
 				end
 				--print("Take Stack: " .. stack:get_name())
 			end
