@@ -14,6 +14,7 @@ minetest.register_node("missions:mission", {
 		oddly_breakable_by_hand = 3,
 		mesecon_needs_receiver = 1
 	},
+	is_ground_content = false,
 	sounds = default.node_sound_glass_defaults(),
 
 	after_place_node = function(pos, placer)
